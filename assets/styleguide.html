@@ -1,0 +1,2321 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ember Pixel — UI System v1.0</title>
+<meta name="description" content="黑底、橙光、点阵。Ember Pixel 是一套深色界面的像素化设计系统。">
+<link rel="stylesheet" href="./ember.css">
+<style>
+  /* ======================================================================
+     STYLEGUIDE PAGE — 仅用于文档页的版式，组件样式全部来自 ember.css
+     ====================================================================== */
+  html { scroll-behavior: smooth; }
+  body { background: var(--ep-bg); }
+
+  .wrap {
+    width: 100%;
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: clamp(20px, 4vw, 48px);
+  }
+
+  section[id] { scroll-margin-top: 72px; }
+
+  .skip {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    z-index: 200;
+    padding: 12px 16px;
+    background: var(--ep-ember);
+    color: var(--ep-ember-ink);
+    font-family: var(--ep-font-ui);
+    font-size: 12px;
+    transform: translateY(-160%);
+  }
+  .skip:focus { transform: none; }
+
+  /* top bar ------------------------------------------------------------- */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    background: var(--ep-bg);
+    border-bottom: 1px solid var(--ep-line);
+  }
+  .topbar__in {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    height: 72px;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; flex: none; }
+  .brand__mark {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    background: var(--ep-ember);
+    color: var(--ep-ember-ink);
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+  }
+  .brand__name {
+    display: grid;
+    gap: 5px;
+    font-family: var(--ep-font-ui);
+    font-size: 12px;
+    line-height: 1;
+    letter-spacing: 0.06em;
+  }
+  .brand__sub {
+    font-size: 8px;
+    letter-spacing: 0.16em;
+    color: var(--ep-dim);
+  }
+  .topbar .ep-nav { gap: 16px; }
+  .topbar .ep-nav a { font-size: 10px; }
+  .topbar__cta {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 16px;
+  }
+  .topmenu { display: none; position: relative; }
+  .topmenu summary {
+    list-style: none;
+    height: 44px;
+    cursor: pointer;
+  }
+  .topmenu summary::-webkit-details-marker { display: none; }
+  .topmenu[open] summary {
+    border-color: var(--ep-ember);
+    color: var(--ep-ember);
+  }
+  .topmenu__panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    z-index: 90;
+    display: grid;
+    gap: 2px;
+    width: 240px;
+    padding: 8px;
+    border: 1px solid var(--ep-line-strong);
+    background: var(--ep-panel);
+    box-shadow: 4px 4px 0 0 #000;
+  }
+  .topmenu__panel a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 12px;
+    border-left: 2px solid transparent;
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ep-muted);
+  }
+  .topmenu__panel a:hover {
+    color: var(--ep-ember);
+    border-left-color: var(--ep-ember);
+    background: rgba(252, 92, 30, 0.06);
+  }
+
+  /* hero ---------------------------------------------------------------- */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background: var(--ep-ember);
+    color: var(--ep-ember-ink);
+  }
+  .hero__dots {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(10, 7, 5, 0.22) 1.2px, transparent 1.8px);
+    background-size: 16px 16px;
+    pointer-events: none;
+  }
+  .hero__in {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 752px;
+    padding-top: 20px;
+  }
+  .hero__top {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+  .hero__center {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    align-items: end;
+    gap: 32px;
+    padding: 32px 0 40px;
+  }
+  .hero__title {
+    font-size: clamp(96px, 18vw, 260px);
+    line-height: 0.78;
+    letter-spacing: -0.025em;
+    margin-left: -0.045em;
+    white-space: nowrap;
+  }
+  .hero__side {
+    display: grid;
+    gap: 20px;
+    padding-bottom: 8px;
+  }
+  .hero__mark {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    background: var(--ep-ember-ink);
+    color: var(--ep-ember);
+    font-family: var(--ep-font-ui);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+  .hero__cn {
+    font-size: 24px;
+    line-height: 1.4;
+    letter-spacing: 0.18em;
+    white-space: nowrap;
+  }
+  .hero__note {
+    max-width: 30ch;
+    font-size: 12px;
+    line-height: 1.9;
+    opacity: 0.82;
+  }
+  .hero__meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    padding: 16px 0 24px;
+    border-top: 2px solid var(--ep-ember-ink);
+  }
+  .hero__meta div { display: grid; gap: 3px; }
+  .hero__meta span {
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    opacity: 0.82;
+  }
+  .hero__meta strong {
+    font-family: var(--ep-font-ui);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+  }
+  .hero__meta em {
+    font-style: normal;
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    opacity: 0.82;
+  }
+
+  /* sections ------------------------------------------------------------ */
+  .sec {
+    padding-block: clamp(72px, 9vw, 112px);
+    border-bottom: 1px solid var(--ep-line);
+  }
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--ep-line);
+    margin-bottom: 48px;
+  }
+  .sec-index {
+    font-family: var(--ep-font-ui);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--ep-ember);
+  }
+  .sec-title {
+    font-size: clamp(40px, 5.2vw, 64px);
+    color: var(--ep-cream);
+  }
+  .sec-cn {
+    font-size: 16px;
+    letter-spacing: 0.18em;
+    color: var(--ep-muted);
+    white-space: nowrap;
+  }
+  .sec-line {
+    flex: 1;
+    height: 1px;
+    margin-left: 8px;
+    background: var(--ep-line);
+  }
+
+  .lead-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 56px;
+    align-items: start;
+    margin-bottom: 64px;
+  }
+  .lead-grid .ep-lead { max-width: 34ch; }
+
+  .spec-list {
+    display: grid;
+    border-top: 1px solid var(--ep-line);
+  }
+  .spec-list > div {
+    display: grid;
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--ep-line);
+  }
+  .spec-list dt {
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    line-height: 1.8;
+    letter-spacing: 0.14em;
+    color: var(--ep-ember);
+  }
+  .spec-list dd {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--ep-muted);
+  }
+
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--ep-line);
+  }
+  .principle {
+    padding: 24px 32px 0 0;
+    border-right: 1px solid var(--ep-line);
+  }
+  .principle + .principle { padding-left: 32px; }
+  .principle:last-child { border-right: 0; padding-right: 0; }
+  .principle__num {
+    display: block;
+    margin-bottom: 24px;
+    font-size: 64px;
+    line-height: 0.8;
+    color: var(--ep-ember);
+  }
+  .principle h3 {
+    margin-bottom: 12px;
+    color: var(--ep-cream);
+    font-size: 12px;
+  }
+  .principle p {
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--ep-muted);
+  }
+  .principle__motif {
+    display: flex;
+    gap: 4px;
+    margin-top: 24px;
+    height: 24px;
+    align-items: flex-end;
+  }
+  .principle__motif i { display: block; background: var(--ep-line-strong); }
+  .principle__motif i.is-on { background: var(--ep-ember); }
+
+  /* color --------------------------------------------------------------- */
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .swatch {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 200px;
+    padding: 20px;
+    border: 1px solid var(--ep-line);
+    background: var(--ep-panel);
+  }
+  .swatch--ember {
+    grid-column: span 2;
+    grid-row: span 2;
+    min-height: 416px;
+    padding: 24px;
+    border-color: var(--ep-ember);
+    background: var(--ep-ember);
+    color: var(--ep-ember-ink);
+  }
+  .swatch--cream { background: var(--ep-cream); color: var(--ep-ember-ink); border-color: var(--ep-cream); }
+  .swatch--muted { background: var(--ep-muted); color: var(--ep-ember-ink); border-color: var(--ep-muted); }
+  .swatch--void { background: var(--ep-bg); border-color: var(--ep-line-strong); }
+  .swatch__label {
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.82;
+  }
+  .swatch__big {
+    font-size: clamp(40px, 5.4vw, 72px);
+    line-height: 0.85;
+    margin-block: 16px;
+  }
+  .swatch__name {
+    font-family: var(--ep-font-ui);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .swatch__foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 8px;
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    opacity: 0.82;
+  }
+  .swatch__hex { margin-top: 8px; font-family: var(--ep-font-ui); font-size: 11px; letter-spacing: 0.04em; }
+
+  .budget {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 32px;
+    align-items: center;
+    padding: 24px;
+    border: 1px solid var(--ep-line);
+    background: var(--ep-panel);
+    margin-bottom: 32px;
+  }
+  .budget__title { font-family: var(--ep-font-ui); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .budget__sub { margin-top: 6px; font-size: 12px; color: var(--ep-dim); }
+  .budget__meter { display: flex; gap: 4px; height: 24px; margin-bottom: 12px; }
+  .budget__meter span { flex: 1; background: var(--ep-line); }
+  .budget__meter span.is-on { background: var(--ep-ember); }
+  .budget__note { font-size: 12px; line-height: 1.8; color: var(--ep-muted); }
+
+  code.token {
+    font-family: var(--ep-font-ui);
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    color: var(--ep-cream);
+  }
+  .chip {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 8px;
+    vertical-align: -2px;
+    border: 1px solid var(--ep-line-strong);
+  }
+
+  /* type ---------------------------------------------------------------- */
+  .specimen {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto 250px;
+    gap: 24px;
+    align-items: end;
+    padding: 32px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    border: 1px solid var(--ep-line);
+    background: var(--ep-panel);
+  }
+  .specimen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(247, 241, 231, 0.1) 1px, transparent 1.6px);
+    background-size: 24px 24px;
+    pointer-events: none;
+  }
+  .specimen__display {
+    position: relative;
+    font-size: clamp(120px, 17vw, 224px);
+    line-height: 0.72;
+    color: var(--ep-ember);
+    margin-bottom: 8px;
+  }
+  .specimen__cjk {
+    position: relative;
+    font-family: var(--ep-font-body);
+    font-size: clamp(72px, 10vw, 144px);
+    line-height: 1;
+    color: var(--ep-cream);
+    margin-bottom: 8px;
+  }
+  .specimen__meta {
+    position: relative;
+    display: grid;
+    gap: 10px;
+    padding-bottom: 8px;
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    line-height: 1.7;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ep-muted);
+  }
+  .specimen__meta b { color: var(--ep-ember); font-weight: 400; }
+
+  .typecards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin: 32px 0;
+  }
+  .typecard {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 300px;
+    padding: 24px;
+    border: 1px solid var(--ep-line);
+    background: var(--ep-panel);
+  }
+  .typecard__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ep-muted);
+  }
+  .typecard__head span:last-child { color: var(--ep-ember); }
+  .typecard__sample {
+    display: flex;
+    align-items: center;
+    min-height: 104px;
+    padding: 16px 0;
+    border-block: 1px solid var(--ep-line);
+    color: var(--ep-cream);
+  }
+  .typecard p { font-size: 12px; line-height: 1.8; color: var(--ep-muted); }
+  .typecard__specs {
+    display: grid;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px dashed var(--ep-line);
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--ep-dim);
+  }
+
+  .notes3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    margin-top: 32px;
+  }
+  .notes3 > div {
+    padding-left: 16px;
+    border-left: 2px solid var(--ep-ember);
+  }
+  .notes3 h4 {
+    margin-bottom: 8px;
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ep-cream);
+  }
+  .notes3 p { font-size: 12px; line-height: 1.8; color: var(--ep-muted); }
+
+  .scale-table td:first-child { width: 160px; }
+  .scale-sample { font-family: var(--ep-font-display); color: var(--ep-ember); font-size: 24px; line-height: 1; }
+
+  /* surface ------------------------------------------------------------- */
+  .surface-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 48px;
+    align-items: start;
+    margin-bottom: 24px;
+  }
+  .grid-canvas {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    max-width: 440px;
+    border: 1px solid var(--ep-line-strong);
+    background-image:
+      linear-gradient(to right, rgba(247, 241, 231, 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(247, 241, 231, 0.035) 1px, transparent 1px),
+      linear-gradient(to right, rgba(247, 241, 231, 0.11) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(247, 241, 231, 0.11) 1px, transparent 1px);
+    background-size: 8px 8px, 8px 8px, 32px 32px, 32px 32px;
+  }
+  .grid-canvas__block {
+    position: absolute;
+    left: 32px;
+    top: 32px;
+    width: 96px;
+    height: 96px;
+    background: var(--ep-ember);
+  }
+  .grid-canvas__block::after {
+    content: "96 × 96";
+    position: absolute;
+    left: 100%;
+    bottom: 0;
+    margin-left: 8px;
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--ep-cream);
+    white-space: nowrap;
+  }
+  .grid-canvas__tag {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    padding: 4px 6px;
+    background: var(--ep-bg);
+    border: 1px solid var(--ep-line-strong);
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--ep-muted);
+  }
+  .surface-list { margin: 0; }
+
+  .primitives {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 32px;
+  }
+  .primitive {
+    display: grid;
+    align-content: space-between;
+    gap: 24px;
+    min-height: 168px;
+    padding: 20px;
+    border: 1px solid var(--ep-line);
+    background: var(--ep-panel);
+  }
+  .primitive__stage {
+    height: 64px;
+    border: 1px solid var(--ep-line-strong);
+    position: relative;
+  }
+  .primitive--dots .primitive__stage {
+    background-image: radial-gradient(circle at 1px 1px, rgba(247, 241, 231, 0.3) 1px, transparent 1.6px);
+    background-size: 16px 16px;
+  }
+  .primitive--brackets .primitive__stage::after {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    background-image:
+      linear-gradient(var(--ep-ember), var(--ep-ember)),
+      linear-gradient(var(--ep-ember), var(--ep-ember)),
+      linear-gradient(var(--ep-ember), var(--ep-ember)),
+      linear-gradient(var(--ep-ember), var(--ep-ember)),
+      linear-gradient(var(--ep-ember), var(--ep-ember)),
+      linear-gradient(var(--ep-ember), var(--ep-ember)),
+      linear-gradient(var(--ep-ember), var(--ep-ember)),
+      linear-gradient(var(--ep-ember), var(--ep-ember));
+    background-repeat: no-repeat;
+    background-size: 12px 2px, 2px 12px, 12px 2px, 2px 12px, 12px 2px, 2px 12px, 12px 2px, 2px 12px;
+    background-position: left top, left top, right top, right top, left bottom, left bottom, right bottom, right bottom;
+  }
+  .primitive--shadow .primitive__stage::after {
+    content: "";
+    position: absolute;
+    inset: 12px 20px 20px 12px;
+    border: 2px solid var(--ep-cream);
+    box-shadow: 4px 4px 0 0 var(--ep-ember);
+  }
+  .primitive__label {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ep-muted);
+  }
+  .primitive__label b { font-weight: 400; color: var(--ep-dim); }
+
+  /* component spec shells ---------------------------------------------- */
+  .spec {
+    margin-bottom: 24px;
+    border: 1px solid var(--ep-line);
+    background: #080807;
+  }
+  .spec__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--ep-line);
+    background: var(--ep-panel);
+  }
+  .spec__bar .ep-ui { font-size: 10px; color: var(--ep-muted); }
+  .spec__body {
+    display: grid;
+    gap: 24px;
+    padding: clamp(20px, 3vw, 32px);
+  }
+  .spec__note {
+    padding-top: 16px;
+    border-top: 1px dashed var(--ep-line);
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--ep-dim);
+  }
+  .row-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ep-dim);
+  }
+  .row-label::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    background: var(--ep-ember);
+  }
+  .buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 48px;
+  }
+  .button-set { display: grid; gap: 16px; align-content: start; }
+
+  .form-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 40px;
+    align-items: start;
+  }
+  .form-demo { max-width: none; }
+  .form-specs {
+    display: grid;
+    gap: 16px;
+    padding: 20px;
+    border: 1px solid var(--ep-line);
+    background: var(--ep-panel);
+  }
+  .form-specs .ep-ui { color: var(--ep-muted); font-size: 10px; }
+  .form-specs .spec-list > div { grid-template-columns: 72px minmax(0, 1fr); padding: 8px 0; }
+  .form-specs .spec-list dt { font-size: 8px; }
+  .form-specs .spec-list dd { font-size: 12px; }
+  .form-specs__note {
+    padding-top: 12px;
+    border-top: 1px dashed var(--ep-line);
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--ep-dim);
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .stat-card {
+    padding: 20px;
+    border: 1px solid var(--ep-line);
+    background: var(--ep-panel);
+  }
+  .stat-card .ep-stat__value { font-size: 48px; }
+
+  .progress-demo { display: grid; gap: 12px; }
+  .progress-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ep-muted);
+  }
+  .progress-head b { color: var(--ep-ember); font-weight: 400; }
+
+  .feedback-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+  .toast-stage {
+    position: relative;
+    min-height: 196px;
+    padding: 16px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    overflow: hidden;
+    border: 1px solid var(--ep-line);
+    background-color: #080807;
+    background-image: radial-gradient(circle at 1px 1px, rgba(247, 241, 231, 0.08) 1px, transparent 1.6px);
+    background-size: 24px 24px;
+  }
+  .toast-stage .ep-toast { position: relative; width: 100%; max-width: 320px; }
+  .dialog-preview { width: 100%; max-width: none; }
+  .dialog-preview .ep-dialog__body { padding: 20px; }
+
+  .tabs-demo { display: grid; gap: 24px; }
+  .tab-content {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .tab-content > div {
+    padding: 16px;
+    border: 1px solid var(--ep-line);
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--ep-muted);
+  }
+  .tab-content b {
+    display: block;
+    margin-bottom: 8px;
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--ep-ember);
+    font-weight: 400;
+  }
+
+  /* dashboard ----------------------------------------------------------- */
+  .dash {
+    display: grid;
+    grid-template-columns: 200px minmax(0, 1fr);
+    border: 1px solid var(--ep-line-strong);
+    background: var(--ep-bg);
+  }
+  .dash__rail {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 20px 16px;
+    border-right: 1px solid var(--ep-line);
+    background: var(--ep-panel);
+  }
+  .dash__brand { display: flex; align-items: center; gap: 10px; }
+  .dash__brand .mark {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    background: var(--ep-ember);
+    color: var(--ep-ember-ink);
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+  }
+  .dash__brand b {
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+  }
+  .dash__nav { display: grid; gap: 2px; }
+  .dash__nav a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border-left: 2px solid transparent;
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ep-muted);
+  }
+  .dash__nav a i { width: 6px; height: 6px; background: currentColor; flex: none; }
+  .dash__nav a.is-active {
+    border-left-color: var(--ep-ember);
+    background: rgba(252, 92, 30, 0.06);
+    color: var(--ep-ember);
+  }
+  .dash__status {
+    display: grid;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--ep-line);
+  }
+  .dash__status .label {
+    font-family: var(--ep-font-ui);
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ep-dim);
+  }
+  .dash__status strong {
+    font-family: var(--ep-font-display);
+    font-weight: 900;
+    font-variation-settings: "ROND" 100, "wght" 900;
+    font-size: 28px;
+    line-height: 0.9;
+    color: var(--ep-cream);
+  }
+  .dash__status strong span { font-size: 0.38em; }
+  .dash__meter { display: flex; gap: 4px; height: 6px; }
+  .dash__meter i { flex: 1; background: var(--ep-line); }
+  .dash__meter i.is-on { background: var(--ep-ember); }
+  .dash__user {
+    padding-top: 12px;
+    border-top: 1px solid var(--ep-line);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--ep-dim);
+  }
+  .dash__main {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+    padding: 20px;
+  }
+  .dash__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--ep-line);
+  }
+  .dash__title { font-size: 40px; line-height: 0.9; }
+  .dash__sub {
+    margin-top: 6px;
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ep-dim);
+  }
+  .dash__stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .dash__stat { padding: 14px; border: 1px solid var(--ep-line); background: var(--ep-panel); }
+  .dash__stat .ep-stat__label { font-size: 8px; margin-bottom: 10px; }
+  .dash__stat .ep-stat__value { font-size: 36px; }
+  .dash__stat .ep-stat__meta { font-size: 8px; }
+  .dash__grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 12px; }
+  .dash__panel { border: 1px solid var(--ep-line); background: var(--ep-panel); }
+  .dash__panel-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--ep-line);
+    font-family: var(--ep-font-ui);
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ep-muted);
+  }
+  .dash__panel-head b { color: var(--ep-ember); font-weight: 400; }
+  .chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 5px;
+    height: 208px;
+    padding: 16px 14px;
+    background-image: repeating-linear-gradient(to top, transparent 0, transparent 51px, rgba(247, 241, 231, 0.06) 51px, rgba(247, 241, 231, 0.06) 52px);
+  }
+  .chart span { flex: 1; min-width: 4px; background: var(--ep-line-strong); }
+  .chart span.is-ember { background: var(--ep-ember); }
+  .dash__logs { margin: 0; }
+  .dash__logs .ep-table th { padding: 8px 12px; font-size: 8px; }
+  .dash__logs .ep-table td { padding: 9px 12px; font-size: 12px; }
+  .dash__logs .ep-table .is-num { font-size: 10px; }
+
+  /* motion -------------------------------------------------------------- */
+  .timings {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .timing {
+    padding: 20px;
+    border: 1px solid var(--ep-line);
+    background: var(--ep-panel);
+  }
+  .timing__value {
+    font-size: 48px;
+    line-height: 0.9;
+    color: var(--ep-cream);
+  }
+  .timing__meta {
+    margin-top: 8px;
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ep-dim);
+  }
+  .timing__bars { display: flex; gap: 4px; align-items: flex-end; height: 24px; margin-top: 20px; }
+  .timing__bars i { width: 8px; background: var(--ep-line-strong); }
+  .timing__bars i.is-on { background: var(--ep-ember); }
+
+  .run-demo {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 24px;
+    border: 1px solid var(--ep-line);
+    background: var(--ep-panel);
+  }
+  .run-demo .ep-progress { height: 16px; }
+  .run-demo .ep-progress > span.is-on { background: var(--ep-ember); }
+
+  /* do / don't ---------------------------------------------------------- */
+  .dodont {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+  .dd { border: 1px solid var(--ep-line); background: #080807; }
+  .dd__bar {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--ep-line);
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .dd--do .dd__bar { color: var(--ep-ember); }
+  .dd--dont .dd__bar { color: var(--ep-danger); }
+  .dd__stage {
+    display: grid;
+    place-items: center;
+    min-height: 200px;
+    padding: 24px;
+  }
+  .dd__caption {
+    padding: 12px 16px;
+    border-top: 1px solid var(--ep-line);
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--ep-muted);
+  }
+  .mini-window {
+    width: 100%;
+    max-width: 300px;
+    border: 1px solid var(--ep-line-strong);
+    background: var(--ep-panel);
+  }
+  .mini-window__bar {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--ep-line);
+    font-family: var(--ep-font-ui);
+    font-size: 8px;
+    letter-spacing: 0.08em;
+    color: var(--ep-dim);
+  }
+  .mini-window__body { padding: 16px; display: grid; gap: 12px; }
+  .mini-window__body p { font-size: 10px; line-height: 1.6; color: var(--ep-muted); }
+  .dd--dont .mini-window--bad { border-radius: 16px; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7); overflow: hidden; }
+  .dd--dont .mini-window--bad .mini-window__body { background: var(--ep-ember); color: var(--ep-ember-ink); }
+  .dd--dont .mini-window--bad p { color: var(--ep-ember-ink); }
+  .mini-type-do { display: grid; gap: 8px; }
+  .mini-type-do strong {
+    font-family: var(--ep-font-display);
+    font-weight: 900;
+    font-variation-settings: "ROND" 100, "wght" 900;
+    font-size: 40px;
+    line-height: 0.9;
+    color: var(--ep-cream);
+  }
+  .mini-type-do span { font-size: 12px; color: var(--ep-muted); }
+  .mini-type-dont {
+    font-family: var(--ep-font-display);
+    font-weight: 900;
+    font-variation-settings: "ROND" 100, "wght" 900;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--ep-muted);
+    max-width: 260px;
+  }
+  .dd__note { font-family: var(--ep-font-ui); font-size: 10px; letter-spacing: 0.06em; color: var(--ep-dim); }
+
+  /* footer -------------------------------------------------------------- */
+  .footer {
+    margin-top: 0;
+    background: var(--ep-ember);
+    color: var(--ep-ember-ink);
+    padding: clamp(56px, 8vw, 96px) 0 24px;
+  }
+  .footer__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 48px;
+  }
+  .footer__stamp {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 220px;
+    height: 220px;
+    padding: 16px;
+    border: 2px solid var(--ep-ember-ink);
+    margin-top: 8px;
+  }
+  .footer__stamp .mark { font-size: 88px; line-height: 0.75; }
+  .footer__stamp .meta {
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    line-height: 1.9;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .footer__title {
+    font-size: clamp(72px, 13vw, 168px);
+    line-height: 0.78;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+  .footer__cn {
+    margin-top: 24px;
+    max-width: 32ch;
+    font-size: 16px;
+    line-height: 1.8;
+    opacity: 0.85;
+  }
+  .footer__meta {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 2px solid var(--ep-ember-ink);
+  }
+  .footer__meta div { display: grid; gap: 4px; }
+  .footer__meta span {
+    font-family: var(--ep-font-ui);
+    font-size: 8px;
+    letter-spacing: 0.16em;
+    opacity: 0.82;
+  }
+  .footer__meta strong {
+    font-family: var(--ep-font-ui);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+  }
+  .footer__bottom {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 32px;
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.82;
+  }
+  .footer__bottom a { border-bottom: 1px solid currentColor; }
+
+  .ep-toast[hidden] { display: none; }
+
+  /* responsive ---------------------------------------------------------- */
+  @media (max-width: 1100px) {
+    .topbar .ep-nav { display: none; }
+    .topmenu { display: block; margin-left: auto; }
+    .hero__center { grid-template-columns: minmax(0, 1fr); }
+    .hero__side { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; padding-bottom: 0; }
+    .hero__note { max-width: 52ch; }
+  }
+  @media (max-width: 900px) {
+    .sec-head { flex-wrap: wrap; }
+    .sec-line { display: none; }
+    .lead-grid { grid-template-columns: 1fr; gap: 32px; }
+    .principles { grid-template-columns: 1fr; }
+    .principle { padding: 24px 0 32px; border-right: 0; border-bottom: 1px solid var(--ep-line); }
+    .principle + .principle { padding-left: 0; }
+    .principle:last-child { border-bottom: 0; }
+    .swatches { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .swatch--ember { grid-column: span 2; grid-row: auto; min-height: 260px; }
+    .budget { grid-template-columns: 1fr; gap: 20px; }
+    .specimen { grid-template-columns: 1fr auto; }
+    .specimen__meta { grid-column: 1 / -1; }
+    .typecards { grid-template-columns: 1fr; }
+    .typecard { min-height: 0; }
+    .notes3 { grid-template-columns: 1fr; }
+    .surface-grid { grid-template-columns: 1fr; }
+    .primitives { grid-template-columns: 1fr; }
+    .buttons-grid { grid-template-columns: 1fr; }
+    .form-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .feedback-grid { grid-template-columns: 1fr; }
+    .dash { grid-template-columns: 1fr; }
+    .dash__rail { display: none; }
+    .dash__grid { grid-template-columns: 1fr; }
+    .tab-content { grid-template-columns: 1fr; }
+    .timings { grid-template-columns: 1fr; }
+    .dodont { grid-template-columns: 1fr; }
+    .footer__meta { grid-template-columns: 1fr; }
+    .footer__stamp { width: 160px; height: 160px; }
+  }
+  @media (max-width: 560px) {
+    .topbar__cta { display: none; }
+    .hero__in { min-height: 620px; }
+    .hero__top { flex-direction: column; gap: 6px; }
+    .hero__title { font-size: clamp(64px, 20vw, 110px); }
+    .hero__cn { font-size: 24px; letter-spacing: 0.16em; }
+    .hero__side { grid-template-columns: 1fr; }
+    .hero__mark { width: 40px; height: 40px; grid-row: auto; }
+    .hero__meta { grid-template-columns: 1fr; gap: 12px; }
+    .swatches { grid-template-columns: 1fr; }
+    .swatch--ember { grid-column: auto; }
+    .specimen { grid-template-columns: 1fr; }
+    .specimen__display { font-size: 120px; }
+    .specimen__cjk { font-size: 72px; }
+    .stats { grid-template-columns: 1fr; }
+    .dash__stats { grid-template-columns: 1fr; }
+    .dash__head { flex-direction: column; align-items: flex-start; }
+    .dash__title { font-size: 32px; }
+    .run-demo { flex-direction: column; align-items: stretch; }
+    .footer__title { font-size: 23vw; }
+    .footer__stamp { display: none; }
+    .footer__top { display: block; }
+    .footer__bottom { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">跳到主内容</a>
+
+<!-- ======================================================================
+     TOP BAR
+     ====================================================================== -->
+<header class="topbar">
+  <div class="wrap topbar__in">
+    <a class="brand" href="#top" aria-label="Ember Pixel 首页">
+      <span class="brand__mark">EP</span>
+      <span class="brand__name">EMBER PIXEL<span class="brand__sub">UI SYSTEM / V1.0</span></span>
+    </a>
+    <nav class="ep-nav" aria-label="章节导航">
+      <a href="#foundation">01 Foundation</a>
+      <a href="#color">02 Color</a>
+      <a href="#type">03 Type</a>
+      <a href="#surface">04 Surface</a>
+      <a href="#components">05 Components</a>
+      <a href="#pattern">06 Pattern</a>
+      <a href="#motion">07 Motion</a>
+      <a href="#rules">08 Rules</a>
+    </nav>
+    <details class="topmenu">
+      <summary class="ep-btn ep-btn--secondary ep-btn--sm">Menu</summary>
+      <nav class="topmenu__panel" aria-label="章节导航（移动端）">
+        <a href="#foundation">01 Foundation</a>
+        <a href="#color">02 Color</a>
+        <a href="#type">03 Type</a>
+        <a href="#surface">04 Surface</a>
+        <a href="#components">05 Components</a>
+        <a href="#pattern">06 Pattern</a>
+        <a href="#motion">07 Motion</a>
+        <a href="#rules">08 Rules</a>
+      </nav>
+    </details>
+    <a class="topbar__cta ep-badge ep-badge--ember" href="#color">TOKENS</a>
+  </div>
+</header>
+
+<!-- ======================================================================
+     HERO
+     ====================================================================== -->
+<section class="hero" id="top">
+  <div class="hero__dots" aria-hidden="true"></div>
+  <div class="wrap hero__in">
+    <div class="hero__top">
+      <span>Design System / Vol. 01</span>
+      <span>2026 / Black + Ember</span>
+    </div>
+
+    <div class="hero__center">
+      <h1 class="hero__title ep-display">Ember<br>Pixel</h1>
+      <div class="hero__side">
+        <span class="hero__mark" aria-hidden="true">EP</span>
+        <p class="hero__cn">黑底 · 橙光 · 点阵</p>
+        <p class="hero__note">一套为深色界面设计的像素化视觉语言。黑色是画布，橙色是信号，点阵是骨架——只在需要被看见的地方，点亮。</p>
+      </div>
+    </div>
+
+    <div class="hero__meta">
+      <div>
+        <span>Palette</span>
+        <strong>#FC5C1E</strong>
+        <em>Sampled from reference</em>
+      </div>
+      <div>
+        <span>Type</span>
+        <strong>Dot matrix</strong>
+        <em>Doto / Silkscreen / Fusion Pixel</em>
+      </div>
+      <div>
+        <span>Grid</span>
+        <strong>8 px</strong>
+        <em>0 radius / 2 px line / steps()</em>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ticker -->
+<div class="ep-marquee" aria-hidden="true">
+  <div class="ep-marquee__track">
+    <div class="ep-marquee__group">
+      <b>●</b> Black is the canvas <b>●</b> Ember is the signal <b>●</b> Dot matrix type <b>●</b> 8px grid <b>●</b> Zero radius <b>●</b> Less, but louder <b>●</b>
+    </div>
+    <div class="ep-marquee__group">
+      <b>●</b> Black is the canvas <b>●</b> Ember is the signal <b>●</b> Dot matrix type <b>●</b> 8px grid <b>●</b> Zero radius <b>●</b> Less, but louder <b>●</b>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+
+  <!-- ====================================================================
+       01 FOUNDATION
+       ==================================================================== -->
+  <section class="sec" id="foundation">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-index">01</span>
+        <h2 class="sec-title ep-display">Foundation</h2>
+        <span class="sec-cn">基础原则</span>
+        <span class="sec-line"></span>
+      </div>
+
+      <div class="lead-grid">
+        <p class="ep-lead">黑是画布，橙是信号。界面大多数时候保持沉默，只在需要行动、确认或警告时点亮橙色；点阵字体提供骨架，让每一像素都有落点。</p>
+        <dl class="spec-list">
+          <div><dt>CONTRAST</dt><dd>6.4 : 1 — EMBER / BLACK</dd></div>
+          <div><dt>ORANGE</dt><dd>≤ 10% 单屏面积，只给行动与状态</dd></div>
+          <div><dt>RADIUS</dt><dd>0 PX — 所有转角保持直角</dd></div>
+          <div><dt>GRID</dt><dd>8 PX 基准，12 列 / 24 GUTTER</dd></div>
+          <div><dt>MOTION</dt><dd>90–320 MS · steps() 阶梯切换</dd></div>
+        </dl>
+      </div>
+
+      <div class="principles">
+        <article class="principle">
+          <span class="principle__num ep-display">01</span>
+          <h3 class="ep-ui">Black first</h3>
+          <p>背景接近纯黑。层级由 1px 线、留白和字号建立，而不是一层层浅灰面板。黑色让橙色拥有电压。</p>
+          <div class="principle__motif" aria-hidden="true">
+            <i style="width:8px;height:8px"></i><i style="width:8px;height:16px"></i><i class="is-on" style="width:8px;height:24px"></i><i style="width:8px;height:12px"></i><i style="width:8px;height:20px"></i>
+          </div>
+        </article>
+        <article class="principle">
+          <span class="principle__num ep-display">02</span>
+          <h3 class="ep-ui">Ember is a signal</h3>
+          <p>橙色是稀缺资源：主行动、当前状态、关键数字。能不用就不用；用一次，就要让它说了算。</p>
+          <div class="principle__motif" aria-hidden="true">
+            <i class="is-on" style="width:64px;height:24px"></i><i style="width:8px;height:24px;background:transparent;border:1px dashed var(--ep-line-strong)"></i><i style="width:8px;height:24px;background:transparent;border:1px dashed var(--ep-line-strong)"></i>
+          </div>
+        </article>
+        <article class="principle">
+          <span class="principle__num ep-display">03</span>
+          <h3 class="ep-ui">Pixels, not curves</h3>
+          <p>0 圆角、1–2px 硬边、点阵字形、阶梯动效。任何柔化——模糊、光晕、缓动曲线——都是对风格的稀释。</p>
+          <div class="principle__motif" aria-hidden="true">
+            <i style="width:8px;height:8px"></i><i style="width:8px;height:8px"></i><i style="width:8px;height:8px"></i><i style="width:8px;height:8px"></i><i style="width:8px;height:8px"></i><i style="width:8px;height:8px"></i><i style="width:8px;height:8px"></i><i style="width:8px;height:8px"></i>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       02 COLOR
+       ==================================================================== -->
+  <section class="sec" id="color">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-index">02</span>
+        <h2 class="sec-title ep-display">Color</h2>
+        <span class="sec-cn">色彩</span>
+        <span class="sec-line"></span>
+      </div>
+
+      <div class="lead-grid">
+        <p class="ep-lead">调色板只有五个角色：黑、面板黑、奶油白、灰、橙。再加一个只在破坏性操作中出现的警报红。</p>
+        <div class="ep-alert">
+          <div>
+            <div class="ep-alert__title">Contrast rule</div>
+            <p>橙色上永远使用黑字。奶油白在橙底上只有 2.8:1，禁止使用。</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="swatches">
+        <article class="swatch swatch--ember">
+          <span class="swatch__label">01 / Ember — Signal</span>
+          <div class="swatch__big ep-display">FC5C1E</div>
+          <div>
+            <div class="swatch__name">Ember</div>
+            <div class="swatch__hex">#FC5C1E · rgb(252, 92, 30)</div>
+            <div class="swatch__foot"><span>主行动 · 焦点 · 数据</span><span>6.4:1 ON BLACK</span></div>
+          </div>
+        </article>
+        <article class="swatch swatch--void">
+          <span class="swatch__label">02 / Void</span>
+          <div>
+            <div class="swatch__name">Void</div>
+            <div class="swatch__hex">#060606</div>
+            <div class="swatch__foot"><span>画布 · 90% 面积</span><span>18.0:1</span></div>
+          </div>
+        </article>
+        <article class="swatch">
+          <span class="swatch__label">03 / Panel</span>
+          <div>
+            <div class="swatch__name">Panel</div>
+            <div class="swatch__hex">#0B0B0A</div>
+            <div class="swatch__foot"><span>卡片 · 输入框</span><span>17.5:1</span></div>
+          </div>
+        </article>
+        <article class="swatch swatch--cream">
+          <span class="swatch__label">04 / Cream</span>
+          <div>
+            <div class="swatch__name">Cream</div>
+            <div class="swatch__hex">#F7F1E7</div>
+            <div class="swatch__foot"><span>正文 · 高对比</span><span>18.0:1</span></div>
+          </div>
+        </article>
+        <article class="swatch swatch--muted">
+          <span class="swatch__label">05 / Muted</span>
+          <div>
+            <div class="swatch__name">Muted</div>
+            <div class="swatch__hex">#B7AC9E</div>
+            <div class="swatch__foot"><span>次级文本 · 标签</span><span>9.1:1</span></div>
+          </div>
+        </article>
+      </div>
+
+      <div class="budget">
+        <div>
+          <div class="budget__title">Orange budget</div>
+          <div class="budget__sub">单屏橙色面积上限 10%</div>
+        </div>
+        <div>
+          <div class="budget__meter" aria-hidden="true">
+            <span class="is-on"></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <p class="budget__note">整屏反白（Hero / CTA 区块）算一次预算，一个页面只出现一次。其余区域用橙色描边、文字和 2px 指示条，而不是大色块。</p>
+        </div>
+      </div>
+
+      <div class="ep-table-wrap">
+        <table class="ep-table">
+          <thead>
+            <tr><th>Token</th><th>Value</th><th>Use</th><th class="is-num">Contrast</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code class="token">--ep-bg</code></td><td><span class="chip" style="background:#060606"></span>#060606</td><td>页面画布，永远最底层</td><td class="is-num">—</td></tr>
+            <tr><td><code class="token">--ep-panel</code></td><td><span class="chip" style="background:#0B0B0A"></span>#0B0B0A</td><td>卡片、输入框、表格头</td><td class="is-num">—</td></tr>
+            <tr><td><code class="token">--ep-line</code></td><td><span class="chip" style="background:#2E2924"></span>#2E2924</td><td>1px 分隔线，结构而非装饰</td><td class="is-num">—</td></tr>
+            <tr><td><code class="token">--ep-ember</code></td><td><span class="chip" style="background:#FC5C1E"></span>#FC5C1E</td><td>主按钮、当前项、关键数字</td><td class="is-num">6.4:1</td></tr>
+            <tr><td><code class="token">--ep-cream</code></td><td><span class="chip" style="background:#F7F1E7"></span>#F7F1E7</td><td>正文与标题，代替纯白</td><td class="is-num">18.0:1</td></tr>
+            <tr><td><code class="token">--ep-muted</code></td><td><span class="chip" style="background:#B7AC9E"></span>#B7AC9E</td><td>次级说明、表单标签</td><td class="is-num">9.1:1</td></tr>
+            <tr><td><code class="token">--ep-danger</code></td><td><span class="chip" style="background:#FF3B24"></span>#FF3B24</td><td>仅破坏性操作与错误</td><td class="is-num">5.7:1</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       03 TYPE
+       ==================================================================== -->
+  <section class="sec" id="type">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-index">03</span>
+        <h2 class="sec-title ep-display">Type</h2>
+        <span class="sec-cn">字体</span>
+        <span class="sec-line"></span>
+      </div>
+
+      <div class="lead-grid">
+        <p class="ep-lead">三套字，三种职责：Doto 负责喊，Silkscreen 负责指路，Fusion Pixel 负责把事情说清楚。</p>
+        <dl class="spec-list">
+          <div><dt>DISPLAY</dt><dd>Doto 900 / ROND 100 — 只用于 ≥32px</dd></div>
+          <div><dt>UI</dt><dd>Silkscreen 400 / 全大写 / 8–16px</dd></div>
+          <div><dt>BODY</dt><dd>Fusion Pixel 12px — 只用 12 / 24 / 36</dd></div>
+          <div><dt>TRACKING</dt><dd>UI +0.08em / 小标签 +0.14em</dd></div>
+        </dl>
+      </div>
+
+      <div class="specimen">
+        <div class="specimen__display ep-display">Aa</div>
+        <div class="specimen__cjk">字</div>
+        <div class="specimen__meta">
+          <span><b>DISPLAY</b> / DOTO 900</span>
+          <span>ROND 100 · 圆点阵</span>
+          <span><b>BODY</b> / FUSION PIXEL</span>
+          <span>12PX 设计尺寸 · 简体中文</span>
+          <span>NEVER SCALE TYPE BETWEEN STEPS</span>
+        </div>
+      </div>
+
+      <div class="typecards">
+        <article class="typecard">
+          <div class="typecard__head"><span>01 / Display</span><span>Doto</span></div>
+          <div class="typecard__sample ep-display" style="font-size:56px">Signal</div>
+          <p>圆点构成的变量像素字。只负责大标题、海报数字与品牌时刻；小于 32px 就换成 Silkscreen。</p>
+          <ul class="typecard__specs">
+            <li>SIZE ≥ 32 PX</li>
+            <li>WEIGHT 900 / ROND 100</li>
+            <li>LINE 0.85</li>
+            <li>LATIN ONLY</li>
+          </ul>
+        </article>
+        <article class="typecard">
+          <div class="typecard__head"><span>02 / UI</span><span>Silkscreen</span></div>
+          <div class="typecard__sample" style="font-family:var(--ep-font-ui);font-size:24px;letter-spacing:.06em">DEPLOY</div>
+          <p>按钮、导航、表头、状态标签。永远全大写、宽字距；它的宽度就是界面的节奏。</p>
+          <ul class="typecard__specs">
+            <li>SIZE 8 / 10 / 12 / 16 PX</li>
+            <li>UPPERCASE</li>
+            <li>TRACKING +0.08EM</li>
+            <li>LATIN ONLY</li>
+          </ul>
+        </article>
+        <article class="typecard">
+          <div class="typecard__head"><span>03 / Body</span><span>Fusion Pixel</span></div>
+          <div class="typecard__sample" style="font-family:var(--ep-font-body);font-size:24px">设计系统</div>
+          <p>简体中文与正文的承重墙。12px 设计尺寸，只在 12 / 24 / 36px 上渲染；关闭灰度抗锯齿。</p>
+          <ul class="typecard__specs">
+            <li>SIZE 12 / 24 / 36 PX</li>
+            <li>CJK + LATIN</li>
+            <li>NO FAUX BOLD</li>
+            <li>LINE 1.75</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="ep-table-wrap">
+        <table class="ep-table scale-table">
+          <thead>
+            <tr><th>Token</th><th>Size / Line</th><th>Family</th><th>Sample</th><th class="is-num">Use</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code class="token">display-xl</code></td><td>160 / 0.85</td><td>Doto 900</td><td><span class="scale-sample">Aa</span></td><td class="is-num">Hero</td></tr>
+            <tr><td><code class="token">display-l</code></td><td>96 / 0.85</td><td>Doto 900</td><td><span class="scale-sample">Aa</span></td><td class="is-num">Poster</td></tr>
+            <tr><td><code class="token">display-m</code></td><td>64 / 0.9</td><td>Doto 900</td><td><span class="scale-sample">Aa</span></td><td class="is-num">Section</td></tr>
+            <tr><td><code class="token">display-s</code></td><td>48 / 0.9</td><td>Doto 900</td><td><span class="scale-sample">Aa</span></td><td class="is-num">Stat / H3</td></tr>
+            <tr><td><code class="token">title</code></td><td>32 / 1.1</td><td>Fusion Pixel</td><td style="font-family:var(--ep-font-body);font-size:32px;line-height:1.1">标题</td><td class="is-num">Panel title</td></tr>
+            <tr><td><code class="token">lead</code></td><td>24 / 1.5</td><td>Fusion Pixel</td><td style="font-family:var(--ep-font-body);font-size:24px;line-height:1.5">导语</td><td class="is-num">Intro</td></tr>
+            <tr><td><code class="token">body</code></td><td>16 / 1.75</td><td>Fusion Pixel</td><td style="font-family:var(--ep-font-body);font-size:16px">正文</td><td class="is-num">Default</td></tr>
+            <tr><td><code class="token">micro</code></td><td>12 / 1.6</td><td>Fusion Pixel</td><td style="font-family:var(--ep-font-body);font-size:12px">辅助说明</td><td class="is-num">Hint</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="notes3">
+        <div>
+          <h4>Integer sizes only</h4>
+          <p>像素字只在设计尺寸的整数倍上清晰。Fusion 12 → 12 / 24 / 36；Silkscreen 8 → 8 / 16 / 24。不要写 13、14、15px。</p>
+        </div>
+        <div>
+          <h4>No faux bold</h4>
+          <p>中文只有 400 一个字重。强调用颜色、字号和间距，不要合成粗体——那会把像素糊成一团。</p>
+        </div>
+        <div>
+          <h4>Antialiasing off</h4>
+          <p>正文与 UI 关闭灰度抗锯齿（<code class="token">-webkit-font-smoothing: none</code>），大号 Doto 保留抗锯齿，让圆点保持圆。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       04 SURFACE
+       ==================================================================== -->
+  <section class="sec" id="surface">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-index">04</span>
+        <h2 class="sec-title ep-display">Surface</h2>
+        <span class="sec-cn">网格与表面</span>
+        <span class="sec-line"></span>
+      </div>
+
+      <div class="lead-grid">
+        <p class="ep-lead">8px 是唯一单位。间距、线宽、图标、点阵背景都以 8 为步长；0.5px 的精致在这里没有位置。</p>
+        <dl class="spec-list">
+          <div><dt>SPACING</dt><dd>4 / 8 / 16 / 24 / 32 / 48 / 64 / 96</dd></div>
+          <div><dt>BORDER</dt><dd>1px 结构线 · 2px 强调线 · 0 圆角</dd></div>
+          <div><dt>ELEVATION</dt><dd>4px 4px 0 硬投影，不使用模糊</dd></div>
+          <div><dt>ICON</dt><dd>16 × 16 网格 · 2px 笔画 · crispEdges</dd></div>
+        </dl>
+      </div>
+
+      <div class="surface-grid">
+        <div class="grid-canvas" aria-label="8 像素网格示意">
+          <div class="grid-canvas__block"></div>
+          <span class="grid-canvas__tag">8 PX GRID</span>
+        </div>
+        <div>
+          <dl class="spec-list surface-list" style="border-top:1px solid var(--ep-line)">
+            <div><dt>COLUMNS</dt><dd>12 列 / 24px gutter / 1280px max</dd></div>
+            <div><dt>SECTION</dt><dd>上下 96–112px 呼吸，1px 分隔线收口</dd></div>
+            <div><dt>RADIUS</dt><dd>全局 0px；圆形只出现在头像与状态点</dd></div>
+            <div><dt>SHADOW</dt><dd>硬投影 4px/4px 0 #000，或完全不用</dd></div>
+            <div><dt>TEXTURE</dt><dd>24px 点阵 / 8px 网格，二选一，不叠加</dd></div>
+            <div><dt>DEPTH</dt><dd>靠边框与背景差（#060606 → #0B0B0A），不靠模糊</dd></div>
+          </dl>
+        </div>
+      </div>
+
+      <div class="primitives">
+        <div class="primitive primitive--dots">
+          <div class="primitive__stage"></div>
+          <div class="primitive__label"><span>Dot field</span><b>24 PX</b></div>
+        </div>
+        <div class="primitive primitive--brackets">
+          <div class="primitive__stage"></div>
+          <div class="primitive__label"><span>Corner brackets</span><b>16 × 2 PX</b></div>
+        </div>
+        <div class="primitive primitive--shadow">
+          <div class="primitive__stage"></div>
+          <div class="primitive__label"><span>Hard shadow</span><b>4 / 4 / 0</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       05 COMPONENTS
+       ==================================================================== -->
+  <section class="sec" id="components">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-index">05</span>
+        <h2 class="sec-title ep-display">Components</h2>
+        <span class="sec-cn">组件</span>
+        <span class="sec-line"></span>
+      </div>
+
+      <p class="ep-lead" style="max-width:38ch;margin-bottom:40px">所有组件共享同一套骨架：2px 边框、0 圆角、阶梯状态、一个橙色焦点。</p>
+
+      <!-- 5.1 actions -->
+      <div class="spec">
+        <div class="spec__bar">
+          <h3 class="ep-ui">5.1 / Actions</h3>
+          <span class="ep-badge ep-badge--live"><i class="ep-dot"></i>Live</span>
+        </div>
+        <div class="spec__body">
+          <div class="buttons-grid">
+            <div class="button-set">
+              <span class="row-label">Primary</span>
+              <div class="ep-row">
+                <button class="ep-btn ep-btn--primary" type="button">Deploy
+                  <svg class="ep-icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M2 7h7v2H2zM9 3l5 5-5 5z"/></svg>
+                </button>
+                <button class="ep-btn ep-btn--primary" type="button" disabled>Deploy</button>
+              </div>
+              <span class="ep-field__hint">主行动一屏最多一个；禁用态保持形状，只降透明度。</span>
+            </div>
+            <div class="button-set">
+              <span class="row-label">Secondary / ghost</span>
+              <div class="ep-row">
+                <button class="ep-btn ep-btn--secondary" type="button">Secondary</button>
+                <button class="ep-btn ep-btn--ghost" type="button">Ghost</button>
+                <button class="ep-btn ep-btn--danger" type="button">Abort</button>
+              </div>
+              <span class="ep-field__hint">Hover 直接反白，不做渐变、不做缩放。</span>
+            </div>
+          </div>
+
+          <div class="ep-row" style="gap:16px">
+            <span class="row-label">Sizes</span>
+            <button class="ep-btn ep-btn--primary ep-btn--sm" type="button">Small 32</button>
+            <button class="ep-btn ep-btn--primary" type="button">Medium 48</button>
+            <button class="ep-btn ep-btn--primary ep-btn--lg" type="button">Large 56</button>
+            <button class="ep-iconbtn" type="button" aria-label="新增">
+              <svg class="ep-icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M7 3h2v10H7zM3 7h10v2H3z"/></svg>
+            </button>
+          </div>
+
+          <p class="spec__note">Hover 90ms steps(2) · Active 位移 2px · Focus 2px 橙圈 offset 3px · 键盘可达。</p>
+        </div>
+      </div>
+
+      <!-- 5.2 fields -->
+      <div class="spec">
+        <div class="spec__bar">
+          <h3 class="ep-ui">5.2 / Fields</h3>
+          <span class="ep-badge">Min height 48</span>
+        </div>
+        <div class="spec__body">
+          <div class="form-layout">
+            <form class="ep-form-grid form-demo" onsubmit="return false">
+            <div class="ep-field">
+              <label class="ep-field__label" for="f-callsign">Callsign <span>Required</span></label>
+              <input class="ep-input" id="f-callsign" type="text" value="NOVA-07" autocomplete="off">
+              <span class="ep-field__hint">4–12 个字符，自动转为大写。</span>
+            </div>
+            <div class="ep-field">
+              <label class="ep-field__label" for="f-email">Email <span>Error</span></label>
+              <input class="ep-input" id="f-email" type="email" value="nova@" aria-invalid="true" aria-describedby="f-email-error">
+              <span class="ep-field__error" id="f-email-error">缺少域名，无法建立链路。</span>
+            </div>
+            <div class="ep-field">
+              <label class="ep-field__label" for="f-band">Band</label>
+              <select class="ep-select" id="f-band">
+                <option>UPLINK / 8.4 GHz</option>
+                <option>DOWNLINK / 7.2 GHz</option>
+                <option>EMERGENCY / 121.5 MHz</option>
+              </select>
+            </div>
+            <div class="ep-field">
+              <label class="ep-field__label" for="f-date">Window <span>UTC</span></label>
+              <input class="ep-input" id="f-date" type="text" value="2026-11-19 12:00">
+            </div>
+            <div class="ep-field ep-field--full">
+              <label class="ep-field__label" for="f-msg">Transmission <span>Optional</span></label>
+              <textarea class="ep-textarea" id="f-msg" placeholder="Be brief. Be loud."></textarea>
+            </div>
+            <div class="ep-field ep-field--full">
+              <div class="ep-row" style="gap:32px" role="group" aria-label="传输选项">
+                <label class="ep-choice"><input class="ep-check" type="checkbox" checked> 加密传输</label>
+                <label class="ep-choice"><input class="ep-radio" type="radio" name="prio" checked> 优先级 A</label>
+                <label class="ep-choice"><input class="ep-radio" type="radio" name="prio"> 优先级 B</label>
+                <label class="ep-choice"><input class="ep-switch" type="checkbox" checked> 自动重连</label>
+              </div>
+            </div>
+            </form>
+            <aside class="form-specs" aria-label="字段规格">
+              <span class="ep-ui">Field specs</span>
+              <dl class="spec-list">
+                <div><dt>HEIGHT</dt><dd>48 PX</dd></div>
+                <div><dt>BORDER</dt><dd>2 PX / 0 RADIUS</dd></div>
+                <div><dt>FOCUS</dt><dd>2 PX EMBER + 2 PX OFFSET</dd></div>
+                <div><dt>ERROR</dt><dd>DANGER + 文案</dd></div>
+                <div><dt>TEXT</dt><dd>16 PX FUSION</dd></div>
+              </dl>
+              <div class="form-specs__note">标签永远在输入框上方，不放进占位符。占位符只放格式示例。</div>
+            </aside>
+          </div>
+          <p class="spec__note">错误只用文字 + 橙红边框，不靠颜色单独表意。输入框 2px 边框，focus 加 2px 橙圈；占位符是 dim 而不是 muted。</p>
+        </div>
+      </div>
+
+      <!-- 5.3 data -->
+      <div class="spec">
+        <div class="spec__bar">
+          <h3 class="ep-ui">5.3 / Data</h3>
+          <span class="ep-badge">Tabular</span>
+        </div>
+        <div class="spec__body">
+          <div class="stats">
+            <div class="stat-card">
+              <span class="ep-stat__label">Signal integrity</span>
+              <div class="ep-stat__value ep-ember-text">98.4<span style="font-size:.4em">%</span></div>
+              <div class="ep-stat__meta">+2.1 vs last orbit</div>
+            </div>
+            <div class="stat-card">
+              <span class="ep-stat__label">Latency</span>
+              <div class="ep-stat__value">12<span style="font-size:.4em">MS</span></div>
+              <div class="ep-stat__meta">Nominal</div>
+            </div>
+            <div class="stat-card">
+              <span class="ep-stat__label">Uplink</span>
+              <div class="ep-stat__value">07<span style="font-size:.4em">/12</span></div>
+              <div class="ep-stat__meta">5 channels idle</div>
+            </div>
+          </div>
+
+          <div class="ep-table-wrap">
+            <table class="ep-table">
+              <thead>
+                <tr><th>Node</th><th>Status</th><th>Operator</th><th class="is-num">Throughput</th><th class="is-num">Ping</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>ARCTURUS-01</td><td><span class="ep-badge ep-badge--live"><i class="ep-dot"></i>Live</span></td><td>NOVA-07</td><td class="is-num">8.4 GB/S</td><td class="is-num">12 MS</td></tr>
+                <tr><td>ORION-04</td><td><span class="ep-badge ep-badge--ember">Sync</span></td><td>KITE-02</td><td class="is-num">3.1 GB/S</td><td class="is-num">48 MS</td></tr>
+                <tr><td>VEGA-09</td><td><span class="ep-badge">Idle</span></td><td>—</td><td class="is-num">0.0 GB/S</td><td class="is-num">—</td></tr>
+                <tr><td>LYRA-02</td><td><span class="ep-badge ep-badge--danger">Lost</span></td><td>ECHO-11</td><td class="is-num">—</td><td class="is-num">ERR</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="progress-demo">
+            <div class="progress-head"><span>Uplink calibration</span><span><b>62%</b> / 12 steps</span></div>
+            <div class="ep-progress" role="img" aria-label="校准进度 62%">
+              <span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span class="is-on"></span>
+              <span class="is-on"></span><span class="is-on"></span><span class="is-on"></span><span></span>
+              <span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+
+          <p class="spec__note">数字用 Silkscreen，等宽、右对齐、橙色。进度用分段方块，不用连续进度条——每一格都是一个离散档位。</p>
+        </div>
+      </div>
+
+      <!-- 5.4 feedback -->
+      <div class="spec">
+        <div class="spec__bar">
+          <h3 class="ep-ui">5.4 / Feedback</h3>
+          <span class="ep-badge">Status</span>
+        </div>
+        <div class="spec__body">
+          <div class="ep-row">
+            <span class="ep-badge ep-badge--ember">Deployed</span>
+            <span class="ep-badge ep-badge--live"><i class="ep-dot"></i>Recording</span>
+            <span class="ep-badge">Standby</span>
+            <span class="ep-badge ep-badge--danger">Lost</span>
+            <span class="ep-badge"><span class="ep-avatar ep-avatar--ghost" style="width:18px;height:18px;font-size:8px">N7</span> NOVA-07</span>
+          </div>
+
+          <div class="ep-alert">
+            <div>
+              <div class="ep-alert__title">Heads up</div>
+              <p>橙色是唯一的主色。当一屏出现两个以上橙色按钮时，用户就不再知道该按哪一个。</p>
+            </div>
+          </div>
+
+          <div class="feedback-grid">
+            <div class="toast-stage">
+              <div class="ep-toast">
+                <div>
+                  <div class="ep-toast__title">Transmission sent</div>
+                  <div class="ep-toast__body">NOVA-07 · 12 ms · 已加密</div>
+                </div>
+                <span class="ep-badge ep-badge--ember" style="margin-left:auto">OK</span>
+              </div>
+            </div>
+
+            <div>
+              <div class="dialog-preview ep-dialog">
+                <div class="ep-dialog__head">
+                  <span class="ep-dialog__title">Abort transmission?</span>
+                  <span class="ep-dim" aria-hidden="true" style="font-family:var(--ep-font-ui);font-size:10px">ESC</span>
+                </div>
+                <div class="ep-dialog__body">当前数据包已写入 62%，中止后无法恢复。确认放弃？</div>
+                <div class="ep-dialog__foot">
+                  <button class="ep-btn ep-btn--secondary ep-btn--sm" type="button">Cancel</button>
+                  <button class="ep-btn ep-btn--danger ep-btn--sm" type="button">Abort</button>
+                </div>
+              </div>
+              <div class="ep-row" style="margin-top:12px">
+                <button class="ep-btn ep-btn--secondary ep-btn--sm" type="button" id="open-dialog">Open modal</button>
+                <button class="ep-btn ep-btn--ghost ep-btn--sm" type="button" id="toast-btn">Fire toast</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="ep-empty">
+            <div class="ep-empty__glyph" aria-hidden="true"></div>
+            <div class="ep-empty__title">No signals yet</div>
+            <p class="ep-empty__text">这个频道还是空的。调整频率，或者等待下一次来自深空的握手。</p>
+            <button class="ep-btn ep-btn--primary ep-btn--sm" type="button">Scan band</button>
+          </div>
+
+          <p class="spec__note">Toast 固定在右下，4px 橙色左边线；Dialog 顶部 4px 橙条；空状态用虚线框而不是插画。</p>
+        </div>
+      </div>
+
+      <!-- 5.5 navigation -->
+      <div class="spec">
+        <div class="spec__bar">
+          <h3 class="ep-ui">5.5 / Navigation</h3>
+          <span class="ep-badge">Keyboard</span>
+        </div>
+        <div class="spec__body">
+          <div class="ep-crumb">
+            <a href="#components">System</a><span aria-hidden="true">/</span>
+            <a href="#components">Components</a><span aria-hidden="true">/</span>
+            <span style="color:var(--ep-cream)">Navigation</span>
+          </div>
+
+          <div class="tabs-demo" data-tabs>
+            <div class="ep-tabs" role="tablist" aria-label="示例标签页">
+              <button class="ep-tab" id="tab-1" role="tab" aria-selected="true" aria-controls="panel-1" tabindex="0">Overview</button>
+              <button class="ep-tab" id="tab-2" role="tab" aria-selected="false" aria-controls="panel-2" tabindex="-1">Signal</button>
+              <button class="ep-tab" id="tab-3" role="tab" aria-selected="false" aria-controls="panel-3" tabindex="-1">Logs</button>
+            </div>
+            <div class="ep-tabpanel" id="panel-1" role="tabpanel" aria-labelledby="tab-1">
+              <div class="tab-content">
+                <div><b>Uptime</b>99.98% · 过去 30 天</div>
+                <div><b>Throughput</b>8.4 GB/s · 峰值 11.2</div>
+                <div><b>Alerts</b>1 未确认 · 0 严重</div>
+              </div>
+            </div>
+            <div class="ep-tabpanel" id="panel-2" role="tabpanel" aria-labelledby="tab-2" hidden>
+              <div class="tab-content">
+                <div><b>Band</b>8.4 GHz · 稳定</div>
+                <div><b>Noise</b>-92 dBm · 极低</div>
+                <div><b>Lock</b>Phase locked</div>
+              </div>
+            </div>
+            <div class="ep-tabpanel" id="panel-3" role="tabpanel" aria-labelledby="tab-3" hidden>
+              <div class="tab-content">
+                <div><b>12:04</b>Handshake complete</div>
+                <div><b>12:01</b>Key rotated</div>
+                <div><b>11:58</b>Carrier acquired</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ep-row" style="justify-content:space-between;border-top:1px solid var(--ep-line);padding-top:16px">
+            <span class="ep-crumb">NODE 07 / 24</span>
+            <a class="ep-link ep-ui" href="#components" style="border:0">Next node →</a>
+          </div>
+
+          <p class="spec__note">Tab 下划线 2px；当前项同时用颜色和边框两条线索，不只靠颜色。焦点顺序与视觉顺序一致。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       06 PATTERN
+       ==================================================================== -->
+  <section class="sec" id="pattern">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-index">06</span>
+        <h2 class="sec-title ep-display">Pattern</h2>
+        <span class="sec-cn">组合示例</span>
+        <span class="sec-line"></span>
+      </div>
+
+      <p class="ep-lead" style="max-width:36ch;margin-bottom:40px">把原则放进一个真实界面：左侧导航、三个指标、一张趋势图、一张日志表。橙色只出现在当前项、主按钮和一个峰值上。</p>
+
+      <div class="dash">
+        <aside class="dash__rail">
+          <div class="dash__brand">
+            <span class="mark">EP</span>
+            <b>EMBER OPS</b>
+          </div>
+          <nav class="dash__nav" aria-label="控制台导航">
+            <a href="#pattern" class="is-active"><i></i>Overview</a>
+            <a href="#pattern"><i></i>Signals</a>
+            <a href="#pattern"><i></i>Nodes</a>
+            <a href="#pattern"><i></i>Operators</a>
+            <a href="#pattern"><i></i>Archive</a>
+          </nav>
+          <div class="dash__status">
+            <span class="label">Uplink load</span>
+            <strong>8.4<span>GB/S</span></strong>
+            <div class="dash__meter" aria-hidden="true">
+              <i class="is-on"></i><i class="is-on"></i><i class="is-on"></i><i class="is-on"></i><i></i><i></i>
+            </div>
+          </div>
+          <div class="dash__user">
+            <span class="ep-avatar" style="width:24px;height:24px;font-size:8px">N7</span>
+            <span>NOVA-07<br>OPERATOR</span>
+          </div>
+        </aside>
+
+        <div class="dash__main">
+          <div class="dash__head">
+            <div>
+              <div class="ep-kicker">Live / Sector 07</div>
+              <div class="dash__title ep-display">Orbital Relay</div>
+              <div class="dash__sub">2026-11-19 · 12:07 UTC · 4 nodes online</div>
+            </div>
+            <button class="ep-btn ep-btn--primary ep-btn--sm" type="button">Deploy</button>
+          </div>
+
+          <div class="dash__stats">
+            <div class="dash__stat">
+              <span class="ep-stat__label">Signal</span>
+              <div class="ep-stat__value ep-ember-text">98.4<span style="font-size:.4em">%</span></div>
+              <div class="ep-stat__meta">+2.1%</div>
+            </div>
+            <div class="dash__stat">
+              <span class="ep-stat__label">Latency</span>
+              <div class="ep-stat__value">12<span style="font-size:.4em">MS</span></div>
+              <div class="ep-stat__meta">Nominal</div>
+            </div>
+            <div class="dash__stat">
+              <span class="ep-stat__label">Uplink</span>
+              <div class="ep-stat__value">07<span style="font-size:.4em">/12</span></div>
+              <div class="ep-stat__meta">5 idle</div>
+            </div>
+          </div>
+
+          <div class="dash__grid">
+            <div class="dash__panel">
+              <div class="dash__panel-head"><span>Signal throughput</span><span><b>24H</b></span></div>
+              <div class="chart" role="img" aria-label="24 小时信号吞吐柱状图">
+                <span style="height:38%"></span><span style="height:52%"></span><span style="height:44%"></span><span style="height:61%"></span>
+                <span style="height:58%"></span><span style="height:72%"></span><span style="height:66%"></span><span style="height:81%"></span>
+                <span style="height:74%"></span><span class="is-ember" style="height:96%"></span><span style="height:84%"></span><span style="height:78%"></span>
+                <span style="height:69%"></span><span style="height:73%"></span><span style="height:64%"></span><span style="height:59%"></span>
+                <span style="height:54%"></span><span style="height:62%"></span><span style="height:55%"></span><span style="height:48%"></span>
+              </div>
+            </div>
+
+            <div class="dash__panel">
+              <div class="dash__panel-head"><span>Signal log</span><span>LIVE</span></div>
+              <table class="ep-table dash__logs">
+                <tbody>
+                  <tr><td>12:06</td><td><span class="ep-badge ep-badge--ember">SYNC</span></td><td class="is-num">8.4G</td></tr>
+                  <tr><td>12:01</td><td><span class="ep-badge">KEY</span></td><td class="is-num">—</td></tr>
+                  <tr><td>11:58</td><td><span class="ep-badge">PING</span></td><td class="is-num">12MS</td></tr>
+                  <tr><td>11:52</td><td><span class="ep-badge ep-badge--danger">LOST</span></td><td class="is-num">ERR</td></tr>
+                  <tr><td>11:44</td><td><span class="ep-badge">SYNC</span></td><td class="is-num">7.9G</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notes3" style="margin-top:32px">
+        <div><h4>One primary</h4><p>整屏只有一个橙色实心按钮。次级动作使用描边或纯文字。</p></div>
+        <div><h4>Numbers are loud</h4><p>关键指标用 Doto，大、圆、不可忽视；解释文字退回 Fusion 与灰色。</p></div>
+        <div><h4>Structure before color</h4><p>所有分区先由 1px 线和留白建立，橙色只是最后一步的点睛。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       07 MOTION
+       ==================================================================== -->
+  <section class="sec" id="motion">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-index">07</span>
+        <h2 class="sec-title ep-display">Motion</h2>
+        <span class="sec-cn">动效</span>
+        <span class="sec-line"></span>
+      </div>
+
+      <div class="lead-grid">
+        <p class="ep-lead">动效是继电器，不是棉花糖。用 steps() 模拟档位切换，90–320ms，只动颜色、位移与透明度。</p>
+        <dl class="spec-list">
+          <div><dt>EASING</dt><dd>steps(2) / steps(4) / 无缓动曲线</dd></div>
+          <div><dt>DURATION</dt><dd>90ms 反馈 · 160ms 状态 · 320ms 面板</dd></div>
+          <div><dt>PROPERTY</dt><dd>color / background / border / transform</dd></div>
+          <div><dt>BLINK</dt><dd>1.2s steps(2) — 只给 LIVE 状态</dd></div>
+        </dl>
+      </div>
+
+      <div class="timings">
+        <div class="timing">
+          <div class="timing__value ep-display">90<span style="font-size:.3em">MS</span></div>
+          <div class="timing__meta">Hover / press · steps(2)</div>
+          <div class="timing__bars" aria-hidden="true"><i class="is-on" style="height:8px"></i><i class="is-on" style="height:16px"></i><i style="height:24px"></i></div>
+        </div>
+        <div class="timing">
+          <div class="timing__value ep-display">160<span style="font-size:.3em">MS</span></div>
+          <div class="timing__meta">State / panel · steps(4)</div>
+          <div class="timing__bars" aria-hidden="true"><i class="is-on" style="height:8px"></i><i class="is-on" style="height:16px"></i><i class="is-on" style="height:24px"></i><i style="height:24px"></i></div>
+        </div>
+        <div class="timing">
+          <div class="timing__value ep-display">320<span style="font-size:.3em">MS</span></div>
+          <div class="timing__meta">Overlay / route · steps(8)</div>
+          <div class="timing__bars" aria-hidden="true"><i class="is-on" style="height:8px"></i><i class="is-on" style="height:8px"></i><i class="is-on" style="height:16px"></i><i class="is-on" style="height:16px"></i><i class="is-on" style="height:24px"></i><i style="height:24px"></i></div>
+        </div>
+      </div>
+
+      <div class="run-demo">
+        <div style="flex:1;display:grid;gap:12px">
+          <div class="progress-head"><span>Sequence burst</span><span id="run-count"><b>0</b> / 12</span></div>
+          <div class="ep-progress" id="run-progress" style="height:16px">
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+        <button class="ep-btn ep-btn--secondary" type="button" id="run-btn">Run sequence</button>
+      </div>
+
+      <div class="notes3">
+        <div><h4>No bounce</h4><p>没有回弹、没有弹簧、没有 scale(1.1)。像素世界的反馈是开关，不是果冻。</p></div>
+        <div><h4>No blur</h4><p>不淡入光晕，不做毛玻璃。出现就出现，消失就消失。</p></div>
+        <div><h4>Reduced motion</h4><p>尊重 prefers-reduced-motion：关闭 marquee、闪烁与所有过渡，状态依然清晰。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       08 DO / DON'T
+       ==================================================================== -->
+  <section class="sec" id="rules">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-index">08</span>
+        <h2 class="sec-title ep-display">Rules</h2>
+        <span class="sec-cn">边界</span>
+        <span class="sec-line"></span>
+      </div>
+
+      <p class="ep-lead" style="max-width:36ch;margin-bottom:40px">风格不是加法，是拒绝。下面四组对比，是这套系统最容易被破坏的地方。</p>
+
+      <div class="dodont">
+        <div class="dd dd--do">
+          <div class="dd__bar"><span>Do / 01</span><span>Signal</span></div>
+          <div class="dd__stage">
+            <div class="mini-window">
+              <div class="mini-window__bar"><span>EMBER OPS</span><span>12:07</span></div>
+              <div class="mini-window__body">
+                <p>一个界面，一个主行动。橙色按钮是唯一的亮点。</p>
+                <button class="ep-btn ep-btn--primary ep-btn--sm" type="button">Deploy</button>
+              </div>
+            </div>
+          </div>
+          <div class="dd__caption">橙色只给主行动。其余动作让位。</div>
+        </div>
+
+        <div class="dd dd--dont">
+          <div class="dd__bar"><span>Don't / 01</span><span>Overload</span></div>
+          <div class="dd__stage">
+            <div class="mini-window mini-window--bad">
+              <div class="mini-window__bar"><span>EMBER OPS</span><span>12:07</span></div>
+              <div class="mini-window__body">
+                <p>每个按钮都是橙色，就没有按钮是重要的。</p>
+                <div class="ep-row" style="gap:8px">
+                  <button class="ep-btn ep-btn--primary ep-btn--sm" type="button">Go</button>
+                  <button class="ep-btn ep-btn--primary ep-btn--sm" type="button">Run</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="dd__caption">橙色通胀：所有东西都在喊，等于没人说话。</div>
+        </div>
+
+        <div class="dd dd--do">
+          <div class="dd__bar"><span>Do / 02</span><span>Hard edge</span></div>
+          <div class="dd__stage">
+            <div style="width:100%;max-width:300px;height:120px;border:2px solid var(--ep-line-strong);background:var(--ep-panel);box-shadow:6px 6px 0 0 var(--ep-ember);display:grid;place-items:center">
+              <span class="ep-ui" style="color:var(--ep-muted)">0 RADIUS</span>
+            </div>
+          </div>
+          <div class="dd__caption">直角、2px 线、硬投影。边缘就是态度。</div>
+        </div>
+
+        <div class="dd dd--dont">
+          <div class="dd__bar"><span>Don't / 02</span><span>Soft UI</span></div>
+          <div class="dd__stage">
+            <div style="width:100%;max-width:300px;height:120px;border:1px solid var(--ep-line);background:var(--ep-panel);border-radius:20px;box-shadow:0 24px 48px rgba(0,0,0,.8);display:grid;place-items:center">
+              <span class="ep-ui" style="color:var(--ep-muted)">20 RADIUS</span>
+            </div>
+          </div>
+          <div class="dd__caption">圆角 + 柔影会立刻把像素语言稀释成 SaaS 模板。</div>
+        </div>
+
+        <div class="dd dd--do">
+          <div class="dd__bar"><span>Do / 03</span><span>Hierarchy</span></div>
+          <div class="dd__stage">
+            <div class="mini-type-do">
+              <strong>Signal</strong>
+              <span>点阵标题配像素正文，信息层级一眼可读。</span>
+            </div>
+          </div>
+          <div class="dd__caption">Doto 负责标题，Fusion 负责正文。</div>
+        </div>
+
+        <div class="dd dd--dont">
+          <div class="dd__bar"><span>Don't / 03</span><span>Pixel body</span></div>
+          <div class="dd__stage">
+            <div class="mini-type-dont">用 Doto 排正文，每个字母都变成一排点，读三行就累。这就是为什么它只能做标题。</div>
+          </div>
+          <div class="dd__caption">点阵标题字不能承担长文本。</div>
+        </div>
+
+        <div class="dd dd--do">
+          <div class="dd__bar"><span>Do / 04</span><span>Steps</span></div>
+          <div class="dd__stage">
+            <button class="ep-btn ep-btn--primary" type="button">90ms · steps(2)</button>
+          </div>
+          <div class="dd__caption">状态切换像继电器：两档，干脆。</div>
+        </div>
+
+        <div class="dd dd--dont">
+          <div class="dd__bar"><span>Don't / 04</span><span>Ease bounce</span></div>
+          <div class="dd__stage">
+            <div style="display:grid;justify-items:center;gap:16px">
+              <button class="ep-btn ep-btn--primary" type="button" style="transform:scale(1.08);border-radius:10px;box-shadow:0 18px 40px rgba(252,92,30,.45)">Bounce</button>
+              <span class="dd__note">400MS · EASE-IN-OUT · SCALE(1.08) · BLUR(8PX)</span>
+            </div>
+          </div>
+          <div class="dd__caption">缓动、缩放、模糊——三种柔化一起上，风格归零。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ======================================================================
+     FOOTER
+     ====================================================================== -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__top">
+      <div>
+        <div class="footer__title ep-display">Stay<br>Loud.</div>
+        <p class="footer__cn">把橙色留给真正重要的那一下。<br>其余时间，让黑色说话。</p>
+      </div>
+      <div class="footer__stamp" aria-hidden="true">
+        <div class="mark ep-display">EP</div>
+        <div class="meta">Ember Pixel<br>UI System / V1.0<br>Est. 2026</div>
+      </div>
+    </div>
+
+    <div class="footer__meta">
+      <div><span>Tokens</span><strong>assets/ember.css</strong></div>
+      <div><span>Type</span><strong>Doto / Silkscreen / Fusion Pixel</strong></div>
+      <div><span>License</span><strong>OFL 1.1 · v1.0 / 2026</strong></div>
+    </div>
+
+    <div class="footer__bottom">
+      <span>Ember Pixel — UI System</span>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </div>
+</footer>
+
+<!-- live toast + dialog -->
+<div class="ep-toast-stack">
+  <div class="ep-toast" id="demo-toast-live" role="status" aria-live="polite" hidden>
+    <div>
+      <div class="ep-toast__title">Transmission sent</div>
+      <div class="ep-toast__body">NOVA-07 · 12 ms · 已加密</div>
+    </div>
+    <span class="ep-badge ep-badge--ember" style="margin-left:auto">OK</span>
+  </div>
+</div>
+
+<dialog class="ep-dialog" id="demo-dialog" aria-labelledby="dialog-title">
+  <div class="ep-dialog__head">
+    <span class="ep-dialog__title" id="dialog-title">Abort transmission?</span>
+    <button class="ep-iconbtn" type="button" data-close aria-label="关闭" style="width:32px;height:32px;border-width:1px">
+      <span aria-hidden="true" style="font-family:var(--ep-font-ui);font-size:12px">X</span>
+    </button>
+  </div>
+  <div class="ep-dialog__body">当前数据包已写入 62%，中止后无法恢复。确认放弃？</div>
+  <div class="ep-dialog__foot">
+    <button class="ep-btn ep-btn--secondary ep-btn--sm" type="button" data-close>Cancel</button>
+    <button class="ep-btn ep-btn--danger ep-btn--sm" type="button" data-close>Abort</button>
+  </div>
+</dialog>
+
+<script>
+  // tabs -----------------------------------------------------------------
+  document.querySelectorAll('[data-tabs]').forEach(function (group) {
+    var tabs = Array.prototype.slice.call(group.querySelectorAll('[role="tab"]'));
+    var panels = Array.prototype.slice.call(group.querySelectorAll('[role="tabpanel"]'));
+
+    function select(index) {
+      tabs.forEach(function (tab, i) {
+        tab.setAttribute('aria-selected', i === index ? 'true' : 'false');
+        tab.tabIndex = i === index ? 0 : -1;
+      });
+      panels.forEach(function (panel, i) {
+        panel.hidden = i !== index;
+      });
+    }
+
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () { select(i); });
+      tab.addEventListener('keydown', function (event) {
+        var next = null;
+        if (event.key === 'ArrowRight') next = (i + 1) % tabs.length;
+        if (event.key === 'ArrowLeft') next = (i - 1 + tabs.length) % tabs.length;
+        if (next !== null) {
+          event.preventDefault();
+          select(next);
+          tabs[next].focus();
+        }
+      });
+    });
+  });
+
+  // mobile menu ----------------------------------------------------------
+  document.querySelectorAll('.topmenu__panel a').forEach(function (link) {
+    link.addEventListener('click', function () {
+      var menu = link.closest('details');
+      if (menu) menu.open = false;
+    });
+  });
+
+  // dialog ---------------------------------------------------------------
+  var dialog = document.getElementById('demo-dialog');
+  var openDialog = document.getElementById('open-dialog');
+  if (dialog && openDialog) {
+    openDialog.addEventListener('click', function () { dialog.showModal(); });
+    dialog.querySelectorAll('[data-close]').forEach(function (button) {
+      button.addEventListener('click', function () { dialog.close(); });
+    });
+    dialog.addEventListener('click', function (event) {
+      if (event.target === dialog) dialog.close();
+    });
+  }
+
+  // toast ----------------------------------------------------------------
+  var toastButton = document.getElementById('toast-btn');
+  var liveToast = document.getElementById('demo-toast-live');
+  var toastTimer;
+  if (toastButton && liveToast) {
+    toastButton.addEventListener('click', function () {
+      liveToast.hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { liveToast.hidden = true; }, 3200);
+    });
+  }
+
+  // sequence burst -------------------------------------------------------
+  var runButton = document.getElementById('run-btn');
+  var runProgress = document.getElementById('run-progress');
+  var runCount = document.getElementById('run-count');
+  var runTimer;
+  if (runButton && runProgress) {
+    var blocks = Array.prototype.slice.call(runProgress.children);
+    runButton.addEventListener('click', function () {
+      clearInterval(runTimer);
+      blocks.forEach(function (block) { block.classList.remove('is-on'); });
+      var i = 0;
+      runCount.innerHTML = '<b>0</b> / 12';
+      runTimer = setInterval(function () {
+        if (i >= blocks.length) { clearInterval(runTimer); return; }
+        blocks[i].classList.add('is-on');
+        i += 1;
+        runCount.innerHTML = '<b>' + i + '</b> / 12';
+      }, 110);
+    });
+  }
+</script>
+</body>
+</html>

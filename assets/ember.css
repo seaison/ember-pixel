@@ -1,0 +1,1261 @@
+/* ==========================================================================
+   EMBER PIXEL — UI SYSTEM v1.0
+   Black canvas · Ember signal · Dot-matrix type
+   --------------------------------------------------------------------------
+   Fonts: Doto (display) / Silkscreen (UI) / Fusion Pixel 12px SC (body, CJK)
+   All three are OFL-1.1. See fonts/FusionPixel-LICENSE.txt.
+   Class prefix: ep-
+   Rules encoded here: 0 radius, 8px grid, 2px lines, stepped motion,
+   orange = signal (≤10% of a screen), cream never on orange.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. FONTS
+   -------------------------------------------------------------------------- */
+@font-face {
+  font-family: "Doto";
+  src: url("./fonts/Doto-Latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Silkscreen";
+  src: url("./fonts/Silkscreen-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Silkscreen";
+  src: url("./fonts/Silkscreen-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Fusion Pixel";
+  src: url("./fonts/FusionPixel-12px-SC.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* --------------------------------------------------------------------------
+   2. TOKENS
+   -------------------------------------------------------------------------- */
+:root {
+  /* canvas — blacks are warm, never blue */
+  --ep-bg: #060606;
+  --ep-panel: #0b0b0a;
+  --ep-raised: #131211;
+  --ep-line: #2e2924;
+  --ep-line-strong: #4f463d;
+
+  /* signal — sampled from the reference poster */
+  --ep-ember: #fc5c1e;
+  --ep-ember-rgb: 252, 92, 30;
+  --ep-ember-hot: #ff7c46;
+  --ep-ember-deep: #c2400c;
+  --ep-ember-ink: #0a0705;
+
+  /* ink */
+  --ep-cream: #f7f1e7;
+  --ep-muted: #b7ac9e;
+  --ep-dim: #8a7f72;
+  --ep-danger: #ff3b24;
+
+  /* type */
+  --ep-font-display: "Doto", "Silkscreen", monospace;
+  --ep-font-ui: "Silkscreen", "Fusion Pixel", monospace;
+  --ep-font-body: "Fusion Pixel", "DotGothic16", monospace;
+
+  /* type scale — pixel fonts only at integer multiples of their design size */
+  --ep-text-display-xl: 160px;
+  --ep-text-display-l: 96px;
+  --ep-text-display-m: 64px;
+  --ep-text-display-s: 48px;
+  --ep-text-title: 32px;
+  --ep-text-lead: 24px;
+  --ep-text-body: 16px;
+  --ep-text-micro: 12px;
+
+  /* space — 8px grid, 4px only for optical alignment */
+  --ep-1: 4px;
+  --ep-2: 8px;
+  --ep-3: 16px;
+  --ep-4: 24px;
+  --ep-5: 32px;
+  --ep-6: 48px;
+  --ep-7: 64px;
+  --ep-8: 96px;
+
+  /* structure */
+  --ep-radius: 0;
+  --ep-container: 1280px;
+  --ep-gutter: 24px;
+
+  /* motion — relay clicks, not cotton candy */
+  --ep-t-fast: 90ms;
+  --ep-t-med: 160ms;
+  --ep-t-slow: 320ms;
+  --ep-ease-step: steps(2, end);
+  --ep-ease-step-4: steps(4, end);
+
+  /* hard shadow, never blurred */
+  --ep-shadow: 4px 4px 0 0 #000;
+
+  color-scheme: dark;
+}
+
+/* --------------------------------------------------------------------------
+   3. BASE
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--ep-bg);
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: none;
+  scrollbar-color: var(--ep-ember) var(--ep-bg);
+  scrollbar-width: thin;
+}
+
+body {
+  margin: 0;
+  background: var(--ep-bg);
+  color: var(--ep-cream);
+  font-family: var(--ep-font-body);
+  font-size: var(--ep-text-body);
+  line-height: 1.75;
+  font-synthesis: none;
+  text-rendering: optimizeSpeed;
+}
+
+h1, h2, h3, h4, h5, h6, p, figure, blockquote {
+  margin: 0;
+}
+
+ul, ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  border-radius: 0;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--ep-line);
+}
+
+::selection {
+  background: var(--ep-ember);
+  color: var(--ep-ember-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ep-ember);
+  outline-offset: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   4. TYPE
+   -------------------------------------------------------------------------- */
+.ep-display {
+  font-family: var(--ep-font-display);
+  font-weight: 900;
+  font-variation-settings: "ROND" 100, "wght" 900;
+  line-height: 0.85;
+  letter-spacing: -0.01em;
+  /* dots stay round: keep antialiasing on for display only */
+  -webkit-font-smoothing: auto;
+}
+
+.ep-display--square {
+  font-variation-settings: "ROND" 0, "wght" 900;
+}
+
+.ep-ui {
+  font-family: var(--ep-font-ui);
+  font-size: var(--ep-text-micro);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ep-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ep-2);
+  font-family: var(--ep-font-ui);
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ep-ember);
+}
+
+.ep-kicker::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: none;
+  background: currentColor;
+}
+
+.ep-lead {
+  font-size: var(--ep-text-lead);
+  line-height: 1.5;
+  color: var(--ep-cream);
+  letter-spacing: 0.01em;
+}
+
+.ep-muted { color: var(--ep-muted); }
+.ep-dim { color: var(--ep-dim); }
+.ep-ember-text { color: var(--ep-ember); }
+
+.ep-num {
+  font-family: var(--ep-font-ui);
+  font-size: var(--ep-text-micro);
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+.ep-link {
+  color: var(--ep-cream);
+  border-bottom: 1px solid var(--ep-line-strong);
+  padding-bottom: 1px;
+  transition: color var(--ep-t-fast) var(--ep-ease-step),
+              border-color var(--ep-t-fast) var(--ep-ease-step);
+}
+
+.ep-link:hover {
+  color: var(--ep-ember);
+  border-color: var(--ep-ember);
+}
+
+.ep-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  border: 1px solid var(--ep-line-strong);
+  border-bottom-width: 3px;
+  background: var(--ep-panel);
+  color: var(--ep-muted);
+  font-family: var(--ep-font-ui);
+  font-size: 10px;
+  line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   5. LAYOUT
+   -------------------------------------------------------------------------- */
+.ep-container {
+  width: 100%;
+  max-width: var(--ep-container);
+  margin-inline: auto;
+  padding-inline: clamp(20px, 4vw, 48px);
+}
+
+.ep-grid {
+  display: grid;
+  gap: var(--ep-gutter);
+}
+
+.ep-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ep-3);
+}
+
+.ep-hr {
+  border: 0;
+  border-top: 1px solid var(--ep-line);
+  margin: 0;
+}
+
+.ep-hr--dashed {
+  border-top: 1px dashed var(--ep-line-strong);
+}
+
+.ep-rule-ember {
+  height: 2px;
+  background: var(--ep-ember);
+  border: 0;
+}
+
+/* dotted field — the only texture in the system */
+.ep-dotgrid {
+  background-image: radial-gradient(circle at 1px 1px, rgba(247, 241, 231, 0.16) 1px, transparent 1.6px);
+  background-size: 24px 24px;
+}
+
+.ep-dotgrid--ink {
+  background-image: radial-gradient(circle at 1px 1px, rgba(10, 7, 5, 0.26) 1.2px, transparent 1.8px);
+  background-size: 16px 16px;
+}
+
+/* pixel corner brackets */
+.ep-brackets {
+  position: relative;
+}
+
+.ep-brackets::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  --ep-bracket: var(--ep-ember);
+  background-image:
+    linear-gradient(var(--ep-bracket), var(--ep-bracket)),
+    linear-gradient(var(--ep-bracket), var(--ep-bracket)),
+    linear-gradient(var(--ep-bracket), var(--ep-bracket)),
+    linear-gradient(var(--ep-bracket), var(--ep-bracket)),
+    linear-gradient(var(--ep-bracket), var(--ep-bracket)),
+    linear-gradient(var(--ep-bracket), var(--ep-bracket)),
+    linear-gradient(var(--ep-bracket), var(--ep-bracket)),
+    linear-gradient(var(--ep-bracket), var(--ep-bracket));
+  background-repeat: no-repeat;
+  background-size: 16px 2px, 2px 16px, 16px 2px, 2px 16px, 16px 2px, 2px 16px, 16px 2px, 2px 16px;
+  background-position:
+    left top, left top,
+    right top, right top,
+    left bottom, left bottom,
+    right bottom, right bottom;
+}
+
+/* --------------------------------------------------------------------------
+   6. BUTTONS
+   -------------------------------------------------------------------------- */
+.ep-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ep-2);
+  height: 48px;
+  padding: 0 var(--ep-4);
+  border: 2px solid transparent;
+  border-radius: var(--ep-radius);
+  background: transparent;
+  color: var(--ep-cream);
+  font-family: var(--ep-font-ui);
+  font-size: var(--ep-text-micro);
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  -webkit-font-smoothing: none;
+  transition:
+    background-color var(--ep-t-fast) var(--ep-ease-step),
+    border-color var(--ep-t-fast) var(--ep-ease-step),
+    color var(--ep-t-fast) var(--ep-ease-step),
+    transform var(--ep-t-fast) var(--ep-ease-step);
+}
+
+.ep-btn:active {
+  transform: translate(2px, 2px);
+}
+
+.ep-btn[disabled],
+.ep-btn[aria-disabled="true"] {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.ep-btn--primary {
+  background: var(--ep-ember);
+  border-color: var(--ep-ember);
+  color: var(--ep-ember-ink);
+}
+
+.ep-btn--secondary {
+  background: transparent;
+  border-color: var(--ep-line-strong);
+  color: var(--ep-cream);
+}
+
+.ep-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--ep-cream);
+}
+
+.ep-btn--danger {
+  background: transparent;
+  border-color: var(--ep-danger);
+  color: var(--ep-danger);
+}
+
+.ep-btn--sm {
+  height: 32px;
+  padding: 0 var(--ep-3);
+  font-size: 10px;
+}
+
+.ep-btn--lg {
+  height: 56px;
+  padding: 0 var(--ep-5);
+}
+
+.ep-btn--block {
+  width: 100%;
+}
+
+.ep-iconbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 2px solid var(--ep-line-strong);
+  background: transparent;
+  color: var(--ep-cream);
+  cursor: pointer;
+  transition:
+    background-color var(--ep-t-fast) var(--ep-ease-step),
+    border-color var(--ep-t-fast) var(--ep-ease-step),
+    color var(--ep-t-fast) var(--ep-ease-step);
+}
+
+.ep-icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  shape-rendering: crispEdges;
+}
+
+@media (hover: hover) {
+  .ep-btn--primary:hover {
+    background: var(--ep-ember-hot);
+    border-color: var(--ep-ember-hot);
+  }
+  .ep-btn--secondary:hover {
+    background: var(--ep-cream);
+    border-color: var(--ep-cream);
+    color: var(--ep-bg);
+  }
+  .ep-btn--ghost:hover {
+    color: var(--ep-ember);
+  }
+  .ep-btn--danger:hover {
+    background: var(--ep-danger);
+    border-color: var(--ep-danger);
+    color: var(--ep-ember-ink);
+  }
+  .ep-iconbtn:hover {
+    border-color: var(--ep-ember);
+    color: var(--ep-ember);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   7. FORMS
+   -------------------------------------------------------------------------- */
+.ep-field {
+  display: grid;
+  gap: var(--ep-2);
+  align-content: start;
+}
+
+.ep-field__label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--ep-2);
+  font-family: var(--ep-font-ui);
+  font-size: 10px;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ep-muted);
+}
+
+.ep-field__label span {
+  color: var(--ep-dim);
+  letter-spacing: 0.06em;
+}
+
+.ep-field__hint {
+  font-size: var(--ep-text-micro);
+  line-height: 1.6;
+  color: var(--ep-dim);
+}
+
+.ep-field__error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--ep-text-micro);
+  line-height: 1.6;
+  color: var(--ep-danger);
+}
+
+.ep-field__error::before {
+  content: "!";
+  display: inline-grid;
+  place-items: center;
+  width: 14px;
+  height: 14px;
+  flex: none;
+  border: 1px solid currentColor;
+  font-family: var(--ep-font-ui);
+  font-size: 10px;
+  line-height: 1;
+}
+
+.ep-input,
+.ep-textarea,
+.ep-select {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px var(--ep-3);
+  border: 2px solid var(--ep-line);
+  border-radius: var(--ep-radius);
+  background: var(--ep-panel);
+  color: var(--ep-cream);
+  font-family: var(--ep-font-body);
+  font-size: var(--ep-text-body);
+  line-height: 1.5;
+  transition: border-color var(--ep-t-fast) var(--ep-ease-step);
+}
+
+.ep-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.ep-input::placeholder,
+.ep-textarea::placeholder {
+  color: var(--ep-dim);
+}
+
+.ep-input:hover,
+.ep-textarea:hover,
+.ep-select:hover {
+  border-color: var(--ep-line-strong);
+}
+
+.ep-input:focus,
+.ep-textarea:focus,
+.ep-select:focus {
+  outline: 2px solid var(--ep-ember);
+  outline-offset: 2px;
+  border-color: var(--ep-ember);
+}
+
+.ep-input[aria-invalid="true"],
+.ep-textarea[aria-invalid="true"],
+.ep-select[aria-invalid="true"] {
+  border-color: var(--ep-danger);
+}
+
+.ep-select {
+  appearance: none;
+  padding-right: 44px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' shape-rendering='crispEdges'%3E%3Cpath fill='%23FC5C1E' d='M0 0h2v2h2v2h2v2h2V4h2V2h2V0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  cursor: pointer;
+}
+
+.ep-select option {
+  background: var(--ep-panel);
+  color: var(--ep-cream);
+}
+
+/* checkbox — square, pixel check */
+.ep-check,
+.ep-radio {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  flex: none;
+  display: inline-block;
+  border: 2px solid var(--ep-line-strong);
+  border-radius: 0;
+  background: var(--ep-bg);
+  cursor: pointer;
+  transition:
+    background-color var(--ep-t-fast) var(--ep-ease-step),
+    border-color var(--ep-t-fast) var(--ep-ease-step);
+}
+
+.ep-check:checked {
+  background-color: var(--ep-ember);
+  border-color: var(--ep-ember);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' shape-rendering='crispEdges'%3E%3Cpath fill='%23060606' d='M1 5h2v2H1zM3 7h2v2H3zM5 9h2v2H5zM7 7h2v2H7zM9 5h2v2H9zM11 3h2v2h-2z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 12px 12px;
+}
+
+.ep-radio:checked {
+  border-color: var(--ep-ember);
+  background: var(--ep-ember);
+  box-shadow: inset 0 0 0 4px var(--ep-bg);
+}
+
+.ep-check:hover,
+.ep-radio:hover {
+  border-color: var(--ep-ember);
+}
+
+.ep-check:focus-visible,
+.ep-radio:focus-visible {
+  outline: 2px solid var(--ep-ember);
+  outline-offset: 2px;
+}
+
+.ep-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ep-2);
+  font-size: var(--ep-text-body);
+  line-height: 1.4;
+  color: var(--ep-cream);
+  cursor: pointer;
+}
+
+/* switch */
+.ep-switch {
+  appearance: none;
+  position: relative;
+  width: 52px;
+  height: 28px;
+  margin: 0;
+  flex: none;
+  border: 2px solid var(--ep-line-strong);
+  border-radius: 0;
+  background: var(--ep-bg);
+  cursor: pointer;
+  transition:
+    background-color var(--ep-t-fast) var(--ep-ease-step),
+    border-color var(--ep-t-fast) var(--ep-ease-step);
+}
+
+.ep-switch::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: var(--ep-dim);
+  transition:
+    transform var(--ep-t-fast) var(--ep-ease-step),
+    background-color var(--ep-t-fast) var(--ep-ease-step);
+}
+
+.ep-switch:checked {
+  border-color: var(--ep-ember);
+  background: rgba(var(--ep-ember-rgb), 0.12);
+}
+
+.ep-switch:checked::before {
+  transform: translateX(24px);
+  background: var(--ep-ember);
+}
+
+.ep-switch:focus-visible {
+  outline: 2px solid var(--ep-ember);
+  outline-offset: 2px;
+}
+
+.ep-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ep-4);
+}
+
+.ep-form-grid > .ep-field--full {
+  grid-column: 1 / -1;
+}
+
+/* --------------------------------------------------------------------------
+   8. CARDS / PANELS
+   -------------------------------------------------------------------------- */
+.ep-card {
+  position: relative;
+  padding: var(--ep-4);
+  border: 1px solid var(--ep-line);
+  border-radius: var(--ep-radius);
+  background: var(--ep-panel);
+}
+
+.ep-card--flush {
+  padding: 0;
+}
+
+.ep-card--ember {
+  border-color: var(--ep-ember);
+}
+
+.ep-card--raised {
+  background: var(--ep-raised);
+}
+
+.ep-card__label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--ep-2);
+  margin-bottom: var(--ep-4);
+  font-family: var(--ep-font-ui);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ep-muted);
+}
+
+/* --------------------------------------------------------------------------
+   9. BADGES / TAGS
+   -------------------------------------------------------------------------- */
+.ep-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border: 1px solid var(--ep-line-strong);
+  border-radius: var(--ep-radius);
+  color: var(--ep-muted);
+  font-family: var(--ep-font-ui);
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ep-badge--ember {
+  border-color: var(--ep-ember);
+  background: var(--ep-ember);
+  color: var(--ep-ember-ink);
+}
+
+.ep-badge--live {
+  border-color: rgba(var(--ep-ember-rgb), 0.45);
+  color: var(--ep-ember);
+}
+
+.ep-badge--danger {
+  border-color: var(--ep-danger);
+  color: var(--ep-danger);
+}
+
+.ep-dot {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  background: currentColor;
+}
+
+.ep-badge--live .ep-dot {
+  animation: ep-blink 1.2s steps(2, end) infinite;
+}
+
+/* --------------------------------------------------------------------------
+   10. NAV / TABS / BREADCRUMB
+   -------------------------------------------------------------------------- */
+.ep-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ep-4);
+}
+
+.ep-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--ep-muted);
+  font-family: var(--ep-font-ui);
+  font-size: var(--ep-text-micro);
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color var(--ep-t-fast) var(--ep-ease-step),
+              border-color var(--ep-t-fast) var(--ep-ease-step);
+}
+
+.ep-nav a[aria-current="page"] {
+  color: var(--ep-ember);
+  border-bottom-color: var(--ep-ember);
+}
+
+.ep-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border-bottom: 1px solid var(--ep-line);
+}
+
+.ep-tab {
+  appearance: none;
+  margin-bottom: -1px;
+  padding: 14px 20px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--ep-muted);
+  font-family: var(--ep-font-ui);
+  font-size: var(--ep-text-micro);
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color var(--ep-t-fast) var(--ep-ease-step),
+              border-color var(--ep-t-fast) var(--ep-ease-step);
+}
+
+.ep-tab[aria-selected="true"] {
+  color: var(--ep-ember);
+  border-bottom-color: var(--ep-ember);
+}
+
+.ep-tabpanel[hidden] {
+  display: none;
+}
+
+.ep-crumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: var(--ep-dim);
+  font-family: var(--ep-font-ui);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ep-crumb a {
+  color: var(--ep-muted);
+}
+
+.ep-crumb a:hover {
+  color: var(--ep-ember);
+}
+
+.ep-crumb span[aria-hidden="true"] {
+  color: var(--ep-line-strong);
+}
+
+@media (hover: hover) {
+  .ep-nav a:hover {
+    color: var(--ep-cream);
+  }
+  .ep-tab:hover {
+    color: var(--ep-cream);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   11. TABLE
+   -------------------------------------------------------------------------- */
+.ep-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--ep-line);
+}
+
+.ep-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--ep-text-body);
+}
+
+.ep-table th {
+  padding: 12px var(--ep-3);
+  border-bottom: 1px solid var(--ep-line-strong);
+  background: var(--ep-panel);
+  color: var(--ep-muted);
+  font-family: var(--ep-font-ui);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.ep-table td {
+  padding: 14px var(--ep-3);
+  border-bottom: 1px solid var(--ep-line);
+  color: var(--ep-cream);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.ep-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.ep-table .is-num {
+  font-family: var(--ep-font-ui);
+  font-size: var(--ep-text-micro);
+  letter-spacing: 0.04em;
+  text-align: right;
+  color: var(--ep-ember);
+  white-space: nowrap;
+}
+
+.ep-table .is-dim {
+  color: var(--ep-dim);
+}
+
+@media (hover: hover) {
+  .ep-table tbody tr:hover td {
+    background: rgba(var(--ep-ember-rgb), 0.05);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   12. STATS / PROGRESS
+   -------------------------------------------------------------------------- */
+.ep-stat__label {
+  display: block;
+  margin-bottom: var(--ep-2);
+  font-family: var(--ep-font-ui);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ep-muted);
+}
+
+.ep-stat__value {
+  font-family: var(--ep-font-display);
+  font-size: var(--ep-text-display-s);
+  font-weight: 900;
+  font-variation-settings: "ROND" 100, "wght" 900;
+  line-height: 0.85;
+  color: var(--ep-cream);
+}
+
+.ep-stat__value > span {
+  font-size: 0.4em;
+}
+
+.ep-stat__meta {
+  margin-top: var(--ep-2);
+  font-family: var(--ep-font-ui);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ep-dim);
+}
+
+.ep-stat--ember .ep-stat__value {
+  color: var(--ep-ember);
+}
+
+.ep-progress {
+  display: flex;
+  gap: 4px;
+  height: 8px;
+  width: 100%;
+}
+
+.ep-progress > span {
+  flex: 1 1 0;
+  background: var(--ep-line);
+}
+
+.ep-progress > span.is-on {
+  background: var(--ep-ember);
+}
+
+/* --------------------------------------------------------------------------
+   13. FEEDBACK
+   -------------------------------------------------------------------------- */
+.ep-alert {
+  display: flex;
+  gap: var(--ep-3);
+  padding: 16px 20px;
+  border: 1px solid var(--ep-line-strong);
+  border-left: 4px solid var(--ep-ember);
+  background: rgba(var(--ep-ember-rgb), 0.06);
+  color: var(--ep-cream);
+  font-size: var(--ep-text-body);
+  line-height: 1.6;
+}
+
+.ep-alert--danger {
+  border-left-color: var(--ep-danger);
+  background: rgba(255, 59, 36, 0.06);
+}
+
+.ep-alert__title {
+  font-family: var(--ep-font-ui);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ep-ember);
+}
+
+.ep-alert--danger .ep-alert__title {
+  color: var(--ep-danger);
+}
+
+.ep-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--ep-3);
+  width: min(360px, calc(100vw - 32px));
+  padding: 16px;
+  border: 1px solid var(--ep-line-strong);
+  border-left: 4px solid var(--ep-ember);
+  background: var(--ep-raised);
+  color: var(--ep-cream);
+  box-shadow: var(--ep-shadow);
+}
+
+.ep-toast__title {
+  font-family: var(--ep-font-ui);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ep-ember);
+}
+
+.ep-toast__body {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--ep-muted);
+}
+
+.ep-toast-stack {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 80;
+  display: grid;
+  gap: 12px;
+  justify-items: end;
+}
+
+.ep-dialog {
+  width: min(520px, calc(100vw - 32px));
+  padding: 0;
+  border: 1px solid var(--ep-line-strong);
+  border-top: 4px solid var(--ep-ember);
+  border-radius: 0;
+  background: var(--ep-panel);
+  color: var(--ep-cream);
+}
+
+.ep-dialog::backdrop {
+  background: rgba(6, 6, 6, 0.82);
+}
+
+.ep-dialog__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ep-3);
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--ep-line);
+}
+
+.ep-dialog__title {
+  font-family: var(--ep-font-ui);
+  font-size: var(--ep-text-micro);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ep-dialog__body {
+  padding: 24px 20px;
+  font-size: var(--ep-text-body);
+  line-height: 1.7;
+  color: var(--ep-muted);
+}
+
+.ep-dialog__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--ep-2);
+  padding: 16px 20px;
+  border-top: 1px solid var(--ep-line);
+}
+
+/* empty state */
+.ep-empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--ep-3);
+  padding: 48px 24px;
+  border: 1px dashed var(--ep-line-strong);
+  text-align: center;
+}
+
+.ep-empty__glyph {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--ep-line-strong);
+  background: linear-gradient(var(--ep-ember), var(--ep-ember)) center / 8px 8px no-repeat;
+}
+
+.ep-empty__title {
+  font-family: var(--ep-font-ui);
+  font-size: var(--ep-text-micro);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ep-empty__text {
+  max-width: 36ch;
+  font-size: var(--ep-text-micro);
+  line-height: 1.7;
+  color: var(--ep-dim);
+}
+
+/* --------------------------------------------------------------------------
+   14. AVATAR
+   -------------------------------------------------------------------------- */
+.ep-avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  background: var(--ep-ember);
+  color: var(--ep-ember-ink);
+  font-family: var(--ep-font-ui);
+  font-size: var(--ep-text-micro);
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+.ep-avatar--ghost {
+  border: 1px solid var(--ep-line-strong);
+  background: transparent;
+  color: var(--ep-muted);
+}
+
+/* --------------------------------------------------------------------------
+   15. MOTION / MARQUEE
+   -------------------------------------------------------------------------- */
+@keyframes ep-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes ep-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.ep-marquee {
+  display: flex;
+  overflow: hidden;
+  border-top: 1px solid var(--ep-line);
+  border-bottom: 1px solid var(--ep-line);
+  background: var(--ep-bg);
+  user-select: none;
+}
+
+.ep-marquee__track {
+  display: flex;
+  flex: none;
+  width: max-content;
+  animation: ep-marquee 32s linear infinite;
+}
+
+.ep-marquee__group {
+  display: flex;
+  align-items: center;
+  gap: var(--ep-4);
+  padding: 10px var(--ep-3);
+  font-family: var(--ep-font-ui);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ep-muted);
+  white-space: nowrap;
+}
+
+.ep-marquee__group b {
+  color: var(--ep-ember);
+  font-weight: 400;
+}
+
+.ep-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   16. REDUCED MOTION
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   17. SMALL SCREENS
+   -------------------------------------------------------------------------- */
+@media (max-width: 720px) {
+  .ep-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ep-btn--lg {
+    width: 100%;
+  }
+  .ep-toast-stack {
+    right: 16px;
+    bottom: 16px;
+    left: 16px;
+    justify-items: stretch;
+  }
+  .ep-toast {
+    width: 100%;
+  }
+}
