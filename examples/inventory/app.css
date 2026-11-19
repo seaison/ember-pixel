@@ -4,6 +4,23 @@
    ../../assets/ember.css.
    ========================================================================== */
 
+@font-face {
+  font-family: "Fusion Pixel Demo";
+  src: url("./fonts/fusion-pixel-demo.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Static UI uses the 14KB subset. The 588KB full font stays in
+     assets/fonts/ but is intentionally not in this stack, so first paint
+     stays light. Rare characters outside the subset use the system font. */
+  --ep-font-display: "Doto", "Fusion Pixel Demo", monospace;
+  --ep-font-ui: "Silkscreen", "Fusion Pixel Demo", monospace;
+  --ep-font-body: "Fusion Pixel Demo", "DotGothic16", monospace;
+}
+
 [hidden] { display: none !important; }
 
 html { scroll-behavior: smooth; }
@@ -402,7 +419,10 @@ body {
   color: var(--ep-muted);
 }
 
-.alert-strip strong { color: var(--ep-cream); }
+.alert-strip strong {
+  font-weight: 400;
+  color: var(--ep-cream);
+}
 .alert-strip .ep-link { white-space: nowrap; }
 
 .stat-grid {
@@ -872,6 +892,12 @@ input[readonly] {
   font-variation-settings: "ROND" 100, "wght" 900;
   line-height: 0.85;
   color: var(--ep-cream);
+}
+
+.summary-stock strong span,
+.part-detail__stock span {
+  font-family: var(--ep-font-body);
+  font-weight: 400;
 }
 
 .summary-stock strong span {

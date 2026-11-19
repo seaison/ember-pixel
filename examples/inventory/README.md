@@ -17,7 +17,7 @@
 
 ## 本地打开
 
-这个示例复用仓库里的 `assets/ember.css` 与字体，必须和仓库一起打开：
+这个示例复用仓库里的 `assets/ember.css` 与字体，必须和仓库一起打开。静态 UI 使用 14KB 的 Fusion Pixel 子集；用户输入的缺字回退系统字体，完整字体仍保留在 `assets/fonts/`。
 
 ```bash
 cd ember-pixel
@@ -33,6 +33,7 @@ python3 -m http.server 8765
 index.html   # shell + 五个视图 + 两个 dialog
 app.css      # 页面级布局，组件来自 ../../assets/ember.css
 app.js       # 种子数据、localStorage、渲染与交互
+fonts/       # 静态 UI 用的 14KB Fusion Pixel 子集
 ```
 
 ## 许可

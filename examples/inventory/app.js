@@ -210,7 +210,7 @@
 
   function miniRow(tx) {
     const part = getPart(tx.partId);
-    return `<div class="mini-tx"><b>${esc(part ? partLabel(part) : '未知元件')}</b><span>${fmtDate(tx.at)} · ${tx.type === 'in' ? '+' : '−'}${fmtNum(tx.qty)} ${esc(tx.unit || part?.unit || '')}</span></div>`;
+    return `<div class="mini-tx"><b>${esc(part ? partLabel(part) : '未知元件')}</b><span>${fmtDate(tx.at)} · ${tx.type === 'in' ? '+' : '-'}${fmtNum(tx.qty)} ${esc(tx.unit || part?.unit || '')}</span></div>`;
   }
 
   function focusTable(wrap) {
@@ -299,7 +299,7 @@
             <td><span class="ep-num">${fmtDate(tx.at)}</span></td>
             <td>${typeBadge(tx.type)}</td>
             <td>${esc(part ? partLabel(part) : '未知元件')}</td>
-            <td class="is-num ${tx.type === 'in' ? 'qty-in' : 'qty-out'}">${tx.type === 'in' ? '+' : '−'}${fmtNum(tx.qty)}</td>
+            <td class="is-num ${tx.type === 'in' ? 'qty-in' : 'qty-out'}">${tx.type === 'in' ? '+' : '-'}${fmtNum(tx.qty)}</td>
             <td class="note-cell">${esc(tx.note || '—')}</td>
           </tr>`;
         }).join('')
@@ -435,7 +435,7 @@
         <td><span class="ep-num">${fmtDate(tx.at)}</span></td>
         <td>${typeBadge(tx.type)}</td>
         <td><span class="part-history">${esc(part ? partLabel(part) : '未知元件')}<small>${esc(part ? `${part.category} · ${part.pkg}` : '')}</small></span></td>
-        <td class="is-num ${tx.type === 'in' ? 'qty-in' : 'qty-out'}">${tx.type === 'in' ? '+' : '−'}${fmtNum(tx.qty)} ${esc(tx.unit || part?.unit || '')}</td>
+        <td class="is-num ${tx.type === 'in' ? 'qty-in' : 'qty-out'}">${tx.type === 'in' ? '+' : '-'}${fmtNum(tx.qty)} ${esc(tx.unit || part?.unit || '')}</td>
         <td class="party-cell">${esc(tx.party || '—')}</td>
         <td class="note-cell">${esc(tx.note || '—')}</td>
       </tr>`;
@@ -756,7 +756,7 @@
     updateOutboundSummary();
 
     const suffix = part.qty <= 0 ? ' · 库存已清零' : (part.qty <= part.min ? ' · 已进入低库存' : '');
-    toast('出库完成', `${part.name} ${part.value} −${fmtNum(qty)} ${part.unit}${suffix}`);
+    toast('出库完成', `${part.name} ${part.value} -${fmtNum(qty)} ${part.unit}${suffix}`);
   }
 
   function resetData() {

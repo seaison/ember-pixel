@@ -95,6 +95,7 @@ for (const file of [
   'assets/fonts/FusionPixel-12px-SC-web.woff2',
   'examples/inventory/index.html', 'examples/inventory/app.css',
   'examples/inventory/app.js', 'examples/inventory/README.md',
+  'examples/inventory/fonts/fusion-pixel-demo.woff2', 'examples/inventory/fonts/README.md',
   'scripts/check-docs.mjs', 'scripts/check-subset.py', 'scripts/build-subset.py',
   '.github/workflows/checks.yml',
 ]) {
