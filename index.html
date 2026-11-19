@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ember Pixel — UI System</title>
+<meta http-equiv="refresh" content="0; url=assets/styleguide.html">
+<style>
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    display: grid;
+    place-items: center;
+    background: #060606;
+    color: #F7F1E7;
+    font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+    text-align: center;
+  }
+  .mark {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 24px;
+    background: #FC5C1E;
+    color: #0A0705;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+  h1 { margin: 0 0 16px; font-size: 24px; letter-spacing: 0.04em; }
+  p { margin: 0; color: #B7AC9E; font-size: 14px; line-height: 1.8; }
+  a { color: #FC5C1E; text-decoration: none; border-bottom: 1px solid currentColor; }
+  a:focus-visible { outline: 2px solid #FC5C1E; outline-offset: 3px; }
+  .meta {
+    margin-top: 32px;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: #8A7F72;
+  }
+</style>
+</head>
+<body>
+  <main>
+    <div class="mark" aria-hidden="true">EP</div>
+    <h1>Ember Pixel</h1>
+    <p>正在打开视觉规范…<br><a href="assets/styleguide.html">如果没有自动跳转，点这里</a></p>
+    <div class="meta">BLACK / EMBER / DOT MATRIX</div>
+  </main>
+  <script>location.replace("assets/styleguide.html");</script>
+</body>
+</html>

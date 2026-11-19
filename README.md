@@ -4,6 +4,8 @@
 
 一套与工具、框架无关的深色 UI 设计系统，也是一个可以被任意 Agent 读取的 Skill。色彩取自参考海报的 `#FC5C1E`，由 Doto、Silkscreen、Fusion Pixel 三套点阵字体构成。
 
+**[在线浏览视觉规范 →](https://seaison.github.io/ember-pixel/)**
+
 ![Ember Pixel 首屏](docs/preview-hero.png)
 
 ## 为什么是三个入口
@@ -57,6 +59,14 @@ git clone https://github.com/seaison/ember-pixel.git ~/.claude/skills/ember-pixe
 ```
 
 把 `assets/ember.css` 与 `assets/fonts/` 一起复制到项目，保持相对路径（CSS 用 `./fonts/` 引用字体）。没有 npm、构建工具或运行时依赖。
+
+## 在线浏览
+
+完整视觉规范由 GitHub Pages 托管，无需克隆：
+
+**[seaison.github.io/ember-pixel →](https://seaison.github.io/ember-pixel/)**
+
+页面完全离线可用；要本地修改时，直接打开 `assets/styleguide.html`。
 
 ## 它是什么
 
@@ -113,14 +123,16 @@ Ember Pixel 不是一套“复古游戏皮肤”，而是一套有明确约束�
 ├── SKILL.md                  # 唯一事实源（Agent Skills 标准）
 ├── AGENTS.md                 # 通用 Agent 摘要
 ├── prompt.md                 # 无文件访问时的独立提示词
+├── index.html                # Pages 入口，跳转到 assets/styleguide.html
 ├── README.md
 ├── assets/
 │   ├── ember.css             # token + 组件库
 │   ├── styleguide.html       # 8 章视觉规范
 │   └── fonts/                # Doto / Silkscreen / Fusion Pixel + OFL
-└── docs/
-    ├── preview-hero.png
-    └── preview-dashboard.png
+├── docs/
+│   ├── preview-hero.png
+│   └── preview-dashboard.png
+└── .nojekyll                 # GitHub Pages 直接静态托管
 ```
 
 ## License
