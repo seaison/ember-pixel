@@ -77,6 +77,8 @@ Ember Pixel 不是一套“复古游戏皮肤”，而是一套有明确约束�
 - **点是骨架**：Doto 的圆点展示字、Silkscreen 的像素 UI、Fusion Pixel 的中文正文。
 - **硬边结构**：0 圆角、1px/2px 边框、8px 网格、4px 硬投影。
 - **继电器动效**：90/160/320ms + `steps()`，没有回弹、模糊和 `scale(1.1)`。
+- **数据可视化**：最多三个系列，1px 网格，10px 轴标签，颜色必须配图例或直接标签。
+- **完整组件**：按钮、输入、表格、菜单、tooltip、分页、骨架、Dialog、Toast。
 
 ![Mission Control 组合示例](docs/preview-dashboard.png)
 
@@ -116,6 +118,22 @@ Ember Pixel 不是一套“复古游戏皮肤”，而是一套有明确约束�
 
 完整规则、组件配方和交付前 QA 见 [`SKILL.md`](SKILL.md)。
 
+## 维护
+
+```bash
+npm run check                              # token / 文档 / 文件 / 链接一致性
+pip install fonttools brotli
+python scripts/check-subset.py             # 页面字符是否被 19KB 子集覆盖
+```
+
+如果改了 `assets/styleguide.html` 的文案，重建子集：
+
+```bash
+python scripts/build-subset.py
+```
+
+`SKILL.md` 是唯一事实源；`AGENTS.md` 和 `prompt.md` 是适配层，规则变更时三份一起改。CI 会检查 token、组件和文件是否存在。
+
 ## 目录
 
 ```
@@ -123,18 +141,29 @@ Ember Pixel 不是一套“复古游戏皮肤”，而是一套有明确约束�
 ├── SKILL.md                  # 唯一事实源（Agent Skills 标准）
 ├── AGENTS.md                 # 通用 Agent 摘要
 ├── prompt.md                 # 无文件访问时的独立提示词
-├── index.html                # Pages 入口，跳转到 assets/styleguide.html
 ├── README.md
+├── LICENSE                   # MIT
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── index.html                # Pages 入口，跳转到 assets/styleguide.html
+├── 404.html
 ├── assets/
 │   ├── ember.css             # token + 组件库
 │   ├── styleguide.html       # 8 章视觉规范
+│   ├── favicon.svg
 │   └── fonts/                # Doto / Silkscreen / Fusion Pixel + OFL
 ├── docs/
 │   ├── preview-hero.png
-│   └── preview-dashboard.png
+│   ├── preview-dashboard.png
+│   └── og.png                # 1200×630 社交分享图
+├── scripts/
+│   ├── check-docs.mjs
+│   ├── check-subset.py
+│   └── build-subset.py
+├── .github/workflows/checks.yml
 └── .nojekyll                 # GitHub Pages 直接静态托管
 ```
 
 ## License
 
-字体遵循 SIL Open Font License 1.1；其余代码与文档版权归作者所有。
+代码与文档采用 [MIT License](LICENSE)；字体（Doto / Silkscreen / Fusion Pixel）遵循 SIL Open Font License 1.1，许可全文在 [`assets/fonts/`](assets/fonts/)。

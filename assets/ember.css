@@ -140,6 +140,10 @@ h1, h2, h3, h4, h5, h6, p, figure, blockquote {
   margin: 0;
 }
 
+p {
+  text-wrap: pretty;
+}
+
 ul, ol {
   margin: 0;
   padding: 0;
@@ -178,6 +182,11 @@ hr {
 :focus-visible {
   outline: 2px solid var(--ep-ember);
   outline-offset: 3px;
+}
+
+/* On an ember field the ember ring disappears — switch to near-black. */
+.ep-on-ember :focus-visible {
+  outline-color: var(--ep-ember-ink);
 }
 
 /* --------------------------------------------------------------------------
@@ -826,6 +835,7 @@ hr {
 
 .ep-tab {
   appearance: none;
+  min-height: 44px;
   margin-bottom: -1px;
   padding: 14px 20px;
   border: 0;
@@ -890,6 +900,11 @@ hr {
 .ep-table-wrap {
   overflow-x: auto;
   border: 1px solid var(--ep-line);
+}
+
+.ep-table-wrap:focus-visible {
+  outline: 2px solid var(--ep-ember);
+  outline-offset: 3px;
 }
 
 .ep-table {
@@ -1223,6 +1238,239 @@ hr {
   clip: rect(0 0 0 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   15b. MENUS / TOOLTIP / PAGINATION / SKELETON / LEGEND
+   -------------------------------------------------------------------------- */
+.ep-menu {
+  position: relative;
+  display: inline-block;
+}
+
+.ep-menu > summary {
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ep-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.ep-menu[open] > summary {
+  border-color: var(--ep-ember);
+  color: var(--ep-ember);
+}
+
+.ep-menu__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 70;
+  display: grid;
+  gap: 2px;
+  min-width: 220px;
+  padding: 8px;
+  border: 1px solid var(--ep-line-strong);
+  background: var(--ep-panel);
+  box-shadow: var(--ep-shadow);
+}
+
+.ep-menu__panel button,
+.ep-menu__panel a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-left: 2px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ep-muted);
+  font-family: var(--ep-font-ui);
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.ep-menu__panel .is-danger {
+  color: var(--ep-danger);
+}
+
+.ep-tip {
+  position: relative;
+  display: inline-flex;
+}
+
+.ep-tip__bubble {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  z-index: 80;
+  width: max-content;
+  max-width: 240px;
+  padding: 8px 10px;
+  border: 1px solid var(--ep-line-strong);
+  background: var(--ep-raised);
+  color: var(--ep-cream);
+  font-family: var(--ep-font-ui);
+  font-size: 10px;
+  line-height: 1.5;
+  letter-spacing: 0.06em;
+  text-align: left;
+  transform: translateX(-50%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity var(--ep-t-fast) var(--ep-ease-step),
+              visibility var(--ep-t-fast) var(--ep-ease-step);
+}
+
+.ep-tip__bubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  transform: translateX(-50%);
+  background: var(--ep-raised);
+  border-right: 1px solid var(--ep-line-strong);
+  border-bottom: 1px solid var(--ep-line-strong);
+}
+
+.ep-tip:focus-within .ep-tip__bubble,
+.ep-tip--open .ep-tip__bubble {
+  opacity: 1;
+  visibility: visible;
+}
+
+.ep-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.ep-page {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--ep-line-strong);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ep-muted);
+  font-family: var(--ep-font-ui);
+  font-size: 10px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color var(--ep-t-fast) var(--ep-ease-step),
+              border-color var(--ep-t-fast) var(--ep-ease-step),
+              color var(--ep-t-fast) var(--ep-ease-step);
+}
+
+.ep-page[aria-current="page"] {
+  border-color: var(--ep-ember);
+  background: var(--ep-ember);
+  color: var(--ep-ember-ink);
+}
+
+.ep-page[disabled] {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.ep-skeleton {
+  height: 12px;
+  background: var(--ep-line-strong);
+}
+
+.ep-skeleton--sm { height: 8px; }
+.ep-skeleton--lg { height: 16px; }
+
+.ep-skeleton--blink {
+  animation: ep-skeleton 1.2s steps(2, end) infinite;
+}
+
+@keyframes ep-skeleton {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+.ep-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: var(--ep-muted);
+  font-family: var(--ep-font-ui);
+  font-size: 10px;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ep-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ep-legend__swatch {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  background: var(--ep-ember);
+}
+
+.ep-legend__swatch--cream { background: var(--ep-cream); }
+.ep-legend__swatch--muted { background: var(--ep-line-strong); }
+
+.ep-toast__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ep-dim);
+  font-family: var(--ep-font-ui);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .ep-menu__panel button:hover,
+  .ep-menu__panel a:hover {
+    border-left-color: var(--ep-ember);
+    background: rgba(var(--ep-ember-rgb), 0.06);
+    color: var(--ep-ember);
+  }
+  .ep-tip:hover .ep-tip__bubble {
+    opacity: 1;
+    visibility: visible;
+  }
+  .ep-page:hover {
+    border-color: var(--ep-cream);
+    color: var(--ep-cream);
+  }
+  .ep-toast__close:hover {
+    border-color: var(--ep-line-strong);
+    color: var(--ep-ember);
+  }
 }
 
 /* --------------------------------------------------------------------------

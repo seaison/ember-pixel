@@ -4,7 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ember Pixel — UI System</title>
-<meta http-equiv="refresh" content="0; url=assets/styleguide.html">
+<meta name="description" content="黑底、橙光、点阵。Ember Pixel 是一套与工具无关的深色 UI 设计系统。">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://seaison.github.io/ember-pixel/">
+<meta name="theme-color" content="#060606">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Ember Pixel">
+<meta property="og:title" content="Ember Pixel — UI System">
+<meta property="og:description" content="黑底、橙光、点阵。一套与工具无关的深色 UI 设计系统。">
+<meta property="og:url" content="https://seaison.github.io/ember-pixel/">
+<meta property="og:image" content="https://seaison.github.io/ember-pixel/docs/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ember Pixel — UI System">
+<meta name="twitter:description" content="黑底、橙光、点阵。一套与工具无关的深色 UI 设计系统。">
+<meta name="twitter:image" content="https://seaison.github.io/ember-pixel/docs/og.png">
 <style>
   html, body { height: 100%; }
   body {
@@ -44,9 +59,13 @@
   <main>
     <div class="mark" aria-hidden="true">EP</div>
     <h1>Ember Pixel</h1>
-    <p>正在打开视觉规范…<br><a href="assets/styleguide.html">如果没有自动跳转，点这里</a></p>
+    <p>正在打开视觉规范…<br><a id="go" href="assets/styleguide.html">如果没有自动跳转，点这里</a></p>
     <div class="meta">BLACK / EMBER / DOT MATRIX</div>
   </main>
-  <script>location.replace("assets/styleguide.html");</script>
+  <script>
+    var target = "assets/styleguide.html" + location.hash;
+    document.getElementById("go").href = target;
+    location.replace(target);
+  </script>
 </body>
 </html>

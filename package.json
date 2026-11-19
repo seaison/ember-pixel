@@ -1,0 +1,11 @@
+{
+  "name": "ember-pixel",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "Black canvas, ember signal, dot-matrix UI design system.",
+  "scripts": {
+    "check": "node scripts/check-docs.mjs"
+  }
+}

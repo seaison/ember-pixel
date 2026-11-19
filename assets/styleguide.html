@@ -5,6 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ember Pixel — UI System v1.0</title>
 <meta name="description" content="黑底、橙光、点阵。Ember Pixel 是一套深色界面的像素化设计系统。">
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://seaison.github.io/ember-pixel/assets/styleguide.html">
+<meta name="theme-color" content="#060606">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Ember Pixel">
+<meta property="og:title" content="Ember Pixel — UI System">
+<meta property="og:description" content="黑底、橙光、点阵。一套与工具无关的深色 UI 设计系统。">
+<meta property="og:url" content="https://seaison.github.io/ember-pixel/assets/styleguide.html">
+<meta property="og:image" content="https://seaison.github.io/ember-pixel/docs/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ember Pixel — UI System">
+<meta name="twitter:description" content="黑底、橙光、点阵。一套与工具无关的深色 UI 设计系统。">
+<meta name="twitter:image" content="https://seaison.github.io/ember-pixel/docs/og.png">
 <link rel="stylesheet" href="./ember.css">
 <style>
   /* Pages preview: 19KB subset of Fusion Pixel instead of the full 588KB file. */
@@ -1164,6 +1179,97 @@
 
   .ep-toast[hidden] { display: none; }
 
+  .footer__bottom a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+  }
+  .ep-icon--up { transform: rotate(-90deg); }
+  .ep-icon--left { transform: rotate(180deg); }
+
+  .menu-slot {
+    position: relative;
+    align-self: flex-start;
+  }
+  .menu-demo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 64px;
+    align-items: flex-start;
+    min-height: 300px;
+    padding-top: 56px;
+  }
+  .pager-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 24px;
+    margin-top: 8px;
+  }
+  .tip-stage {
+    display: grid;
+    place-items: center;
+    width: 320px;
+    min-height: 220px;
+    margin-left: 48px;
+    padding: 64px 24px 24px;
+    border: 1px solid var(--ep-line);
+    background: #080807;
+  }
+
+  .viz-grid {
+    display: grid;
+    grid-template-columns: 0.9fr 1.5fr 0.9fr;
+    gap: 16px;
+  }
+  .viz-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+    padding: 16px;
+    border: 1px solid var(--ep-line);
+    background: #080807;
+  }
+  .viz-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .viz-chart {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .viz-grid-lines line {
+    stroke: var(--ep-line);
+    stroke-width: 1;
+  }
+  .viz-line {
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+  }
+  .viz-line--ember { stroke: var(--ep-ember); }
+  .viz-line--muted { stroke: var(--ep-line-strong); stroke-dasharray: 4 4; }
+  .viz-dot { fill: var(--ep-ember); }
+  .viz-axis {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--ep-font-ui);
+    font-size: 10px;
+    color: var(--ep-dim);
+  }
+  .viz-note {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--ep-muted);
+  }
+  .viz-legend { display: grid; gap: 10px; }
+  .viz-skeleton { display: grid; gap: 10px; padding-top: 4px; }
+
   /* responsive ---------------------------------------------------------- */
   @media (max-width: 1100px) {
     .topbar .ep-nav { display: none; }
@@ -1199,10 +1305,16 @@
     .tab-content { grid-template-columns: 1fr; }
     .timings { grid-template-columns: 1fr; }
     .dodont { grid-template-columns: 1fr; }
+    .viz-grid { grid-template-columns: 1fr; }
+    .menu-demo { flex-direction: column; align-items: stretch; min-height: 0; padding-top: 0; gap: 24px; }
+    .menu-slot { min-height: 280px; }
+    .tip-stage { width: min(100%, 360px); margin-left: 0; }
+    .pager-row { margin-top: 24px; }
     .footer__meta { grid-template-columns: 1fr; }
     .footer__stamp { width: 160px; height: 160px; }
   }
   @media (max-width: 560px) {
+    .tip-stage { width: 100%; }
     .topbar__cta { display: none; }
     .hero__in { min-height: 620px; }
     .hero__top { flex-direction: column; gap: 6px; }
@@ -1225,6 +1337,9 @@
     .footer__stamp { display: none; }
     .footer__top { display: block; }
     .footer__bottom { flex-direction: column; }
+  }
+  @media (max-width: 360px) {
+    .hero__cn { font-size: 20px; letter-spacing: 0.12em; }
   }
 </style>
 </head>
@@ -1271,7 +1386,7 @@
 <!-- ======================================================================
      HERO
      ====================================================================== -->
-<section class="hero" id="top">
+<section class="hero ep-on-ember" id="top">
   <div class="hero__dots" aria-hidden="true"></div>
   <div class="wrap hero__in">
     <div class="hero__top">
@@ -1454,7 +1569,7 @@
         </div>
       </div>
 
-      <div class="ep-table-wrap">
+      <div class="ep-table-wrap" tabindex="0" role="region" aria-label="颜色 Token 表">
         <table class="ep-table">
           <thead>
             <tr><th>Token</th><th>Value</th><th>Use</th><th class="is-num">Contrast</th></tr>
@@ -1543,7 +1658,7 @@
         </article>
       </div>
 
-      <div class="ep-table-wrap">
+      <div class="ep-table-wrap" tabindex="0" role="region" aria-label="字体尺寸表">
         <table class="ep-table scale-table">
           <thead>
             <tr><th>Token</th><th>Size / Line</th><th>Family</th><th>Sample</th><th class="is-num">Use</th></tr>
@@ -1776,7 +1891,7 @@
             </div>
           </div>
 
-          <div class="ep-table-wrap">
+          <div class="ep-table-wrap" tabindex="0" role="region" aria-label="节点状态表">
             <table class="ep-table">
               <thead>
                 <tr><th>Node</th><th>Status</th><th>Operator</th><th class="is-num">Throughput</th><th class="is-num">Ping</th></tr>
@@ -1837,7 +1952,7 @@
             </div>
 
             <div>
-              <div class="dialog-preview ep-dialog">
+              <div class="dialog-preview ep-dialog" inert>
                 <div class="ep-dialog__head">
                   <span class="ep-dialog__title">Abort transmission?</span>
                   <span class="ep-dim" aria-hidden="true" style="font-family:var(--ep-font-ui);font-size:10px">ESC</span>
@@ -1849,13 +1964,13 @@
                 </div>
               </div>
               <div class="ep-row" style="margin-top:12px">
-                <button class="ep-btn ep-btn--secondary ep-btn--sm" type="button" id="open-dialog">Open modal</button>
-                <button class="ep-btn ep-btn--ghost ep-btn--sm" type="button" id="toast-btn">Fire toast</button>
+                <button class="ep-btn ep-btn--secondary" type="button" id="open-dialog">Open modal</button>
+                <button class="ep-btn ep-btn--ghost" type="button" id="toast-btn">Fire toast</button>
               </div>
             </div>
           </div>
 
-          <div class="ep-empty">
+          <div class="ep-empty" inert>
             <div class="ep-empty__glyph" aria-hidden="true"></div>
             <div class="ep-empty__title">No signals yet</div>
             <p class="ep-empty__text">这个频道还是空的。调整频率，或者等待下一次来自深空的握手。</p>
@@ -1910,10 +2025,57 @@
 
           <div class="ep-row" style="justify-content:space-between;border-top:1px solid var(--ep-line);padding-top:16px">
             <span class="ep-crumb">NODE 07 / 24</span>
-            <a class="ep-link ep-ui" href="#components" style="border:0">Next node →</a>
+            <a class="ep-link ep-ui" href="#components" style="border:0;display:inline-flex;align-items:center;gap:8px">Next node <svg class="ep-icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M2 7h7v2H2zM9 3l5 5-5 5z"/></svg></a>
           </div>
 
           <p class="spec__note">Tab 下划线 2px；当前项同时用颜色和边框两条线索，不只靠颜色。焦点顺序与视觉顺序一致。</p>
+        </div>
+      </div>
+
+      <!-- 5.6 menus & pagination -->
+      <div class="spec">
+        <div class="spec__bar">
+          <h3 class="ep-ui">5.6 / Menus &amp; pagination</h3>
+          <span class="ep-badge">Keyboard</span>
+        </div>
+        <div class="spec__body">
+          <div class="row-label">Action menu / tooltip / pages</div>
+          <div class="menu-demo">
+            <div class="menu-slot">
+              <details class="ep-menu" open>
+                <summary class="ep-btn ep-btn--secondary">Actions</summary>
+                <div class="ep-menu__panel">
+                  <button type="button">Rename</button>
+                  <button type="button">Duplicate</button>
+                  <button type="button" class="is-danger">Delete</button>
+                </div>
+              </details>
+            </div>
+
+            <div class="tip-stage">
+              <span class="ep-tip ep-tip--open">
+                <button class="ep-iconbtn" type="button" aria-label="加密说明" aria-describedby="tip-signal">?</button>
+                <span class="ep-tip__bubble" id="tip-signal" role="tooltip">AES-256 · 每 24h 轮换</span>
+              </span>
+            </div>
+
+          </div>
+
+          <div class="pager-row">
+            <span class="row-label">Pagination</span>
+            <nav class="ep-pagination" aria-label="分页示例">
+              <button class="ep-page" type="button" aria-label="上一页">
+                <svg class="ep-icon ep-icon--left" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M2 7h7v2H2zM9 3l5 5-5 5z"/></svg>
+              </button>
+              <button class="ep-page" type="button" aria-current="page">1</button>
+              <button class="ep-page" type="button">2</button>
+              <button class="ep-page" type="button">3</button>
+              <button class="ep-page" type="button" aria-label="下一页">
+                <svg class="ep-icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M2 7h7v2H2zM9 3l5 5-5 5z"/></svg>
+              </button>
+            </nav>
+          </div>
+          <p class="spec__note">菜单用原生 <code class="token">&lt;details&gt;</code>，Escape / 点击外部关闭；分页 44×44，当前页用橙色实心；tooltip 同时支持 hover 与 focus，不承载唯一信息。</p>
         </div>
       </div>
     </div>
@@ -1966,7 +2128,7 @@
               <div class="dash__title ep-display">Orbital Relay</div>
               <div class="dash__sub">2026-11-19 · 12:07 UTC · 4 nodes online</div>
             </div>
-            <button class="ep-btn ep-btn--primary ep-btn--sm" type="button">Deploy</button>
+            <button class="ep-btn ep-btn--primary" type="button">Deploy</button>
           </div>
 
           <div class="dash__stats">
@@ -2019,6 +2181,54 @@
         <div><h4>One primary</h4><p>整屏只有一个橙色实心按钮。次级动作使用描边或纯文字。</p></div>
         <div><h4>Numbers are loud</h4><p>关键指标用 Doto，大、圆、不可忽视；解释文字退回 Fusion 与灰色。</p></div>
         <div><h4>Structure before color</h4><p>所有分区先由 1px 线和留白建立，橙色只是最后一步的点睛。</p></div>
+      </div>
+
+      <!-- 06.1 data viz -->
+      <div class="spec" style="margin-top:32px">
+        <div class="spec__bar">
+          <h3 class="ep-ui">06.1 / Data viz</h3>
+          <span class="ep-badge">3 series max</span>
+        </div>
+        <div class="spec__body">
+          <div class="viz-grid">
+            <div class="viz-card">
+              <span class="ep-ui">Series</span>
+              <div class="ep-legend viz-legend">
+                <span class="ep-legend__item"><i class="ep-legend__swatch"></i>Current / Ember</span>
+                <span class="ep-legend__item"><i class="ep-legend__swatch ep-legend__swatch--cream"></i>Compare / Cream</span>
+                <span class="ep-legend__item"><i class="ep-legend__swatch ep-legend__swatch--muted"></i>Baseline / Muted</span>
+              </div>
+              <p class="viz-note">最多三条线。颜色与文本标签同时出现。</p>
+            </div>
+
+            <div class="viz-card">
+              <div class="viz-head"><span class="ep-ui">Latency / 24H</span><span class="ep-ui ep-ember-text">12 MS</span></div>
+              <svg class="viz-chart" viewBox="0 0 520 160" role="img" aria-label="24 小时延迟趋势：当前 12ms，基线稳定">
+                <g class="viz-grid-lines">
+                  <line x1="0" y1="20" x2="520" y2="20"/>
+                  <line x1="0" y1="60" x2="520" y2="60"/>
+                  <line x1="0" y1="100" x2="520" y2="100"/>
+                  <line x1="0" y1="140" x2="520" y2="140"/>
+                </g>
+                <polyline class="viz-line viz-line--muted" points="0,120 65,118 130,116 195,112 260,114 325,110 390,108 455,112 520,110"/>
+                <polyline class="viz-line viz-line--ember" points="0,110 65,96 130,102 195,78 260,84 325,64 390,72 455,52 520,58"/>
+                <rect class="viz-dot" x="451" y="48" width="8" height="8"/>
+              </svg>
+              <div class="viz-axis"><span>00</span><span>06</span><span>12</span><span>18</span><span>24</span></div>
+            </div>
+
+            <div class="viz-card">
+              <span class="ep-ui">Loading</span>
+              <div class="viz-skeleton" aria-hidden="true">
+                <div class="ep-skeleton ep-skeleton--blink" style="width:84%"></div>
+                <div class="ep-skeleton ep-skeleton--blink" style="width:56%"></div>
+                <div class="ep-skeleton ep-skeleton--blink" style="width:70%"></div>
+              </div>
+              <p class="viz-note">加载用分段方块，不用 spinner。</p>
+            </div>
+          </div>
+          <p class="spec__note">数据可视化只使用 ember / cream / muted 三个系列；网格 1px，标签 10px Silkscreen，不用渐变、阴影、3D。颜色必须配合图例或直接标签；加载用 <code class="token">.ep-skeleton</code>，空状态用虚线框。</p>
+        </div>
       </div>
     </div>
   </section>
@@ -2099,12 +2309,12 @@
       <div class="dodont">
         <div class="dd dd--do">
           <div class="dd__bar"><span>Do / 01</span><span>Signal</span></div>
-          <div class="dd__stage">
+          <div class="dd__stage" inert>
             <div class="mini-window">
               <div class="mini-window__bar"><span>EMBER OPS</span><span>12:07</span></div>
               <div class="mini-window__body">
                 <p>一个界面，一个主行动。橙色按钮是唯一的亮点。</p>
-                <button class="ep-btn ep-btn--primary ep-btn--sm" type="button">Deploy</button>
+                <button class="ep-btn ep-btn--primary" type="button">Deploy</button>
               </div>
             </div>
           </div>
@@ -2113,7 +2323,7 @@
 
         <div class="dd dd--dont">
           <div class="dd__bar"><span>Don't / 01</span><span>Overload</span></div>
-          <div class="dd__stage">
+          <div class="dd__stage" inert>
             <div class="mini-window mini-window--bad">
               <div class="mini-window__bar"><span>EMBER OPS</span><span>12:07</span></div>
               <div class="mini-window__body">
@@ -2130,7 +2340,7 @@
 
         <div class="dd dd--do">
           <div class="dd__bar"><span>Do / 02</span><span>Hard edge</span></div>
-          <div class="dd__stage">
+          <div class="dd__stage" inert>
             <div style="width:100%;max-width:300px;height:120px;border:2px solid var(--ep-line-strong);background:var(--ep-panel);box-shadow:6px 6px 0 0 var(--ep-ember);display:grid;place-items:center">
               <span class="ep-ui" style="color:var(--ep-muted)">0 RADIUS</span>
             </div>
@@ -2140,7 +2350,7 @@
 
         <div class="dd dd--dont">
           <div class="dd__bar"><span>Don't / 02</span><span>Soft UI</span></div>
-          <div class="dd__stage">
+          <div class="dd__stage" inert>
             <div style="width:100%;max-width:300px;height:120px;border:1px solid var(--ep-line);background:var(--ep-panel);border-radius:20px;box-shadow:0 24px 48px rgba(0,0,0,.8);display:grid;place-items:center">
               <span class="ep-ui" style="color:var(--ep-muted)">20 RADIUS</span>
             </div>
@@ -2150,7 +2360,7 @@
 
         <div class="dd dd--do">
           <div class="dd__bar"><span>Do / 03</span><span>Hierarchy</span></div>
-          <div class="dd__stage">
+          <div class="dd__stage" inert>
             <div class="mini-type-do">
               <strong>Signal</strong>
               <span>点阵标题配像素正文，信息层级一眼可读。</span>
@@ -2161,7 +2371,7 @@
 
         <div class="dd dd--dont">
           <div class="dd__bar"><span>Don't / 03</span><span>Pixel body</span></div>
-          <div class="dd__stage">
+          <div class="dd__stage" inert>
             <div class="mini-type-dont">用 Doto 排正文，每个字母都变成一排点，读三行就累。这就是为什么它只能做标题。</div>
           </div>
           <div class="dd__caption">点阵标题字不能承担长文本。</div>
@@ -2169,7 +2379,7 @@
 
         <div class="dd dd--do">
           <div class="dd__bar"><span>Do / 04</span><span>Steps</span></div>
-          <div class="dd__stage">
+          <div class="dd__stage" inert>
             <button class="ep-btn ep-btn--primary" type="button">90ms · steps(2)</button>
           </div>
           <div class="dd__caption">状态切换像继电器：两档，干脆。</div>
@@ -2177,7 +2387,7 @@
 
         <div class="dd dd--dont">
           <div class="dd__bar"><span>Don't / 04</span><span>Ease bounce</span></div>
-          <div class="dd__stage">
+          <div class="dd__stage" inert>
             <div style="display:grid;justify-items:center;gap:16px">
               <button class="ep-btn ep-btn--primary" type="button" style="transform:scale(1.08);border-radius:10px;box-shadow:0 18px 40px rgba(252,92,30,.45)">Bounce</button>
               <span class="dd__note">400MS · EASE-IN-OUT · SCALE(1.08) · BLUR(8PX)</span>
@@ -2194,7 +2404,7 @@
 <!-- ======================================================================
      FOOTER
      ====================================================================== -->
-<footer class="footer">
+<footer class="footer ep-on-ember">
   <div class="wrap">
     <div class="footer__top">
       <div>
@@ -2210,12 +2420,12 @@
     <div class="footer__meta">
       <div><span>Tokens</span><strong>assets/ember.css</strong></div>
       <div><span>Type</span><strong>Doto / Silkscreen / Fusion Pixel</strong></div>
-      <div><span>License</span><strong>OFL 1.1 · v1.0 / 2026</strong></div>
+      <div><span>License</span><strong>MIT / OFL · v1.0 / 2026</strong></div>
     </div>
 
     <div class="footer__bottom">
       <span>Ember Pixel — UI System</span>
-      <a href="#top">Back to top ↑</a>
+      <a href="#top">Back to top <svg class="ep-icon ep-icon--up" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M2 7h7v2H2zM9 3l5 5-5 5z"/></svg></a>
     </div>
   </div>
 </footer>
@@ -2228,6 +2438,7 @@
       <div class="ep-toast__body">NOVA-07 · 12 ms · 已加密</div>
     </div>
     <span class="ep-badge ep-badge--ember" style="margin-left:auto">OK</span>
+    <button class="ep-toast__close" type="button" data-close-toast aria-label="关闭提示">X</button>
   </div>
 </div>
 
@@ -2276,11 +2487,33 @@
     });
   });
 
-  // mobile menu ----------------------------------------------------------
-  document.querySelectorAll('.topmenu__panel a').forEach(function (link) {
-    link.addEventListener('click', function () {
-      var menu = link.closest('details');
-      if (menu) menu.open = false;
+  // menus (mobile nav + action menu) --------------------------------------
+  function closeMenu(menu, restoreFocus) {
+    if (!menu || !menu.open) return;
+    menu.open = false;
+    if (restoreFocus) {
+      var summary = menu.querySelector('summary');
+      if (summary) summary.focus();
+    }
+  }
+
+  document.querySelectorAll('.topmenu__panel a, .ep-menu__panel a, .ep-menu__panel button').forEach(function (item) {
+    item.addEventListener('click', function () {
+      closeMenu(item.closest('details'), false);
+    });
+  });
+
+  document.addEventListener('click', function (event) {
+    document.querySelectorAll('details[open]').forEach(function (menu) {
+      var isNav = menu.classList.contains('topmenu') || menu.classList.contains('ep-menu');
+      if (isNav && !menu.contains(event.target)) closeMenu(menu, false);
+    });
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key !== 'Escape') return;
+    document.querySelectorAll('.topmenu[open], .ep-menu[open]').forEach(function (menu) {
+      closeMenu(menu, true);
     });
   });
 
@@ -2301,11 +2534,21 @@
   var toastButton = document.getElementById('toast-btn');
   var liveToast = document.getElementById('demo-toast-live');
   var toastTimer;
+
+  function hideToast() {
+    if (!liveToast) return;
+    liveToast.hidden = true;
+    clearTimeout(toastTimer);
+  }
+
   if (toastButton && liveToast) {
     toastButton.addEventListener('click', function () {
       liveToast.hidden = false;
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(function () { liveToast.hidden = true; }, 3200);
+      toastTimer = setTimeout(hideToast, 5000);
+    });
+    liveToast.querySelectorAll('[data-close-toast]').forEach(function (button) {
+      button.addEventListener('click', hideToast);
     });
   }
 
@@ -2314,6 +2557,8 @@
   var runProgress = document.getElementById('run-progress');
   var runCount = document.getElementById('run-count');
   var runTimer;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
   if (runButton && runProgress) {
     var blocks = Array.prototype.slice.call(runProgress.children);
     runButton.addEventListener('click', function () {
@@ -2321,6 +2566,13 @@
       blocks.forEach(function (block) { block.classList.remove('is-on'); });
       var i = 0;
       runCount.innerHTML = '<b>0</b> / 12';
+
+      if (reduceMotion.matches) {
+        blocks.forEach(function (block) { block.classList.add('is-on'); });
+        runCount.innerHTML = '<b>12</b> / 12';
+        return;
+      }
+
       runTimer = setInterval(function () {
         if (i >= blocks.length) { clearInterval(runTimer); return; }
         blocks[i].classList.add('is-on');

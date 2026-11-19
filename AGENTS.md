@@ -98,6 +98,7 @@ Use the classes in `assets/ember.css`; do not re-style them with radius or soft 
 - `.ep-field`, `.ep-input`, `.ep-select`, `.ep-textarea`, `.ep-check`, `.ep-radio`, `.ep-switch`
 - `.ep-card`, `.ep-brackets`, `.ep-badge`, `.ep-table-wrap`, `.ep-table`, `.ep-progress`
 - `.ep-tabs`, `.ep-tab`, `.ep-tabpanel`, `.ep-toast`, `.ep-dialog`, `.ep-empty`, `.ep-avatar`
+- `.ep-menu` / `.ep-menu__panel`, `.ep-tip` / `.ep-tip__bubble`, `.ep-pagination` / `.ep-page`, `.ep-skeleton`, `.ep-legend`
 
 ```html
 <button class="ep-btn ep-btn--primary">Deploy</button>
@@ -123,6 +124,13 @@ Use the classes in `assets/ember.css`; do not re-style them with radius or soft 
 5. **One real interface**: sidebar + 3 stats + chart + log table, to prove composition.
 6. **Footer**: ember block with black Doto statement and a 2px stamp; or black with ember type.
 
+## Data viz
+
+- Max 3 series: ember (current), cream (comparison), muted (baseline). Danger only for errors.
+- 1px grid, 10px Silkscreen axis labels, 2px lines. No gradients, shadows, or 3D.
+- Always pair color with a legend or direct label.
+- Loading uses `.ep-skeleton` blocks; empty states use dashed borders.
+
 ## Motion
 
 ```css
@@ -143,6 +151,9 @@ Press feedback is `translate(2px, 2px)`. Panel transitions use `steps(4)`, overl
 - Labels always visible; errors include text + `aria-invalid`.
 - Status uses text + color, never color alone.
 - Native `<dialog>` for modals; `role="status"` for toasts.
+- Scrollable `.ep-table-wrap` gets `tabindex="0" role="region" aria-label="…"`.
+- On ember fields use `.ep-on-ember` so the focus ring switches to near-black.
+- Illustrative demo controls should be `inert`; only real controls enter the tab order.
 
 ## Output contract
 
@@ -160,14 +171,20 @@ Press feedback is `translate(2px, 2px)`. Panel transitions use `steps(4)`, overl
 - Use `ease`, `cubic-bezier`, spring, bounce, or scale animations.
 - Use color alone to communicate status.
 
+## License
+
+Code and docs: MIT. Fonts: SIL Open Font License 1.1.
+
 ## Repo map
 
 ```
 SKILL.md               canonical skill
 AGENTS.md              this file
 prompt.md              standalone prompt for chat-only agents
+LICENSE                MIT (fonts remain OFL)
 assets/ember.css       tokens + components
 assets/styleguide.html visual reference
 assets/fonts/          OFL fonts
-docs/                  README preview images
+docs/                  previews and OG image
+scripts/               docs and font-subset checks
 ```

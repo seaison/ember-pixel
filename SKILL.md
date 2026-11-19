@@ -1,6 +1,6 @@
 ---
 name: ember-pixel
-description: 黑底、橙光、点阵的 UI 设计系统（Ember Pixel）。Use when building or restyling interfaces that need a black canvas, #FC5C1E ember accent, pixel/dot-matrix typography, 0 radius, 8px grid and stepped motion — pages, dashboards, components, design tokens, or visual audits. 中文触发：黑橙 UI、点阵/像素风、深色终端感、Armin Grotesk 配色。
+description: 黑橙点阵 UI 设计系统（Ember Pixel）：黑底 #060606、主橙 #FC5C1E、Doto/Silkscreen/Fusion Pixel、0 圆角、8px 网格、steps 动效。用于黑橙 UI、点阵/像素风、深色终端感、dashboard、design tokens 与视觉规范。
 ---
 
 # Ember Pixel
@@ -166,7 +166,7 @@ description: 黑底、橙光、点阵的 UI 设计系统（Ember Pixel）。Use 
   <div class="ep-stat__value">98.4<span>%</span></div>
 </article>
 
-<div class="ep-table-wrap">
+<div class="ep-table-wrap" tabindex="0" role="region" aria-label="Node telemetry">
   <table class="ep-table">
     <thead><tr><th>Node</th><th>Status</th><th class="is-num">Ping</th></tr></thead>
     <tbody>
@@ -178,6 +178,7 @@ description: 黑底、橙光、点阵的 UI 设计系统（Ember Pixel）。Use 
 
 - 数字用 `.is-num`：Silkscreen、右对齐、橙色。
 - 状态徽章必须有文字；LIVE 点可以闪，但闪烁不是唯一线索。
+- 横向滚动的 `.ep-table-wrap` 必须加 `tabindex="0" role="region" aria-label="…"`，否则键盘用户无法滚动表格。
 
 ### 反馈
 
@@ -214,6 +215,30 @@ description: 黑底、橙光、点阵的 UI 设计系统（Ember Pixel）。Use 
 - 顶部导航 72px，黑底 1px 下线；logo 是 32×32 橙方块 + 黑字。
 - 移动端隐藏导航时，必须提供可访问的替代入口（菜单或页内锚点），不要直接消失。
 
+### 菜单 / Tooltip / 分页 / 骨架
+
+```html
+<details class="ep-menu">
+  <summary class="ep-btn ep-btn--secondary">Actions</summary>
+  <div class="ep-menu__panel">
+    <button type="button">Rename</button>
+    <button type="button" class="is-danger">Delete</button>
+  </div>
+</details>
+
+<span class="ep-tip">
+  <button class="ep-iconbtn" type="button" aria-describedby="tip-1">?</button>
+  <span class="ep-tip__bubble" id="tip-1" role="tooltip">AES-256 · 每 24h 轮换</span>
+</span>
+
+<nav class="ep-pagination" aria-label="Pagination">…</nav>
+
+<div class="ep-skeleton ep-skeleton--blink" style="width:60%"></div>
+```
+
+- 菜单用原生 `<details>`，Escape / 点击外部关闭；分页 44×44；tooltip 同时支持 hover 与 focus，且不能承载唯一信息。
+- 加载用 `.ep-skeleton` 分段闪烁，不用 spinner；骨架块要能看清，不要用比面板还暗的颜色。
+
 ## 页面配方
 
 一个典型页面的顺序：
@@ -226,6 +251,13 @@ description: 黑底、橙光、点阵的 UI 设计系统（Ember Pixel）。Use 
 6. **Footer**：橙色整块，黑色 Doto 大字（“STAY LOUD.”），加一个 2px 黑框的 EP 印章；或者黑底 + 橙色大字。
 
 如果页面没有 hero，就把唯一的橙色时刻给主 CTA 区块或页脚。不要每屏都放橙色。
+
+## 数据可视化
+
+- 系列最多三个：ember（当前）、cream（对照）、muted（基线）；`--ep-danger` 只表示错误。
+- 1px 网格、10px Silkscreen 轴标签、2px 线；无渐变、阴影、3D。
+- 颜色必须配图例或直接标签，不能只靠颜色。
+- 加载用 `.ep-skeleton` 分段闪烁；空状态用虚线框；数字用 Doto 或 Silkscreen。
 
 ## 动效
 
@@ -274,6 +306,8 @@ description: 黑底、橙光、点阵的 UI 设计系统（Ember Pixel）。Use 
 - **Silkscreen** — Google Fonts / OFL 1.1，仅拉丁。
 - **Fusion Pixel 12px Proportional SC** — [TakWolf/fusion-pixel-font](https://github.com/TakWolf/fusion-pixel-font)，OFL 1.1，简体中文全覆盖，588KB。
 
-许可全文在 `assets/fonts/`。如果项目只做英文，可以删掉 Fusion，把 body 换成 Silkscreen 16；如果中文站点只需要少量字符，用 `pyftsubset` 按字符集裁剪 Fusion，再保留 12/24 的整数倍尺寸。
+代码与文档采用 MIT License（见仓库根目录 `LICENSE`）；字体保持各自的 OFL 1.1 许可，全文在 `assets/fonts/`。
+
+如果项目只做英文，可以删掉 Fusion，把 body 换成 Silkscreen 16；如果中文站点只需要少量字符，用 `pyftsubset` 按字符集裁剪 Fusion，再保留 12/24 的整数倍尺寸。
 
 不要用 Doto 排中文，也不要用系统黑体兜底中文——那会瞬间破坏点阵质感。中文用 Fusion；缺字时再回退到 `DotGothic16`，并接受个别字形差异。

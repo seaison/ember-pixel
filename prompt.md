@@ -178,7 +178,30 @@ Use these classes and states; extend the CSS rather than restyling with radius o
 .ep-progress { display: flex; gap: 4px; height: 8px; }
 .ep-progress > span { flex: 1; background: var(--line); }
 .ep-progress > span.is-on { background: var(--ember); }
+
+.ep-skeleton { height: 12px; background: var(--line-strong); }
+.ep-skeleton--blink { animation: ep-skeleton 1.2s steps(2, end) infinite; }
+@keyframes ep-skeleton {
+  0%, 100% { opacity: .55; }
+  50% { opacity: 1; }
+}
+
+.ep-legend { display: flex; flex-wrap: wrap; gap: 16px; color: var(--muted); font-family: var(--font-ui); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+.ep-legend__swatch { width: 8px; height: 8px; background: var(--ember); }
+
+.ep-menu { position: relative; display: inline-block; }
+.ep-menu > summary { list-style: none; cursor: pointer; }
+.ep-menu > summary::-webkit-details-marker { display: none; }
+.ep-menu__panel { position: absolute; top: calc(100% + 8px); left: 0; min-width: 220px; padding: 8px; border: 1px solid var(--line-strong); background: var(--panel); display: grid; gap: 2px; }
+.ep-menu__panel button { min-height: 44px; padding: 0 12px; border: 0; background: none; color: var(--muted); font-family: var(--font-ui); font-size: 10px; letter-spacing: .08em; text-align: left; text-transform: uppercase; cursor: pointer; }
+.ep-menu__panel .is-danger { color: var(--danger); }
+
+.ep-pagination { display: flex; gap: 4px; }
+.ep-page { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1px solid var(--line-strong); border-radius: 0; background: transparent; color: var(--muted); font-family: var(--font-ui); font-size: 10px; cursor: pointer; }
+.ep-page[aria-current="page"] { background: var(--ember); border-color: var(--ember); color: var(--ember-ink); }
 ```
+
+Menus use native `<details>` and close on Escape / outside click. Pagination uses 44×44 squares; tooltips must also work on focus and cannot carry unique information.
 
 Stat numbers use Doto at 48–56px in cream or ember. Section titles use Doto at 48–64px. Chinese headings use Fusion Pixel at 24–32px, never bold.
 
@@ -190,6 +213,13 @@ Stat numbers use Doto at 48–56px in cream or ember. Section titles use Doto at
 4. **Sections**: index (01…), Doto title, Chinese label, 1px rule; 96–112px vertical padding.
 5. **One real interface**: sidebar + 3 stat cards + CSS bar chart + log table. This is where the system proves it composes.
 6. **Footer**: ember block with black Doto statement and a 2px stamp; or black with ember type.
+
+## Data viz
+
+- Max 3 series: ember (current), cream (comparison), muted (baseline). Danger only for errors.
+- 1px grid, 10px Silkscreen axis labels, 2px lines. No gradients, shadows, or 3D.
+- Pair color with a legend or direct label.
+- Loading uses `.ep-skeleton`; empty states use dashed borders.
 
 ## Motion
 
@@ -205,7 +235,8 @@ Stat numbers use Doto at 48–56px in cream or ember. Section titles use Doto at
 - Labels always visible; errors include text + `aria-invalid`.
 - Status uses text + color; never color alone.
 - Native `<dialog>` for modals; `role="status"` for toasts.
-- Focus: `outline: 2px solid var(--ember); outline-offset: 3px`.
+- Focus: `outline: 2px solid var(--ember); outline-offset: 3px`. On ember surfaces use near-black: `.ep-on-ember :focus-visible { outline-color: var(--ember-ink); }`.
+- Scrollable `.ep-table-wrap` gets `tabindex="0" role="region" aria-label="…"` so keyboard users can pan it.
 
 ## Do not
 
