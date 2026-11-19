@@ -355,6 +355,7 @@
 
     const rows = Array.from(groups.entries()).sort(([a], [b]) => a.localeCompare(b));
     const max = Math.max(1, ...rows.map(([, entry]) => entry.units));
+    els.rackCount.textContent = `${rows.length} RACKS`;
 
     els.rackList.innerHTML = rows.map(([key, entry]) => `
       <div class="rack-row">
@@ -771,6 +772,15 @@
     els.invStatus.value = 'all';
     els.histSearch.value = '';
     els.histType.value = 'all';
+    els.inQty.value = '1';
+    els.inNote.value = '';
+    els.newName.value = '';
+    els.newValue.value = '';
+    els.newPkg.value = '';
+    els.newMin.value = '1';
+    els.outQty.value = '1';
+    els.outProject.value = '';
+    els.outNote.value = '';
     clearInboundErrors();
     clearOutboundErrors();
     closeDialogs();
@@ -1128,6 +1138,7 @@
     els.statTodayFoot = $('#stat-today-foot');
     els.chart = $('#activity-chart');
     els.rackList = $('#rack-list');
+    els.rackCount = $('#rack-count');
     els.lowList = $('#low-list');
     els.recentBody = $('#recent-body');
 
