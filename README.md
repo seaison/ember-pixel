@@ -2,9 +2,61 @@
 
 **黑底 · 橙光 · 点阵**
 
-一套为深色界面设计的像素化 UI 系统，也是一个可以直接安装的 DSH Skill。色彩取自参考海报的 `#FC5C1E`，由 Doto、Silkscreen、Fusion Pixel 三套点阵字体构成。
+一套与工具、框架无关的深色 UI 设计系统，也是一个可以被任意 Agent 读取的 Skill。色彩取自参考海报的 `#FC5C1E`，由 Doto、Silkscreen、Fusion Pixel 三套点阵字体构成。
 
 ![Ember Pixel 首屏](docs/preview-hero.png)
+
+## 为什么是三个入口
+
+没有一种文件格式能被所有 Agent 原生识别。Ember Pixel 把同一套规范拆成三个入口，内容保持一致：
+
+| 文件 | 用途 |
+| --- | --- |
+| [`SKILL.md`](SKILL.md) | **唯一事实源**。支持 `SKILL.md` / Agent Skills 的工具：DSH、Claude Code 等 |
+| [`AGENTS.md`](AGENTS.md) | **通用摘要**。给 Codex、Cursor、Windsurf 等读取 `AGENTS.md` 的 Agent |
+| [`prompt.md`](prompt.md) | **独立提示词**。给 ChatGPT / Claude / Gemini 等只能粘贴文本的对话 |
+
+有冲突时以 `SKILL.md` 为准。
+
+## 安装 / 使用
+
+### DSH
+
+```bash
+git clone https://github.com/seaison/ember-pixel.git ~/.dsh/skills/ember-pixel
+```
+
+### Claude Code
+
+```bash
+# 个人级
+git clone https://github.com/seaison/ember-pixel.git ~/.claude/skills/ember-pixel
+
+# 或项目级：放进 <project>/.claude/skills/ember-pixel/
+```
+
+`SKILL.md` 的 frontmatter 遵循 Agent Skills 约定，Claude Code 会像读取原生 skill 一样读取它。
+
+### Codex / Cursor / Windsurf / 其他 AGENTS.md Agent
+
+把整个仓库（或至少 `AGENTS.md` + `assets/`）放进项目，或让 Agent 直接读这个仓库的 `SKILL.md`。`AGENTS.md` 自带完整的非协商规则，即使只读这一个文件也能开始。
+
+### ChatGPT / Claude / Gemini 网页版
+
+打开 [`prompt.md`](prompt.md)，把分隔线之后的全部内容粘贴到对话开头，再描述需求。它是自包含的，不依赖仓库文件。
+
+### 其他 Agent
+
+- **Gemini CLI / Windsurf / Cline** 等：把 `AGENTS.md` 作为项目规则文件，或让 Agent 直接读 `SKILL.md`。
+- **任何能读文件的 Agent**：先读 `SKILL.md`，再读 `assets/ember.css` 和 `assets/styleguide.html`。
+
+### 普通前端项目
+
+```html
+<link rel="stylesheet" href="assets/ember.css">
+```
+
+把 `assets/ember.css` 与 `assets/fonts/` 一起复制到项目，保持相对路径（CSS 用 `./fonts/` 引用字体）。没有 npm、构建工具或运行时依赖。
 
 ## 它是什么
 
@@ -17,30 +69,6 @@ Ember Pixel 不是一套“复古游戏皮肤”，而是一套有明确约束�
 - **继电器动效**：90/160/320ms + `steps()`，没有回弹、模糊和 `scale(1.1)`。
 
 ![Mission Control 组合示例](docs/preview-dashboard.png)
-
-## 快速开始
-
-### 作为 DSH Skill
-
-```bash
-git clone https://github.com/seaison/ember-pixel.git ~/.dsh/skills/ember-pixel
-```
-
-新开一个 DSH 会话，然后直接说：
-
-> 用 ember-pixel 做一个数据控制台
-
-### 作为前端样式库
-
-```html
-<link rel="stylesheet" href="assets/ember.css">
-```
-
-把 `assets/ember.css` 与 `assets/fonts/` 一起复制到项目，保持相对路径（CSS 用 `./fonts/` 引用字体）。
-
-### 打开视觉规范
-
-浏览器直接打开 [`assets/styleguide.html`](assets/styleguide.html)。页面完全离线，包含 8 个章节和可交互的 Tabs / Dialog / Toast / 移动端菜单。
 
 ## 调色板
 
@@ -82,11 +110,13 @@ git clone https://github.com/seaison/ember-pixel.git ~/.dsh/skills/ember-pixel
 
 ```
 .
-├── SKILL.md                  # Skill 规则与配方
+├── SKILL.md                  # 唯一事实源（Agent Skills 标准）
+├── AGENTS.md                 # 通用 Agent 摘要
+├── prompt.md                 # 无文件访问时的独立提示词
 ├── README.md
 ├── assets/
 │   ├── ember.css             # token + 组件库
-│   ├── styleguide.html       # 视觉规范
+│   ├── styleguide.html       # 8 章视觉规范
 │   └── fonts/                # Doto / Silkscreen / Fusion Pixel + OFL
 └── docs/
     ├── preview-hero.png

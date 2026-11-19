@@ -9,6 +9,16 @@ description: 黑底、橙光、点阵的 UI 设计系统（Ember Pixel）。Use 
 
 这不是“复古游戏皮肤”。它是一套有明确约束的现代界面语言：黑色负责安静，橙色负责行动，像素字体负责识别度。
 
+## 兼容性
+
+这份 skill 是纯 Markdown + 相对路径资源，不依赖 DSH 专有 API：
+
+- **SKILL.md / Agent Skills 标准**：DSH、Claude Code，以及任何支持 `SKILL.md` + YAML frontmatter 的工具。把整个目录放进对应的 skills 目录即可。
+- **读取 AGENTS.md 的工具**：Codex、Cursor、Windsurf 等，使用仓库根目录的 `AGENTS.md`。
+- **只能粘贴提示词的聊天工具**：使用 `prompt.md`。
+
+规范本身与框架无关：HTML/CSS、React、Vue、Svelte 都可以；`assets/ember.css` 是纯 CSS，没有构建依赖。
+
 ## 先读这三个文件
 
 | 文件 | 作用 |
