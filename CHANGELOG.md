@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+- Added `examples/inventory/`: Parts Depot, a working household component inventory demo with inbound, outbound, search, pagination, history, CSV/JSON export, localStorage persistence, and a light/dark-free Ember Pixel dashboard.
+
 ## [1.0.0] — 2026-11-19
 
 - Initial public release of the Ember Pixel design system.

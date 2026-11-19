@@ -93,6 +93,8 @@ for (const file of [
   'LICENSE', 'CHANGELOG.md', 'CONTRIBUTING.md', '404.html', 'index.html',
   'docs/og.png', 'assets/favicon.svg',
   'assets/fonts/FusionPixel-12px-SC-web.woff2',
+  'examples/inventory/index.html', 'examples/inventory/app.css',
+  'examples/inventory/app.js', 'examples/inventory/README.md',
   'scripts/check-docs.mjs', 'scripts/check-subset.py', 'scripts/build-subset.py',
   '.github/workflows/checks.yml',
 ]) {
@@ -105,6 +107,8 @@ if (readme.includes('MIT')) ok('README declares MIT');
 else fail('README does not declare MIT');
 if (readme.includes('https://seaison.github.io/ember-pixel/')) ok('README links the live guide');
 else fail('README is missing the live guide link');
+if (readme.includes('https://seaison.github.io/ember-pixel/examples/inventory/')) ok('README links the live demo');
+else fail('README is missing the live demo link');
 
 // 8. local README links resolve
 const linkPattern = /\]\(([^)]+)\)/g;

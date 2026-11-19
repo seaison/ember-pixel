@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parts Depot — 家庭元件仓</title>
+<meta name="description" content="Parts Depot：家用电子元器件出入库管理系统。Black canvas, ember signal, dot matrix.">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#060606">
+<link rel="stylesheet" href="../../assets/ember.css">
+<link rel="stylesheet" href="./app.css">
+</head>
+<body>
+
+<a class="skip" href="#main">跳到主内容</a>
+
+<!-- pixel icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-grid" viewBox="0 0 16 16"><path fill="currentColor" d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z"/></symbol>
+  <symbol id="i-in" viewBox="0 0 16 16"><path fill="currentColor" d="M7 2h2v5h2v2H9v2H7V9H5V7h2zM2 13h12v2H2z"/></symbol>
+  <symbol id="i-out" viewBox="0 0 16 16"><path fill="currentColor" d="M7 12h2V7h2V5H9V3H7v2H5v2h2zM2 13h12v2H2z"/></symbol>
+  <symbol id="i-box" viewBox="0 0 16 16"><path fill="currentColor" d="M2 3h12v2H2zM2 7h2v6H2zM12 7h2v6h-2zM2 12h12v2H2zM5 7h6v2H5z"/></symbol>
+  <symbol id="i-list" viewBox="0 0 16 16"><path fill="currentColor" d="M2 3h12v2H2zM2 7h12v2H2zM2 11h8v2H2z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 16 16"><path fill="currentColor" d="M5 2h5v2h2v5h-2v2H5v-2H3V4h2zM6 4H5v5h5V4zM11 11h2v2h2v2h-3v-2h-1z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 16 16"><path fill="currentColor" d="M7 2h2v5h5v2H9v5H7V9H2V7h5z"/></symbol>
+  <symbol id="i-close" viewBox="0 0 16 16"><path fill="currentColor" d="M3 3h2v2H3zM5 5h2v2H5zM7 7h2v2H7zM9 9h2v2H9zM11 11h2v2h-2zM3 11h2v2H3zM5 9h2v2H5zM9 5h2v2H9zM11 3h2v2h-2z"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 16 16"><path fill="currentColor" d="M3 6h2v2h2v2h2v-2h2V6h2v4h-2v2H5v-2H3z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 16 16"><path fill="currentColor" d="M2 7h7v2H2zM9 3l5 5-5 5z"/></symbol>
+  <symbol id="i-up" viewBox="0 0 16 16"><path fill="currentColor" d="M2 7h7v2H2zM9 3l5 5-5 5z"/></symbol>
+</svg>
+
+<div class="app">
+
+  <!-- ====================================================================
+       RAIL
+       ==================================================================== -->
+  <aside class="rail">
+    <a class="rail__brand" href="#overview" aria-label="Parts Depot 首页">
+      <span class="rail__mark">PD</span>
+      <span class="rail__name">PARTS DEPOT<small>HOME LAB / 家庭元件仓</small></span>
+    </a>
+
+    <nav class="rail__nav" aria-label="主导航">
+      <a class="rail__link" href="#overview" data-nav="overview">
+        <svg class="ep-icon" aria-hidden="true"><use href="#i-grid"></use></svg>
+        <span class="rail__txt">Overview<em>总览</em></span>
+        <span class="rail__badge" data-count="skus">18</span>
+      </a>
+      <a class="rail__link" href="#inbound" data-nav="inbound">
+        <svg class="ep-icon" aria-hidden="true"><use href="#i-in"></use></svg>
+        <span class="rail__txt">Inbound<em>入库</em></span>
+      </a>
+      <a class="rail__link" href="#outbound" data-nav="outbound">
+        <svg class="ep-icon" aria-hidden="true"><use href="#i-out"></use></svg>
+        <span class="rail__txt">Outbound<em>出库</em></span>
+      </a>
+      <a class="rail__link" href="#inventory" data-nav="inventory">
+        <svg class="ep-icon" aria-hidden="true"><use href="#i-box"></use></svg>
+        <span class="rail__txt">Inventory<em>库存</em></span>
+        <span class="rail__badge rail__badge--signal" data-count="low">5</span>
+      </a>
+      <a class="rail__link" href="#history" data-nav="history">
+        <svg class="ep-icon" aria-hidden="true"><use href="#i-list"></use></svg>
+        <span class="rail__txt">History<em>流水</em></span>
+      </a>
+    </nav>
+
+    <div class="rail__health">
+      <div class="rail__health-head"><span>STOCK HEALTH</span><strong id="health-pct">72%</strong></div>
+      <div class="rail__meter" id="health-meter" aria-hidden="true"></div>
+      <div class="rail__health-meta">
+        <span><b id="health-ok">13</b> OK</span>
+        <span><b id="health-low">5</b> LOW</span>
+      </div>
+    </div>
+
+    <div class="rail__foot">
+      <span class="rail__local"><i class="ep-dot"></i><span id="storage-label">LOCAL STORAGE</span></span>
+      <span class="rail__saved">SAVED <span id="save-stamp">--:--</span></span>
+      <span class="rail__built">BUILT WITH EMBER PIXEL</span>
+    </div>
+  </aside>
+
+  <!-- ====================================================================
+       MAIN
+       ==================================================================== -->
+  <div class="main">
+
+    <header class="topbar">
+      <div class="topbar__crumb">
+        <span>HOME LAB</span><span aria-hidden="true">/</span><strong id="crumb">OVERVIEW</strong>
+      </div>
+      <div class="topbar__right">
+        <span class="topbar__date ep-ui" id="today-date">2026.11.20</span>
+        <span class="ep-badge ep-badge--live"><i class="ep-dot"></i>LOCAL</span>
+        <details class="ep-menu operator">
+          <summary class="ep-btn ep-btn--ghost ep-btn--sm" aria-label="打开操作菜单">
+            <span class="ep-avatar" style="width:24px;height:24px;font-size:8px">OP</span>
+            <span>OWNER</span>
+            <svg class="ep-icon" aria-hidden="true"><use href="#i-chevron"></use></svg>
+          </summary>
+          <div class="ep-menu__panel">
+            <button type="button" data-action="export-json">导出数据 / EXPORT</button>
+            <button type="button" class="is-danger" data-action="reset-open">重置演示 / RESET</button>
+          </div>
+        </details>
+      </div>
+    </header>
+
+    <main id="main" tabindex="-1">
+
+      <!-- ================================================================
+           OVERVIEW
+           ================================================================ -->
+      <section class="view" id="view-overview" data-view="overview" aria-labelledby="overview-title">
+        <div class="page-head">
+          <div>
+            <span class="ep-kicker">Home lab / Stock control</span>
+            <h1 class="page-title ep-display" id="overview-title" tabindex="-1">Overview</h1>
+            <p class="page-sub">库存总览 · 今天先补哪一盒？</p>
+          </div>
+          <div class="page-actions">
+            <a class="ep-btn ep-btn--secondary" href="#outbound">出库</a>
+            <a class="ep-btn ep-btn--primary" href="#inbound">入库</a>
+          </div>
+        </div>
+
+        <div class="alert-strip" id="overview-alert" hidden>
+          <span class="alert-strip__mark" aria-hidden="true"></span>
+          <p><strong id="alert-count">0</strong> 个元件需要补货，<span id="alert-names">—</span></p>
+          <a class="ep-link" href="#inventory">查看库存</a>
+        </div>
+
+        <div class="stat-grid">
+          <article class="stat-card">
+            <span class="ep-stat__label">SKUs / 元件种类</span>
+            <div class="stat-value ep-display" id="stat-skus">18</div>
+            <span class="stat-foot" id="stat-skus-foot">9 CATEGORIES</span>
+          </article>
+          <article class="stat-card">
+            <span class="ep-stat__label">Units / 在库总数</span>
+            <div class="stat-value ep-display" id="stat-units">889</div>
+            <span class="stat-foot" id="stat-units-foot">ACROSS 18 BINS</span>
+          </article>
+          <article class="stat-card stat-card--signal">
+            <span class="ep-stat__label">Attention / 低库存</span>
+            <div class="stat-value ep-display" id="stat-low">5</div>
+            <span class="stat-foot" id="stat-low-foot">1 OUT OF STOCK</span>
+          </article>
+          <article class="stat-card">
+            <span class="ep-stat__label">Today / 今日变动</span>
+            <div class="stat-value ep-display" id="stat-today">2</div>
+            <span class="stat-foot" id="stat-today-foot">IN + OUT MOVEMENTS</span>
+          </article>
+        </div>
+
+        <div class="dash-grid">
+          <div class="dash-left">
+          <section class="panel panel--chart" aria-labelledby="chart-title">
+            <div class="panel__head">
+              <div>
+                <span class="ep-ui">Activity / 7D</span>
+                <h2 class="panel__title" id="chart-title">库存流动</h2>
+              </div>
+              <span class="ep-badge">MOVEMENTS</span>
+            </div>
+            <div class="chart" id="activity-chart" role="img" aria-label="近 7 天出入库次数"></div>
+            <div class="ep-legend chart-legend">
+              <span class="ep-legend__item"><i class="ep-legend__swatch ep-legend__swatch--cream"></i>INBOUND</span>
+              <span class="ep-legend__item"><i class="ep-legend__swatch"></i>OUTBOUND</span>
+            </div>
+          </section>
+
+          <section class="panel panel--racks" aria-labelledby="rack-title">
+            <div class="panel__head">
+              <div>
+                <span class="ep-ui">Storage / Racks</span>
+                <h2 class="panel__title" id="rack-title">库位负载</h2>
+              </div>
+              <span class="ep-badge">6 RACKS</span>
+            </div>
+            <div class="rack-list" id="rack-list"></div>
+          </section>
+          </div>
+
+          <section class="panel" aria-labelledby="low-title">
+            <div class="panel__head">
+              <div>
+                <span class="ep-ui">Attention</span>
+                <h2 class="panel__title" id="low-title">低库存</h2>
+              </div>
+              <a class="ep-link ep-ui" href="#inventory">ALL</a>
+            </div>
+            <div class="low-list" id="low-list"></div>
+          </section>
+        </div>
+
+        <section class="panel panel--recent" aria-labelledby="recent-title">
+          <div class="panel__head">
+            <div>
+              <span class="ep-ui">Log / Latest</span>
+              <h2 class="panel__title" id="recent-title">最近流水</h2>
+            </div>
+            <a class="ep-btn ep-btn--ghost ep-btn--sm" href="#history">全部流水</a>
+          </div>
+          <div class="ep-table-wrap" tabindex="0" role="region" aria-label="最近出入库流水">
+            <table class="ep-table">
+              <thead>
+                <tr><th scope="col">Time</th><th scope="col">Type</th><th scope="col">Part</th><th scope="col" class="is-num">Qty</th><th scope="col">Note</th></tr>
+              </thead>
+              <tbody id="recent-body"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <!-- ================================================================
+           INBOUND
+           ================================================================ -->
+      <section class="view" id="view-inbound" data-view="inbound" aria-labelledby="inbound-title" hidden>
+        <div class="page-head">
+          <div>
+            <span class="ep-kicker">Stock in / Receive</span>
+            <h1 class="page-title ep-display" id="inbound-title" tabindex="-1">Inbound</h1>
+            <p class="page-sub">入库登记 · 把新到的元件放回它的格子。</p>
+          </div>
+          <div class="page-actions">
+            <a class="ep-btn ep-btn--secondary" href="#outbound">去出库</a>
+          </div>
+        </div>
+
+        <div class="form-layout">
+          <form class="panel form-panel" id="inbound-form" novalidate>
+            <div class="form-grid">
+              <div class="ep-field">
+                <label class="ep-field__label" for="in-part">元件 <span>PART</span></label>
+                <select class="ep-select" id="in-part"></select>
+                <span class="ep-field__hint">找不到？在列表底部选择“＋ 新建元件”。</span>
+              </div>
+              <div class="ep-field">
+                <label class="ep-field__label" for="in-qty">数量 <span>QTY</span></label>
+                <input class="ep-input" id="in-qty" type="number" inputmode="numeric" min="1" step="1" value="1" aria-describedby="in-qty-error">
+                <span class="ep-field__error" id="in-qty-error" hidden></span>
+              </div>
+              <div class="ep-field">
+                <label class="ep-field__label" for="in-supplier">供应商 <span>SUPPLIER</span></label>
+                <input class="ep-input" id="in-supplier" list="suppliers" placeholder="立创商城 / 淘宝 / 拆机" autocomplete="off">
+              </div>
+              <div class="ep-field">
+                <label class="ep-field__label" for="in-location">库位 <span>LOCATION</span></label>
+                <input class="ep-input" id="in-location" placeholder="A1-01" autocomplete="off">
+              </div>
+              <div class="ep-field form-full">
+                <label class="ep-field__label" for="in-note">备注 <span>NOTE</span></label>
+                <textarea class="ep-textarea" id="in-note" rows="3" placeholder="例如：补货 / 拆机件 / 项目余料"></textarea>
+              </div>
+            </div>
+
+            <div class="new-part" id="new-part-fields" hidden>
+              <div class="new-part__head">
+                <span class="ep-ui">New part / 新元件</span>
+                <span class="ep-badge">建立档案</span>
+              </div>
+              <div class="form-grid">
+                <div class="ep-field form-full">
+                  <label class="ep-field__label" for="new-name">名称 <span>NAME</span></label>
+                  <input class="ep-input" id="new-name" placeholder="例如：金属膜电阻" autocomplete="off" aria-describedby="new-name-error">
+                  <span class="ep-field__error" id="new-name-error" hidden></span>
+                </div>
+                <div class="ep-field">
+                  <label class="ep-field__label" for="new-category">类别 <span>CATEGORY</span></label>
+                  <select class="ep-select" id="new-category"></select>
+                </div>
+                <div class="ep-field">
+                  <label class="ep-field__label" for="new-value">型号 / 阻值 <span>VALUE</span></label>
+                  <input class="ep-input" id="new-value" placeholder="10kΩ / NE555" autocomplete="off">
+                </div>
+                <div class="ep-field">
+                  <label class="ep-field__label" for="new-pkg">封装 <span>PACKAGE</span></label>
+                  <input class="ep-input" id="new-pkg" placeholder="1/4W · 1%" autocomplete="off">
+                </div>
+                <div class="ep-field">
+                  <label class="ep-field__label" for="new-unit">单位 <span>UNIT</span></label>
+                  <select class="ep-select" id="new-unit">
+                    <option>只</option><option>个</option><option>卷</option><option>盒</option><option>米</option><option>包</option>
+                  </select>
+                </div>
+                <div class="ep-field">
+                  <label class="ep-field__label" for="new-min">安全库存 <span>MIN</span></label>
+                  <input class="ep-input" id="new-min" type="number" inputmode="numeric" min="0" step="1" value="1">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <a class="ep-btn ep-btn--ghost" href="#overview">取消</a>
+              <button class="ep-btn ep-btn--primary" type="submit">确认入库</button>
+            </div>
+          </form>
+
+          <aside class="panel summary-panel" aria-label="入库预览">
+            <span class="ep-ui">Target / 入库后</span>
+            <div id="inbound-summary"></div>
+            <div class="summary-recent">
+              <span class="ep-ui">Recent inbound</span>
+              <div id="inbound-recent"></div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           OUTBOUND
+           ================================================================ -->
+      <section class="view" id="view-outbound" data-view="outbound" aria-labelledby="outbound-title" hidden>
+        <div class="page-head">
+          <div>
+            <span class="ep-kicker">Stock out / Issue</span>
+            <h1 class="page-title ep-display" id="outbound-title" tabindex="-1">Outbound</h1>
+            <p class="page-sub">出库登记 · 拿走之前，先确认余量。</p>
+          </div>
+          <div class="page-actions">
+            <a class="ep-btn ep-btn--secondary" href="#inbound">去入库</a>
+          </div>
+        </div>
+
+        <div class="form-layout">
+          <form class="panel form-panel" id="outbound-form" novalidate>
+            <div class="form-grid">
+              <div class="ep-field">
+                <label class="ep-field__label" for="out-part">元件 <span>PART</span></label>
+                <select class="ep-select" id="out-part"></select>
+                <span class="ep-field__hint">缺货项仍会显示，数量超出时会提示。</span>
+              </div>
+              <div class="ep-field">
+                <label class="ep-field__label" for="out-qty">数量 <span>QTY</span></label>
+                <input class="ep-input" id="out-qty" type="number" inputmode="numeric" min="1" step="1" value="1" aria-describedby="out-qty-error">
+                <span class="ep-field__error" id="out-qty-error" hidden></span>
+              </div>
+              <div class="ep-field">
+                <label class="ep-field__label" for="out-project">用途 / 项目 <span>PROJECT</span></label>
+                <input class="ep-input" id="out-project" placeholder="例如：桌面灯 / 维修 / 实验" autocomplete="off">
+              </div>
+              <div class="ep-field">
+                <label class="ep-field__label" for="out-location">从哪拿 <span>LOCATION</span></label>
+                <input class="ep-input" id="out-location" placeholder="自动带出库位" autocomplete="off" readonly>
+              </div>
+              <div class="ep-field form-full">
+                <label class="ep-field__label" for="out-note">备注 <span>NOTE</span></label>
+                <textarea class="ep-textarea" id="out-note" rows="3" placeholder="例如：做 555 呼吸灯 / 拆机补件"></textarea>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <a class="ep-btn ep-btn--ghost" href="#overview">取消</a>
+              <button class="ep-btn ep-btn--primary" type="submit">确认出库</button>
+            </div>
+          </form>
+
+          <aside class="panel summary-panel" aria-label="出库预览">
+            <span class="ep-ui">Target / 出库后</span>
+            <div id="outbound-summary"></div>
+            <div class="summary-recent">
+              <span class="ep-ui">Recent outbound</span>
+              <div id="outbound-recent"></div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           INVENTORY
+           ================================================================ -->
+      <section class="view" id="view-inventory" data-view="inventory" aria-labelledby="inventory-title" hidden>
+        <div class="page-head">
+          <div>
+            <span class="ep-kicker">Stock / Bins</span>
+            <h1 class="page-title ep-display" id="inventory-title" tabindex="-1">Inventory</h1>
+            <p class="page-sub">库存清单 · 每一格都要有它的位置。</p>
+          </div>
+          <div class="page-actions">
+            <button class="ep-btn ep-btn--primary" type="button" id="new-part-btn">新建元件</button>
+          </div>
+        </div>
+
+        <section class="panel" aria-label="库存筛选与列表">
+          <div class="toolbar">
+            <div class="ep-field toolbar__search">
+              <label class="ep-field__label" for="inv-search">搜索 <span>SEARCH</span></label>
+              <input class="ep-input" id="inv-search" type="search" placeholder="名称 / 型号 / 库位" autocomplete="off">
+            </div>
+            <div class="ep-field">
+              <label class="ep-field__label" for="inv-cat">类别 <span>CATEGORY</span></label>
+              <select class="ep-select" id="inv-cat"></select>
+            </div>
+            <div class="ep-field">
+              <label class="ep-field__label" for="inv-status">状态 <span>STATUS</span></label>
+              <select class="ep-select" id="inv-status">
+                <option value="all">全部</option>
+                <option value="ok">正常</option>
+                <option value="low">低库存</option>
+                <option value="out">缺货</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-meta">
+            <span class="ep-ui" id="inv-count">18 PARTS</span>
+            <span class="ep-ui" id="inv-page-label">PAGE 1 / 1</span>
+            <span class="scroll-hint ep-ui">SCROLL →</span>
+          </div>
+
+          <div class="ep-table-wrap" tabindex="0" role="region" aria-label="元件库存列表" id="inv-table-wrap">
+            <table class="ep-table">
+              <thead>
+                <tr>
+                  <th scope="col">Part</th><th scope="col">Category</th><th scope="col">Bin</th>
+                  <th scope="col" class="is-num">Stock</th><th scope="col">Status</th><th scope="col">Updated</th><th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody id="inventory-body"></tbody>
+            </table>
+          </div>
+
+          <div class="ep-empty" id="inventory-empty" hidden>
+            <div class="ep-empty__glyph" aria-hidden="true"></div>
+            <div class="ep-empty__title">No match</div>
+            <p class="ep-empty__text">没有符合条件的元件。换个关键词，或者清空筛选。</p>
+            <button class="ep-btn ep-btn--secondary ep-btn--sm" type="button" data-action="clear-filters">清空筛选</button>
+          </div>
+
+          <div class="pagination-row">
+            <span class="ep-ui" id="inv-range">1–8 / 18</span>
+            <nav class="ep-pagination" id="inventory-pagination" aria-label="库存分页"></nav>
+          </div>
+        </section>
+      </section>
+
+      <!-- ================================================================
+           HISTORY
+           ================================================================ -->
+      <section class="view" id="view-history" data-view="history" aria-labelledby="history-title" hidden>
+        <div class="page-head">
+          <div>
+            <span class="ep-kicker">Log / All movements</span>
+            <h1 class="page-title ep-display" id="history-title" tabindex="-1">History</h1>
+            <p class="page-sub">出入库流水 · 每一次进出都有记录。</p>
+          </div>
+          <div class="page-actions">
+            <button class="ep-btn ep-btn--secondary" type="button" data-action="export-csv">导出 CSV</button>
+          </div>
+        </div>
+
+        <section class="panel" aria-label="流水筛选与列表">
+          <div class="toolbar toolbar--history">
+            <div class="ep-field toolbar__search">
+              <label class="ep-field__label" for="hist-search">搜索 <span>SEARCH</span></label>
+              <input class="ep-input" id="hist-search" type="search" placeholder="元件 / 备注 / 项目" autocomplete="off">
+            </div>
+            <div class="ep-field">
+              <label class="ep-field__label" for="hist-type">类型 <span>TYPE</span></label>
+              <select class="ep-select" id="hist-type">
+                <option value="all">全部</option>
+                <option value="in">入库</option>
+                <option value="out">出库</option>
+              </select>
+            </div>
+            <span class="ep-ui toolbar__hint">LOCAL · AUTO SAVED</span>
+          </div>
+
+          <div class="table-meta">
+            <span class="ep-ui" id="hist-count">14 MOVEMENTS</span>
+            <span class="ep-ui" id="hist-page-label">PAGE 1 / 2</span>
+            <span class="scroll-hint ep-ui">SCROLL →</span>
+          </div>
+
+          <div class="ep-table-wrap" id="history-table-wrap" tabindex="0" role="region" aria-label="出入库流水">
+            <table class="ep-table">
+              <thead>
+                <tr><th scope="col">Time</th><th scope="col">Type</th><th scope="col">Part</th><th scope="col" class="is-num">Qty</th><th scope="col">Party</th><th scope="col">Note</th></tr>
+              </thead>
+              <tbody id="history-body"></tbody>
+            </table>
+          </div>
+
+          <div class="ep-empty" id="history-empty" hidden>
+            <div class="ep-empty__glyph" aria-hidden="true"></div>
+            <div class="ep-empty__title">No movements</div>
+            <p class="ep-empty__text">这个筛选下还没有流水。先入库一件，记录就会出现在这里。</p>
+            <button class="ep-btn ep-btn--secondary ep-btn--sm" type="button" data-action="clear-history">清空筛选</button>
+          </div>
+
+          <div class="pagination-row">
+            <span class="ep-ui" id="hist-range">1–10 / 14</span>
+            <nav class="ep-pagination" id="history-pagination" aria-label="流水分页"></nav>
+          </div>
+        </section>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- ======================================================================
+     TOASTS / DIALOGS
+     ====================================================================== -->
+<div class="ep-toast-stack" id="toast-stack" aria-live="polite" aria-atomic="false"></div>
+
+<dialog class="ep-dialog" id="part-dialog" aria-labelledby="part-dialog-title">
+  <div class="ep-dialog__head">
+    <span class="ep-dialog__title" id="part-dialog-title">Part</span>
+    <button class="ep-iconbtn" type="button" data-action="close-dialog" aria-label="关闭" style="width:32px;height:32px;border-width:1px">
+      <svg class="ep-icon" aria-hidden="true"><use href="#i-close"></use></svg>
+    </button>
+  </div>
+  <div class="ep-dialog__body" id="part-dialog-body"></div>
+  <div class="ep-dialog__foot" id="part-dialog-foot"></div>
+</dialog>
+
+<dialog class="ep-dialog" id="reset-dialog" aria-labelledby="reset-dialog-title">
+  <div class="ep-dialog__head">
+    <span class="ep-dialog__title" id="reset-dialog-title">Reset demo data?</span>
+    <button class="ep-iconbtn" type="button" data-action="close-dialog" aria-label="关闭" style="width:32px;height:32px;border-width:1px">
+      <svg class="ep-icon" aria-hidden="true"><use href="#i-close"></use></svg>
+    </button>
+  </div>
+  <div class="ep-dialog__body">
+    <p>这会清空当前浏览器里的所有元件与流水，并恢复初始演示数据。操作不可撤销。</p>
+  </div>
+  <div class="ep-dialog__foot">
+    <button class="ep-btn ep-btn--secondary ep-btn--sm" type="button" data-action="close-dialog">取消</button>
+    <button class="ep-btn ep-btn--danger ep-btn--sm" type="button" data-action="confirm-reset">重置数据</button>
+  </div>
+</dialog>
+
+<datalist id="suppliers">
+  <option value="立创商城"></option>
+  <option value="淘宝"></option>
+  <option value="本地电子城"></option>
+  <option value="拆机"></option>
+  <option value="自制"></option>
+</datalist>
+
+<script src="./app.js" defer></script>
+</body>
+</html>

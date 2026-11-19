@@ -4,7 +4,8 @@
 
 一套与工具、框架无关的深色 UI 设计系统，也是一个可以被任意 Agent 读取的 Skill。色彩取自参考海报的 `#FC5C1E`，由 Doto、Silkscreen、Fusion Pixel 三套点阵字体构成。
 
-**[在线浏览视觉规范 →](https://seaison.github.io/ember-pixel/)**
+**[在线浏览视觉规范 →](https://seaison.github.io/ember-pixel/)**<br>
+**[在线 Demo：Parts Depot 家庭元件仓 →](https://seaison.github.io/ember-pixel/examples/inventory/)**
 
 ![Ember Pixel 首屏](docs/preview-hero.png)
 
@@ -67,6 +68,10 @@ git clone https://github.com/seaison/ember-pixel.git ~/.claude/skills/ember-pixe
 **[seaison.github.io/ember-pixel →](https://seaison.github.io/ember-pixel/)**
 
 页面由 GitHub Pages 从 `main` 分支根目录托管，完全离线可用；要本地修改时，直接打开 `assets/styleguide.html`。
+
+## Demo
+
+[**Parts Depot — 家庭元件仓**](https://seaison.github.io/ember-pixel/examples/inventory/)：一个可交互的家用电子元件出入库示例——入库、出库、库存筛选、流水、CSV / JSON 导出，数据保存在浏览器 `localStorage`。它把 Ember Pixel 的组件、表格、表单和数据可视化组合到同一个真实界面里。
 
 ## 它是什么
 
@@ -156,6 +161,8 @@ python scripts/build-subset.py
 │   ├── preview-hero.png
 │   ├── preview-dashboard.png
 │   └── og.png                # 1200×630 社交分享图
+├── examples/
+│   └── inventory/             # Parts Depot 可交互示例
 ├── scripts/
 │   ├── check-docs.mjs
 │   ├── check-subset.py
