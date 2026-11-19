@@ -66,7 +66,7 @@ git clone https://github.com/seaison/ember-pixel.git ~/.claude/skills/ember-pixe
 
 **[seaison.github.io/ember-pixel →](https://seaison.github.io/ember-pixel/)**
 
-页面完全离线可用；要本地修改时，直接打开 `assets/styleguide.html`。
+页面由 GitHub Pages 从 `main` 分支根目录托管，完全离线可用；要本地修改时，直接打开 `assets/styleguide.html`。
 
 ## 它是什么
 
@@ -102,7 +102,7 @@ Ember Pixel 不是一套“复古游戏皮肤”，而是一套有明确约束�
 | UI | Silkscreen 400 | 8–16px，全大写 |
 | Body | Fusion Pixel | 12 / 16 / 24 / 36px，中文 |
 
-所有字体均为 SIL Open Font License 1.1，许可全文在 [`assets/fonts/`](assets/fonts/)。
+所有字体均为 SIL Open Font License 1.1，许可全文在 [`assets/fonts/`](assets/fonts/)。在线规范使用按页面字符裁切的 19KB 子集（`FusionPixel-12px-SC-web.woff2`），完整字体仍保留给项目使用。
 
 ## 核心规则
 

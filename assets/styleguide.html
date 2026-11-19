@@ -7,6 +7,19 @@
 <meta name="description" content="黑底、橙光、点阵。Ember Pixel 是一套深色界面的像素化设计系统。">
 <link rel="stylesheet" href="./ember.css">
 <style>
+  /* Pages preview: 19KB subset of Fusion Pixel instead of the full 588KB file. */
+  @font-face {
+    font-family: "Fusion Pixel Web";
+    src: url("./fonts/FusionPixel-12px-SC-web.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  :root {
+    --ep-font-display: "Doto", "Fusion Pixel Web", monospace;
+    --ep-font-ui: "Silkscreen", "Fusion Pixel Web", monospace;
+    --ep-font-body: "Fusion Pixel Web", "DotGothic16", monospace;
+  }
   /* ======================================================================
      STYLEGUIDE PAGE — 仅用于文档页的版式，组件样式全部来自 ember.css
      ====================================================================== */
