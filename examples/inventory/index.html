@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Parts Depot — 家庭元件仓</title>
-<meta name="description" content="Parts Depot：家用电子元器件出入库管理系统。Black canvas, ember signal, dot matrix.">
+<meta name="description" content="Parts Depot：家用电子元器件出入库管理系统。扫码收货、BOM、取件、生产资料与焊接工位。Black canvas, ember signal, dot matrix.">
 <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#060606">
 <link rel="stylesheet" href="../../assets/ember.css">
@@ -27,6 +27,15 @@
   <symbol id="i-chevron" viewBox="0 0 16 16"><path fill="currentColor" d="M3 6h2v2h2v2h2v-2h2V6h2v4h-2v2H5v-2H3z"/></symbol>
   <symbol id="i-arrow" viewBox="0 0 16 16"><path fill="currentColor" d="M2 7h7v2H2zM9 3l5 5-5 5z"/></symbol>
   <symbol id="i-up" viewBox="0 0 16 16"><path fill="currentColor" d="M2 7h7v2H2zM9 3l5 5-5 5z"/></symbol>
+  <symbol id="i-album" viewBox="0 0 16 16"><path fill="currentColor" d="M2 2h12v2H2zM2 12h12v2H2zM2 4h2v8H2zM12 4h2v8h-2zM5 6h2v2H5zM9 5h2v2H9zM5 10l2-2 2 2 2-3 2 3v2H5z"/></symbol>
+  <symbol id="i-pick" viewBox="0 0 16 16"><path fill="currentColor" d="M2 3h8v2H2zM2 7h8v2H2zM2 11h5v2H2zM11 7h2v2h-2zM13 5h2v2h-2zM13 9h2v2h-2zM11 11h2v2h-2z"/></symbol>
+  <symbol id="i-scan" viewBox="0 0 16 16"><path fill="currentColor" d="M2 2h4v2H4v2H2zM10 2h4v4h-2V4h-2zM2 10h2v2h2v2H2zM12 10h2v4h-4v-2h2zM6 6h1v4H6zM8 6h2v4H8zM11 6h1v4h-1z"/></symbol>
+  <symbol id="i-material" viewBox="0 0 16 16"><path fill="currentColor" d="M3 5h10v9H3zM5 3h6v2H5zM5 8h2v2H5zM9 8h2v2H9zM5 11h6v1H5z"/></symbol>
+  <symbol id="i-solder" viewBox="0 0 16 16"><path fill="currentColor" d="M2 13h5v1H2zM4 11l7-7 2 2-7 7H4zM10 3l2-2 3 3-2 2zM6 11l1 1-1 1-1-1z"/></symbol>
+  <symbol id="i-package" viewBox="0 0 16 16"><path fill="currentColor" d="M2 5l6-3 6 3v7l-6 3-6-3zM8 4L4 6l4 2 4-2zM3 7v4l4 2V9zM13 7l-4 2v4l4-2z"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 16 16"><path fill="currentColor" d="M2 4h4l1-2h3l1 2h3v9H2zM6 7h4v4H6zM7 8h2v2H7z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 16 16"><path fill="currentColor" d="M2 8h2v2h2v2h2v-2h2V8h2V6h2V4h-2v2h-2v2H8V6H6v2H4v2H2z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 16 16"><path fill="currentColor" d="M5 3h2v10H5zM7 5h2v6H7zM9 7h2v2H9z"/></symbol>
 </svg>
 
 <div class="app">
@@ -35,49 +44,48 @@
        RAIL
        ==================================================================== -->
   <aside class="rail">
-    <a class="rail__brand" href="#overview" aria-label="Parts Depot 首页">
+    <a class="rail__brand" href="#overview" aria-label="Parts Depot 总览" data-home="overview">
       <span class="rail__mark">PD</span>
-      <span class="rail__name">PARTS DEPOT<small>HOME LAB / 家庭元件仓</small></span>
+      <span class="rail__name">STOCK</span>
     </a>
 
     <nav class="rail__nav" aria-label="主导航">
-      <a class="rail__link" href="#overview" data-nav="overview">
-        <svg class="ep-icon" aria-hidden="true"><use href="#i-grid"></use></svg>
-        <span class="rail__txt">Overview<em>总览</em></span>
-        <span class="rail__badge" data-count="skus">18</span>
+      <a class="rail__link" href="#album" data-nav="album" aria-label="相册">
+        <svg class="ep-icon" aria-hidden="true"><use href="#i-album"></use></svg>
+        <span class="rail__label">相册</span>
       </a>
-      <a class="rail__link" href="#inbound" data-nav="inbound">
-        <svg class="ep-icon" aria-hidden="true"><use href="#i-in"></use></svg>
-        <span class="rail__txt">Inbound<em>入库</em></span>
-      </a>
-      <a class="rail__link" href="#outbound" data-nav="outbound">
-        <svg class="ep-icon" aria-hidden="true"><use href="#i-out"></use></svg>
-        <span class="rail__txt">Outbound<em>出库</em></span>
-      </a>
-      <a class="rail__link" href="#inventory" data-nav="inventory">
+      <a class="rail__link" href="#inventory" data-nav="inventory" aria-label="库存与 BOM">
         <svg class="ep-icon" aria-hidden="true"><use href="#i-box"></use></svg>
-        <span class="rail__txt">Inventory<em>库存</em></span>
-        <span class="rail__badge rail__badge--signal" data-count="low">5</span>
+        <span class="rail__label">库存/BOM</span>
+        <span class="rail__badge" data-count="low">6</span>
       </a>
-      <a class="rail__link" href="#history" data-nav="history">
-        <svg class="ep-icon" aria-hidden="true"><use href="#i-list"></use></svg>
-        <span class="rail__txt">History<em>流水</em></span>
+      <a class="rail__link" href="#pick" data-nav="pick" aria-label="取件">
+        <svg class="ep-icon" aria-hidden="true"><use href="#i-pick"></use></svg>
+        <span class="rail__label">取件</span>
+        <span class="rail__badge" data-count="picks">2</span>
+      </a>
+      <a class="rail__link" href="#inbound" data-nav="inbound" aria-label="入库">
+        <svg class="ep-icon" aria-hidden="true"><use href="#i-in"></use></svg>
+        <span class="rail__label">入库</span>
+      </a>
+      <a class="rail__link" href="#scan" data-nav="scan" aria-label="扫码收货">
+        <svg class="ep-icon" aria-hidden="true"><use href="#i-scan"></use></svg>
+        <span class="rail__label">扫码收货</span>
+        <span class="rail__badge" data-count="packages">3</span>
+      </a>
+      <a class="rail__link" href="#materials" data-nav="materials" aria-label="生产资料">
+        <svg class="ep-icon" aria-hidden="true"><use href="#i-material"></use></svg>
+        <span class="rail__label">生产资料</span>
+      </a>
+      <a class="rail__link" href="#solder" data-nav="solder" aria-label="焊接">
+        <svg class="ep-icon" aria-hidden="true"><use href="#i-solder"></use></svg>
+        <span class="rail__label">焊接</span>
       </a>
     </nav>
 
-    <div class="rail__health">
-      <div class="rail__health-head"><span>STOCK HEALTH</span><strong id="health-pct">72%</strong></div>
-      <div class="rail__meter" id="health-meter" aria-hidden="true"></div>
-      <div class="rail__health-meta">
-        <span><b id="health-ok">13</b> OK</span>
-        <span><b id="health-low">5</b> LOW</span>
-      </div>
-    </div>
-
     <div class="rail__foot">
-      <span class="rail__local"><i class="ep-dot"></i><span id="storage-label">LOCAL STORAGE</span></span>
+      <span class="rail__local"><i class="ep-dot"></i><span id="storage-label">LOCAL</span></span>
       <span class="rail__saved">SAVED <span id="save-stamp">--:--</span></span>
-      <span class="rail__built">BUILT WITH EMBER PIXEL</span>
     </div>
   </aside>
 
@@ -87,8 +95,9 @@
   <div class="main">
 
     <header class="topbar">
-      <div class="topbar__crumb">
-        <span>HOME LAB</span><span aria-hidden="true">/</span><strong id="crumb">OVERVIEW</strong>
+      <div class="topbar__stack">
+        <span class="topbar__host"><i class="ep-dot"></i>HOST ONLINE <span>· V1.0</span><span class="topbar__sys" id="sys-state">入库定位中</span></span>
+        <span class="topbar__crumb"><span>HOME LAB</span><span aria-hidden="true">/</span><strong id="crumb">SCAN</strong></span>
       </div>
       <div class="topbar__right">
         <span class="topbar__date ep-ui" id="today-date">2026.11.20</span>
@@ -110,9 +119,120 @@
     <main id="main" tabindex="-1">
 
       <!-- ================================================================
+           SCAN RECEIVE
+           ================================================================ -->
+      <section class="view" id="view-scan" data-view="scan" aria-labelledby="scan-title">
+        <div class="page-head">
+          <div>
+            <span class="ep-kicker">Receive / Camera</span>
+            <h1 class="page-title ep-display" id="scan-title" tabindex="-1">Scan In</h1>
+            <p class="page-sub">扫描快递面单 · 把包裹放进画面里。</p>
+          </div>
+          <div class="page-actions">
+            <a class="ep-btn ep-btn--secondary" href="#inbound">手动入库</a>
+          </div>
+        </div>
+
+        <div class="scan-layout">
+          <section class="panel scan-panel" aria-labelledby="scan-panel-title">
+            <div class="panel__head">
+              <div>
+                <span class="ep-ui">Scanner / Live</span>
+                <h2 class="panel__title" id="scan-panel-title">扫描快递面单</h2>
+              </div>
+              <span class="ep-badge ep-badge--live"><i class="ep-dot"></i>正在识别条码</span>
+            </div>
+
+            <div class="scan-stage" id="scan-stage">
+              <video class="scan-video" id="scan-video" muted playsinline hidden></video>
+              <div class="scan-placeholder" id="scan-placeholder">
+                <svg class="scan-cam-icon" aria-hidden="true"><use href="#i-camera"></use></svg>
+                <div class="scan-scene" aria-hidden="true">
+                  <div class="scan-barcode">
+                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                    <span></span><span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                  <div class="scan-label">TRACK / SF-2026-1120</div>
+                </div>
+                <p>CAMERA STANDBY</p>
+                <span>点击「开启摄像头」或直接模拟扫码</span>
+              </div>
+
+              <div class="scan-frame" aria-hidden="true">
+                <span class="scan-corner scan-corner--tl"></span>
+                <span class="scan-corner scan-corner--tr"></span>
+                <span class="scan-corner scan-corner--bl"></span>
+                <span class="scan-corner scan-corner--br"></span>
+                <span class="scan-line"></span>
+              </div>
+
+              <div class="scan-hud"><span>LIVE AREA / 160 × 120</span><span>20 FPS</span></div>
+            </div>
+
+            <div class="scan-actions">
+              <button class="ep-btn ep-btn--primary" type="button" data-action="simulate-scan">模拟扫码</button>
+              <button class="ep-btn ep-btn--secondary" type="button" data-action="start-camera">开启摄像头</button>
+              <button class="ep-btn ep-btn--ghost" type="button" data-action="stop-camera" hidden>关闭摄像头</button>
+            </div>
+            <p class="scan-hint">把面单放进画面里就行，条码在画面任何位置都能识别。面单破损时可以手动输入单号，或直接点右侧包裹收货。</p>
+          </section>
+
+          <section class="panel packages-panel" aria-labelledby="packages-title">
+            <div class="panel__head">
+              <div>
+                <span class="ep-ui">In transit</span>
+                <h2 class="panel__title" id="packages-title">在途包裹</h2>
+              </div>
+              <span class="ep-badge" id="package-count">3</span>
+            </div>
+            <div class="scan-sync">
+              <span class="ep-ui" id="sync-stamp">上次同步 4 小时前</span>
+              <button class="ep-btn ep-btn--ghost ep-btn--sm" type="button" data-action="sync-packages">同步</button>
+            </div>
+            <div class="package-list" id="package-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           ALBUM
+           ================================================================ -->
+      <section class="view" id="view-album" data-view="album" aria-labelledby="album-title" hidden>
+        <div class="page-head">
+          <div>
+            <span class="ep-kicker">Archive / Visual</span>
+            <h1 class="page-title ep-display" id="album-title" tabindex="-1">Album</h1>
+            <p class="page-sub">元件档案 · 扫码件与归档记录。</p>
+          </div>
+          <div class="page-actions">
+            <a class="ep-btn ep-btn--secondary" href="#scan">去扫码</a>
+            <button class="ep-btn ep-btn--primary" type="button" data-action="album-add">添加档案</button>
+          </div>
+        </div>
+
+        <div class="album-toolbar">
+          <div class="ep-field">
+            <label class="ep-field__label" for="album-cat">类别 <span>CATEGORY</span></label>
+            <select class="ep-select" id="album-cat"></select>
+          </div>
+          <span class="ep-ui" id="album-count">6 RECORDS</span>
+        </div>
+
+        <div class="album-grid" id="album-grid"></div>
+        <div class="ep-empty" id="album-empty" hidden>
+          <div class="ep-empty__glyph" aria-hidden="true"></div>
+          <div class="ep-empty__title">No archive</div>
+          <p class="ep-empty__text">这个类别还没有归档。去扫一张，或者添加一条记录。</p>
+          <a class="ep-btn ep-btn--secondary ep-btn--sm" href="#scan">去扫码</a>
+        </div>
+      </section>
+
+      <!-- ================================================================
            OVERVIEW
            ================================================================ -->
-      <section class="view" id="view-overview" data-view="overview" aria-labelledby="overview-title">
+      <section class="view" id="view-overview" data-view="overview" aria-labelledby="overview-title" hidden>
         <div class="page-head">
           <div>
             <span class="ep-kicker">Home lab / Stock control</span>
@@ -134,17 +254,17 @@
         <div class="stat-grid">
           <article class="stat-card">
             <span class="ep-stat__label">SKUs / 元件种类</span>
-            <div class="stat-value ep-display" id="stat-skus">18</div>
+            <div class="stat-value ep-display" id="stat-skus">22</div>
             <span class="stat-foot" id="stat-skus-foot">9 CATEGORIES</span>
           </article>
           <article class="stat-card">
             <span class="ep-stat__label">Units / 在库总数</span>
-            <div class="stat-value ep-display" id="stat-units">889</div>
+            <div class="stat-value ep-display" id="stat-units">903</div>
             <span class="stat-foot" id="stat-units-foot">ACROSS 18 BINS</span>
           </article>
           <article class="stat-card stat-card--signal">
             <span class="ep-stat__label">Attention / 低库存</span>
-            <div class="stat-value ep-display" id="stat-low">5</div>
+            <div class="stat-value ep-display" id="stat-low">6</div>
             <span class="stat-foot" id="stat-low-foot">1 OUT OF STOCK</span>
           </article>
           <article class="stat-card">
@@ -376,9 +496,10 @@
           <div>
             <span class="ep-kicker">Stock / Bins</span>
             <h1 class="page-title ep-display" id="inventory-title" tabindex="-1">Inventory</h1>
-            <p class="page-sub">库存清单 · 每一格都要有它的位置。</p>
+            <p class="page-sub">库存清单与 BOM · 每一格都要有它的位置。</p>
           </div>
           <div class="page-actions">
+            <a class="ep-btn ep-btn--secondary" href="#history">流水</a>
             <button class="ep-btn ep-btn--primary" type="button" id="new-part-btn">新建元件</button>
           </div>
         </div>
@@ -405,7 +526,7 @@
           </div>
 
           <div class="table-meta">
-            <span class="ep-ui" id="inv-count">18 PARTS</span>
+            <span class="ep-ui" id="inv-count">22 PARTS</span>
             <span class="ep-ui" id="inv-page-label">PAGE 1 / 1</span>
             <span class="scroll-hint ep-ui">SCROLL →</span>
           </div>
@@ -430,10 +551,170 @@
           </div>
 
           <div class="pagination-row">
-            <span class="ep-ui" id="inv-range">1–8 / 18</span>
+            <span class="ep-ui" id="inv-range">1–8 / 22</span>
             <nav class="ep-pagination" id="inventory-pagination" aria-label="库存分页"></nav>
           </div>
         </section>
+
+        <section class="panel bom-panel" aria-label="BOM 清单">
+          <div class="panel__head">
+            <div>
+              <span class="ep-ui">Bill of materials</span>
+              <h2 class="panel__title">BOM 清单</h2>
+            </div>
+            <span class="ep-badge" id="bom-count">3 BOMS</span>
+          </div>
+          <div class="bom-list" id="bom-list"></div>
+        </section>
+      </section>
+
+      <!-- ================================================================
+           PICK
+           ================================================================ -->
+      <section class="view" id="view-pick" data-view="pick" aria-labelledby="pick-title" hidden>
+        <div class="page-head">
+          <div>
+            <span class="ep-kicker">Pick / Queue</span>
+            <h1 class="page-title ep-display" id="pick-title" tabindex="-1">Pick</h1>
+            <p class="page-sub">取件队列 · 按单拿料，确认后一次性出库。</p>
+          </div>
+          <div class="page-actions">
+            <a class="ep-btn ep-btn--secondary" href="#outbound">单件出库</a>
+          </div>
+        </div>
+
+        <div class="pick-stats">
+          <article class="stat-card">
+            <span class="ep-ui">Pending / 待取件</span>
+            <div class="stat-value ep-display" id="pick-pending">2</div>
+            <span class="stat-foot">OPEN TICKETS</span>
+          </article>
+          <article class="stat-card stat-card--signal">
+            <span class="ep-ui">Short / 缺料单</span>
+            <div class="stat-value ep-display" id="pick-short">1</div>
+            <span class="stat-foot">BLOCKED BY STOCK</span>
+          </article>
+          <article class="stat-card">
+            <span class="ep-ui">Done / 今日完成</span>
+            <div class="stat-value ep-display" id="pick-done">1</div>
+            <span class="stat-foot">TODAY</span>
+          </article>
+        </div>
+
+        <section class="panel" aria-label="取件队列">
+          <div class="panel__head">
+            <div>
+              <span class="ep-ui">Open tickets</span>
+              <h2 class="panel__title">取件队列</h2>
+            </div>
+            <span class="ep-badge" id="pick-count">2 OPEN</span>
+          </div>
+          <div class="pick-list" id="pick-list"></div>
+        </section>
+      </section>
+
+      <!-- ================================================================
+           MATERIALS
+           ================================================================ -->
+      <section class="view" id="view-materials" data-view="materials" aria-labelledby="materials-title" hidden>
+        <div class="page-head">
+          <div>
+            <span class="ep-kicker">Workshop / Consumables</span>
+            <h1 class="page-title ep-display" id="materials-title" tabindex="-1">Materials</h1>
+            <p class="page-sub">生产资料 · 耗材、辅料与领用记录。</p>
+          </div>
+          <div class="page-actions">
+            <a class="ep-btn ep-btn--primary" href="#inbound">补货入库</a>
+          </div>
+        </div>
+
+        <section class="panel" aria-label="生产资料清单">
+          <div class="panel__head">
+            <div>
+              <span class="ep-ui">Consumables / Stock</span>
+              <h2 class="panel__title">耗材清单</h2>
+            </div>
+            <span class="ep-badge" id="material-count">6 SKUS</span>
+          </div>
+          <div class="ep-table-wrap" tabindex="0" role="region" aria-label="生产资料库存列表">
+            <table class="ep-table">
+              <thead>
+                <tr><th scope="col">Material</th><th scope="col">Bin</th><th scope="col" class="is-num">Stock</th><th scope="col">Status</th><th scope="col">Last use</th><th scope="col">Action</th></tr>
+              </thead>
+              <tbody id="material-body"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <div class="materials-grid">
+          <section class="panel" aria-labelledby="material-low-title">
+            <div class="panel__head">
+              <div>
+                <span class="ep-ui">Reorder / Attention</span>
+                <h2 class="panel__title" id="material-low-title">耗材提醒</h2>
+              </div>
+              <span class="ep-badge" id="material-low-count">0 LOW</span>
+            </div>
+            <div class="material-low" id="material-low"></div>
+          </section>
+          <section class="panel" aria-labelledby="material-log-title">
+            <div class="panel__head">
+              <div>
+                <span class="ep-ui">Usage / Latest</span>
+                <h2 class="panel__title" id="material-log-title">最近领用</h2>
+              </div>
+              <a class="ep-link" href="#history">全部流水</a>
+            </div>
+            <div class="material-log" id="material-log"></div>
+          </section>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           SOLDER
+           ================================================================ -->
+      <section class="view" id="view-solder" data-view="solder" aria-labelledby="solder-title" hidden>
+        <div class="page-head">
+          <div>
+            <span class="ep-kicker">Workshop / Station 01</span>
+            <h1 class="page-title ep-display" id="solder-title" tabindex="-1">Solder</h1>
+            <p class="page-sub">焊接工位 · 工单排队，完成一块记一块。</p>
+          </div>
+          <div class="page-actions">
+            <a class="ep-btn ep-btn--secondary" href="#pick">去取件</a>
+          </div>
+        </div>
+
+        <div class="solder-layout">
+          <section class="panel station-panel" aria-labelledby="station-title">
+            <div class="panel__head">
+              <div>
+                <span class="ep-ui">Station / 01</span>
+                <h2 class="panel__title" id="station-title">焊接工位</h2>
+              </div>
+              <span class="ep-badge" id="station-status">IDLE</span>
+            </div>
+            <div class="station-temp"><strong id="station-temp">28</strong><span>°C</span></div>
+            <div class="station-meta">
+              <span>TARGET <b>320</b>°C</span>
+              <span>POWER <b id="station-power">0</b>W</span>
+            </div>
+            <div class="station-bars" id="station-bars" aria-hidden="true"></div>
+            <button class="ep-btn ep-btn--primary" type="button" id="station-toggle" data-action="station-toggle">开启工位</button>
+            <p class="station-note">演示工位：只记录开关与工单状态，不连接真实焊台。</p>
+          </section>
+
+          <section class="panel" aria-labelledby="jobs-title">
+            <div class="panel__head">
+              <div>
+                <span class="ep-ui">Jobs / Queue</span>
+                <h2 class="panel__title" id="jobs-title">工单队列</h2>
+              </div>
+              <span class="ep-badge" id="job-count">3 JOBS</span>
+            </div>
+            <div class="job-list" id="solder-jobs"></div>
+          </section>
+        </div>
       </section>
 
       <!-- ================================================================
@@ -515,6 +796,50 @@
   </div>
   <div class="ep-dialog__body" id="part-dialog-body"></div>
   <div class="ep-dialog__foot" id="part-dialog-foot"></div>
+</dialog>
+
+<dialog class="ep-dialog" id="receive-dialog" aria-labelledby="receive-dialog-title">
+  <div class="ep-dialog__head">
+    <span class="ep-dialog__title" id="receive-dialog-title">Receive package</span>
+    <button class="ep-iconbtn" type="button" data-action="close-dialog" aria-label="关闭" style="width:32px;height:32px;border-width:1px">
+      <svg class="ep-icon" aria-hidden="true"><use href="#i-close"></use></svg>
+    </button>
+  </div>
+  <div class="ep-dialog__body" id="receive-dialog-body"></div>
+  <div class="ep-dialog__foot" id="receive-dialog-foot"></div>
+</dialog>
+
+<dialog class="ep-dialog" id="bom-dialog" aria-labelledby="bom-dialog-title">
+  <div class="ep-dialog__head">
+    <span class="ep-dialog__title" id="bom-dialog-title">BOM</span>
+    <button class="ep-iconbtn" type="button" data-action="close-dialog" aria-label="关闭" style="width:32px;height:32px;border-width:1px">
+      <svg class="ep-icon" aria-hidden="true"><use href="#i-close"></use></svg>
+    </button>
+  </div>
+  <div class="ep-dialog__body" id="bom-dialog-body"></div>
+  <div class="ep-dialog__foot" id="bom-dialog-foot"></div>
+</dialog>
+
+<dialog class="ep-dialog" id="pick-dialog" aria-labelledby="pick-dialog-title">
+  <div class="ep-dialog__head">
+    <span class="ep-dialog__title" id="pick-dialog-title">Pick ticket</span>
+    <button class="ep-iconbtn" type="button" data-action="close-dialog" aria-label="关闭" style="width:32px;height:32px;border-width:1px">
+      <svg class="ep-icon" aria-hidden="true"><use href="#i-close"></use></svg>
+    </button>
+  </div>
+  <div class="ep-dialog__body" id="pick-dialog-body"></div>
+  <div class="ep-dialog__foot" id="pick-dialog-foot"></div>
+</dialog>
+
+<dialog class="ep-dialog" id="album-dialog" aria-labelledby="album-dialog-title">
+  <div class="ep-dialog__head">
+    <span class="ep-dialog__title" id="album-dialog-title">Archive</span>
+    <button class="ep-iconbtn" type="button" data-action="close-dialog" aria-label="关闭" style="width:32px;height:32px;border-width:1px">
+      <svg class="ep-icon" aria-hidden="true"><use href="#i-close"></use></svg>
+    </button>
+  </div>
+  <div class="ep-dialog__body" id="album-dialog-body"></div>
+  <div class="ep-dialog__foot" id="album-dialog-foot"></div>
 </dialog>
 
 <dialog class="ep-dialog" id="reset-dialog" aria-labelledby="reset-dialog-title">

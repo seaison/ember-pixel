@@ -2,7 +2,8 @@
 
 ## [Unreleased]
 
-- Added `examples/inventory/`: Parts Depot, a working household component inventory demo with inbound, outbound, search, pagination, history, CSV/JSON export, localStorage persistence, and a complete Ember Pixel dashboard.
+- Added `examples/inventory/`: Parts Depot, a working household component inventory demo with a narrow icon rail, scan receiving, album archive, inventory / BOM, pick queue, inbound / outbound, materials, soldering jobs, history, CSV/JSON export and localStorage persistence.
+- Demo UI uses a 18KB Fusion Pixel subset for fast first paint; the full font remains available in `assets/fonts/`.
 
 ## [1.0.0] — 2026-11-19
 

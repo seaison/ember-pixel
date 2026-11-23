@@ -71,7 +71,7 @@ git clone https://github.com/seaison/ember-pixel.git ~/.claude/skills/ember-pixe
 
 ## Demo
 
-[**Parts Depot — 家庭元件仓**](https://seaison.github.io/ember-pixel/examples/inventory/)：一个可交互的家用电子元件出入库示例——入库、出库、库存筛选、流水、CSV / JSON 导出，数据保存在浏览器 `localStorage`。它把 Ember Pixel 的组件、表格、表单和数据可视化组合到同一个真实界面里。
+[**Parts Depot — 家庭元件仓**](https://seaison.github.io/ember-pixel/examples/inventory/)：一个可交互的家用电子元件工作坊示例——扫码收货、相册、库存 / BOM、取件、生产资料与焊接工位，外加流水、CSV / JSON 导出。数据保存在浏览器 `localStorage`。它把 Ember Pixel 的窄图标侧栏、组件、表格、表单和数据可视化组合到同一个真实界面里。
 
 ## 它是什么
 

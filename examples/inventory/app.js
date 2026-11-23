@@ -12,14 +12,20 @@
   const ACTOR = 'OWNER';
 
   const CATEGORIES = ['电阻', '电容', '二极管', '三极管', '集成电路', '连接器', '传感器', '开关', '耗材'];
-  const VIEWS = ['overview', 'inbound', 'outbound', 'inventory', 'history'];
+  const VIEWS = ['overview', 'scan', 'album', 'inventory', 'pick', 'inbound', 'outbound', 'materials', 'solder', 'history'];
   const TITLES = {
     overview: 'Overview',
+    scan: 'Scan In',
+    album: 'Album',
+    inventory: 'Inventory',
+    pick: 'Pick',
     inbound: 'Inbound',
     outbound: 'Outbound',
-    inventory: 'Inventory',
+    materials: 'Materials',
+    solder: 'Solder',
     history: 'History'
   };
+  const RELATED_NAV = { history: 'inventory', outbound: 'pick' };
   const WD = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
   const SEED_PARTS = [
@@ -40,7 +46,11 @@
     { id: 'SN-DHT11', name: '温湿度传感器', category: '传感器', value: 'DHT11', pkg: '模块', qty: 4, min: 2, unit: '只', location: 'E1-01', supplier: '淘宝' },
     { id: 'SW-TACT', name: '轻触开关', category: '开关', value: '6×6×5', pkg: '4 脚', qty: 35, min: 20, unit: '只', location: 'D2-01', supplier: '立创商城' },
     { id: 'TL-SOLDER', name: '焊锡丝', category: '耗材', value: '0.8mm', pkg: '100g', qty: 2, min: 1, unit: '卷', location: 'F1-01', supplier: '本地电子城' },
-    { id: 'WR-DUPONT', name: '杜邦线', category: '耗材', value: '20cm', pkg: '母对母 40P', qty: 1, min: 2, unit: '盒', location: 'F1-02', supplier: '淘宝' }
+    { id: 'WR-DUPONT', name: '杜邦线', category: '耗材', value: '20cm', pkg: '母对母 40P', qty: 1, min: 2, unit: '盒', location: 'F1-02', supplier: '淘宝' },
+    { id: 'FL-FLUX', name: '助焊剂', category: '耗材', value: '10ml', pkg: '针管', qty: 2, min: 1, unit: '支', location: 'F2-01', supplier: '淘宝' },
+    { id: 'TR-HEAT', name: '热缩管', category: '耗材', value: '2:1', pkg: '1m 混装', qty: 8, min: 5, unit: '包', location: 'F2-02', supplier: '立创商城' },
+    { id: 'TP-HIGH', name: '高温胶带', category: '耗材', value: '10mm', pkg: '33m', qty: 3, min: 2, unit: '卷', location: 'F2-03', supplier: '淘宝' },
+    { id: 'TL-WICK', name: '吸锡带', category: '耗材', value: '2.5mm', pkg: '1.5m', qty: 1, min: 2, unit: '卷', location: 'F2-04', supplier: '淘宝' }
   ];
 
   const SEED_TX = [
@@ -58,6 +68,69 @@
     [8700, 'out', 'IC-358', 2, '音频缓冲', '实验'],
     [9600, 'in', 'C-10U', 10, '淘宝', '电源电容'],
     [10200, 'out', 'LED-3G', 8, '指示灯', '面板灯']
+  ];
+
+  const SEED_PHOTOS = [
+    ['R-10K', '10kΩ 带装，标签朝上', 2],
+    ['IC-555', 'NE555 批次，DIP-8 原装', 6],
+    ['CN-USBC', 'USB-C 沉板母座，16P', 18],
+    ['SN-DHT11', 'DHT11 模块，带排针', 30],
+    ['TL-SOLDER', '0.8mm 焊锡丝，100g', 48],
+    ['Q-8050', '拆机 S8050，已测 hFE', 72]
+  ];
+
+  const SEED_BOMS = [
+    {
+      id: 'BOM-555', name: '555 呼吸灯', version: 'v1.2', project: '桌面灯',
+      note: '单灯呼吸，5V 供电，10k 与 100nF 定频。',
+      lines: [
+        { partId: 'IC-555', qty: 2 }, { partId: 'R-10K', qty: 2 },
+        { partId: 'C-104', qty: 2 }, { partId: 'LED-5R', qty: 1 }
+      ]
+    },
+    {
+      id: 'BOM-DESK', name: '桌面灯', version: 'v0.9', project: '桌面灯',
+      note: '四颗红光 LED，轻触开关切换，杜邦线走线。',
+      lines: [
+        { partId: 'LED-5R', qty: 4 }, { partId: 'R-220', qty: 4 },
+        { partId: 'SW-TACT', qty: 2 }, { partId: 'WR-DUPONT', qty: 1 }
+      ]
+    },
+    {
+      id: 'BOM-ENV', name: '温湿度节点', version: 'v1.0', project: '环境监测',
+      note: 'DHT11 + LM358 缓冲，USB-C 供电。',
+      lines: [
+        { partId: 'CN-USBC', qty: 3 }, { partId: 'SN-DHT11', qty: 1 },
+        { partId: 'IC-358', qty: 1 }, { partId: 'C-104', qty: 2 }
+      ]
+    }
+  ];
+
+  const SEED_PICKS = [
+    {
+      id: 'PK-1042', project: '555 呼吸灯', requested: 'OWNER', bomId: 'BOM-555', status: 'pending',
+      at: 2, items: [{ partId: 'IC-555', qty: 2 }, { partId: 'R-10K', qty: 2 }, { partId: 'C-104', qty: 2 }, { partId: 'LED-5R', qty: 1 }]
+    },
+    {
+      id: 'PK-1043', project: '温湿度节点', requested: 'OWNER', bomId: 'BOM-ENV', status: 'pending',
+      at: 24, items: [{ partId: 'CN-USBC', qty: 3 }, { partId: 'SN-DHT11', qty: 1 }, { partId: 'IC-358', qty: 1 }, { partId: 'C-104', qty: 2 }]
+    },
+    {
+      id: 'PK-1041', project: '桌面灯', requested: 'OWNER', bomId: 'BOM-DESK', status: 'done',
+      at: 50, doneAt: 3, items: [{ partId: 'LED-5R', qty: 4 }, { partId: 'R-220', qty: 4 }, { partId: 'SW-TACT', qty: 2 }]
+    }
+  ];
+
+  const SEED_PACKAGES = [
+    { id: 'PKG-01', tracking: 'SF1234567890123', carrier: '顺丰', partId: 'IC-555', qty: 5, supplier: '立创商城', eta: '今天 18:00', note: '555 呼吸灯补料', status: 'pending' },
+    { id: 'PKG-02', tracking: 'YT7612345678901', carrier: '圆通', partId: 'CN-USBC', qty: 3, supplier: '淘宝', eta: '明天 12:00', note: '温湿度节点外壳', status: 'pending' },
+    { id: 'PKG-03', tracking: 'JD9988776655443', carrier: '京东', partId: 'R-10K', qty: 100, supplier: '立创商城', eta: '明天 18:00', note: '10kΩ 带装备料', status: 'pending' }
+  ];
+
+  const SEED_SOLDER = [
+    { id: 'JOB-01', project: '555 呼吸灯', board: 'NE555 呼吸灯 v1.2', qty: 2, status: 'queued', note: '先焊 IC 座，再装 LED' },
+    { id: 'JOB-02', project: '桌面灯', board: 'LED 灯板 v0.9', qty: 1, status: 'queued', note: '四灯并联，限流 220Ω' },
+    { id: 'JOB-03', project: '温湿度节点', board: 'DHT11 节点 v1.0', qty: 1, status: 'done', note: '已测试，读数正常' }
   ];
 
   /* ------------------------------------------------------------- helpers -- */
@@ -152,7 +225,28 @@
       };
     });
 
-    return { version: 1, savedAt: new Date(now).toISOString(), parts, transactions };
+    const photos = SEED_PHOTOS.map(([partId, note, hoursAgo], index) => ({
+      id: `PH-${String(index + 1).padStart(2, '0')}`,
+      partId, note,
+      at: new Date(now - hoursAgo * 36e5).toISOString()
+    }));
+
+    const boms = SEED_BOMS.map((bom) => ({ ...bom, lines: bom.lines.map((line) => ({ ...line })) }));
+    const picks = SEED_PICKS.map((pick) => ({
+      ...pick,
+      at: new Date(now - pick.at * 36e5).toISOString(),
+      doneAt: pick.doneAt ? new Date(now - pick.doneAt * 36e5).toISOString() : null,
+      items: pick.items.map((item) => ({ ...item }))
+    }));
+    const packages = SEED_PACKAGES.map((pkg) => ({ ...pkg }));
+    const solderJobs = SEED_SOLDER.map((job) => ({ ...job }));
+
+    return {
+      version: 2,
+      savedAt: new Date(now).toISOString(),
+      parts, transactions, photos, boms, picks, packages, solderJobs,
+      stationOn: false
+    };
   }
 
   let storageOk = true;
@@ -161,7 +255,7 @@
       const raw = localStorage.getItem(KEY);
       if (!raw) return null;
       const parsed = JSON.parse(raw);
-      if (parsed && parsed.version === 1 && Array.isArray(parsed.parts) && Array.isArray(parsed.transactions)) {
+      if (parsed && parsed.version === 2 && Array.isArray(parsed.parts) && Array.isArray(parsed.transactions)) {
         return parsed;
       }
     } catch (error) {
@@ -184,11 +278,16 @@
   }
 
   const ui = {
-    view: 'overview',
+    view: 'scan',
     inv: { q: '', cat: 'all', status: 'all', page: 1 },
     hist: { q: '', type: 'all', page: 1 },
+    album: { cat: 'all' },
     prefill: null,
-    dialogPart: null
+    dialogPart: null,
+    receiveId: null,
+    bomId: null,
+    pickId: null,
+    albumId: null
   };
 
   const els = {};
@@ -222,6 +321,12 @@
   function renderAll() {
     renderRail();
     renderOverview();
+    renderScan();
+    renderAlbum();
+    renderBom();
+    renderPick();
+    renderMaterials();
+    renderSolder();
     renderInventory();
     renderHistory();
     renderInbound();
@@ -231,20 +336,12 @@
 
   function renderRail() {
     const low = state.parts.filter((part) => part.qty <= part.min);
-    const healthy = state.parts.length - low.length;
-    const pct = state.parts.length ? Math.round((healthy / state.parts.length) * 100) : 0;
+    const packages = state.packages.filter((pkg) => pkg.status === 'pending');
+    const picks = state.picks.filter((pick) => pick.status === 'pending');
 
-    $$('[data-count="skus"]').forEach((node) => { node.textContent = state.parts.length; });
     $$('[data-count="low"]').forEach((node) => { node.textContent = low.length; });
-
-    els.healthPct.textContent = `${pct}%`;
-    els.healthOk.textContent = healthy;
-    els.healthLow.textContent = low.length;
-
-    const filled = Math.round((pct / 100) * 12);
-    els.healthMeter.innerHTML = Array.from({ length: 12 }, (_, i) =>
-      `<span class="${i < filled ? 'is-on' : ''}"></span>`
-    ).join('');
+    $$('[data-count="packages"]').forEach((node) => { node.textContent = packages.length; });
+    $$('[data-count="picks"]').forEach((node) => { node.textContent = picks.length; });
   }
 
   function renderOverview() {
@@ -459,6 +556,207 @@
     }).sort((a, b) => b.at.localeCompare(a.at));
   }
 
+  function bomStats(bom) {
+    const lines = bom.lines.map((line) => {
+      const part = getPart(line.partId);
+      return { ...line, part, ok: Boolean(part) && part.qty >= line.qty };
+    });
+    const missing = lines.filter((line) => !line.ok).length;
+    const coverage = lines.length ? Math.round(((lines.length - missing) / lines.length) * 100) : 0;
+    return { lines, missing, coverage };
+  }
+
+  function renderBom() {
+    if (!els.bomList) return;
+    els.bomCount.textContent = `${state.boms.length} BOMS`;
+    if (!state.boms.length) {
+      els.bomList.innerHTML = '<div class="low-empty">还没有 BOM。先建一个项目，再把元件加进去。</div>';
+      return;
+    }
+    els.bomList.innerHTML = state.boms.map((bom) => {
+      const stats = bomStats(bom);
+      return `<article class="bom-card">
+        <div class="bom-card__head">
+          <div>
+            <span class="ep-ui">${esc(bom.id)} · ${esc(bom.version)}</span>
+            <h3>${esc(bom.name)}</h3>
+          </div>
+          <span class="ep-badge ${stats.missing ? 'status-low' : 'status-ok'}"><i class="ep-dot"></i>${stats.missing ? `缺 ${stats.missing} 项` : '可齐套'}</span>
+        </div>
+        <p class="bom-card__meta">${esc(bom.project)} · ${bom.lines.length} LINES</p>
+        <div class="bom-bar" aria-hidden="true"><span style="width:${stats.coverage}%"></span></div>
+        <div class="bom-card__foot">
+          <span class="ep-ui">${stats.coverage}% READY</span>
+          <button class="ep-btn ep-btn--secondary ep-btn--sm" type="button" data-action="bom-view" data-id="${esc(bom.id)}">查看 BOM</button>
+        </div>
+      </article>`;
+    }).join('');
+  }
+
+  function barcodeMarkup(seed) {
+    const text = String(seed || 'PD');
+    return Array.from({ length: 32 }, (_, index) => {
+      const code = text.charCodeAt(index % text.length);
+      const width = 2 + ((code + index) % 3);
+      return `<span style="width:${width}px"></span>`;
+    }).join('');
+  }
+
+  function renderAlbum() {
+    if (!els.albumGrid) return;
+    const list = state.photos
+      .map((photo) => ({ ...photo, part: getPart(photo.partId) }))
+      .filter((photo) => photo.part && (ui.album.cat === 'all' || photo.part.category === ui.album.cat))
+      .sort((a, b) => b.at.localeCompare(a.at));
+
+    els.albumCount.textContent = `${list.length} RECORDS`;
+    els.albumGrid.hidden = list.length === 0;
+    els.albumEmpty.hidden = list.length !== 0;
+    els.albumGrid.innerHTML = list.map((photo) => `
+      <button class="album-card" type="button" data-action="album-view" data-id="${esc(photo.id)}">
+        <span class="album-thumb">
+          <span class="album-bars" aria-hidden="true">${barcodeMarkup(photo.partId + photo.id)}</span>
+          <span class="album-thumb__tag">${esc(photo.part.category)}</span>
+        </span>
+        <span class="album-meta">
+          <strong>${esc(photo.part.name)} ${esc(photo.part.value)}</strong>
+          <small>${esc(photo.part.location)} · ${fmtDate(photo.at)}</small>
+        </span>
+      </button>`).join('');
+  }
+
+  function renderScan() {
+    if (!els.packageList) return;
+    const pending = state.packages.filter((pkg) => pkg.status === 'pending');
+    els.packageCount.textContent = `${pending.length} 个`;
+    if (!pending.length) {
+      els.packageList.innerHTML = '<div class="scan-empty"><span class="ep-ui">ALL CLEAR</span><p>在途包裹都收完了。</p><a class="ep-link" href="#inbound">手动入库</a></div>';
+      return;
+    }
+    els.packageList.innerHTML = pending.map((pkg) => {
+      const part = getPart(pkg.partId);
+      return `<article class="package-card" data-package-id="${esc(pkg.id)}">
+        <div class="package-card__top">
+          <span class="package-carrier">${esc(pkg.carrier)}</span>
+          <span class="ep-badge status-low"><i class="ep-dot"></i>待收货</span>
+        </div>
+        <div class="package-code">${esc(pkg.tracking)}</div>
+        <div class="package-item">${esc(part ? partLabel(part) : '未知元件')} <span>×${fmtNum(pkg.qty)}</span></div>
+        <div class="package-meta"><span>ETA ${esc(pkg.eta)}</span><span>${esc(pkg.supplier)}</span></div>
+        <div class="package-card__foot">
+          <span class="ep-ui">${esc(pkg.note)}</span>
+          <button class="ep-btn ep-btn--secondary ep-btn--sm" type="button" data-action="receive-package" data-id="${esc(pkg.id)}">收货</button>
+        </div>
+      </article>`;
+    }).join('');
+  }
+
+  function renderPick() {
+    if (!els.pickList) return;
+    const order = [...state.picks].sort((a, b) =>
+      (a.status === 'pending' ? 0 : 1) - (b.status === 'pending' ? 0 : 1) ||
+      b.at.localeCompare(a.at)
+    );
+    const pending = state.picks.filter((pick) => pick.status === 'pending');
+    const blocked = pending.filter((pick) => bomStats({ lines: pick.items }).missing > 0);
+    const doneToday = state.picks.filter((pick) => pick.status === 'done' && pick.doneAt && isToday(pick.doneAt));
+
+    els.pickPending.textContent = fmtNum(pending.length);
+    els.pickShort.textContent = fmtNum(blocked.length);
+    els.pickDone.textContent = fmtNum(doneToday.length);
+    els.pickCount.textContent = `${pending.length} OPEN`;
+
+    els.pickList.innerHTML = order.map((pick) => {
+      const stats = bomStats({ lines: pick.items });
+      const done = pick.status === 'done';
+      return `<article class="pick-card ${done ? 'is-done' : ''}">
+        <div class="pick-card__head">
+          <span class="ep-ui">${esc(pick.id)} · ${fmtDate(pick.at)}</span>
+          <span class="ep-badge ${done ? 'status-ok' : stats.missing ? 'status-low' : ''}"><i class="ep-dot"></i>${done ? '已完成' : stats.missing ? `缺 ${stats.missing} 项` : '待取件'}</span>
+        </div>
+        <div class="pick-card__body">
+          <h3>${esc(pick.project)}</h3>
+          <p>${pick.items.length} ITEMS · ${esc(pick.requested)}</p>
+          <ul class="pick-lines">${pick.items.map((item) => {
+            const part = getPart(item.partId);
+            return `<li><span>${esc(part ? partLabel(part) : '未知')}</span><b>×${fmtNum(item.qty)}</b></li>`;
+          }).join('')}</ul>
+        </div>
+        <div class="pick-card__foot">
+          <span class="ep-ui">${done ? 'CLOSED' : stats.missing ? 'WAITING FOR STOCK' : 'READY TO PICK'}</span>
+          <button class="ep-btn ep-btn--secondary ep-btn--sm" type="button" data-action="pick-open" data-id="${esc(pick.id)}">${done ? '查看' : '开始取件'}</button>
+        </div>
+      </article>`;
+    }).join('');
+  }
+
+  function renderMaterials() {
+    if (!els.materialBody) return;
+    const list = state.parts.filter((part) => part.category === '耗材');
+    els.materialCount.textContent = `${list.length} SKUS`;
+    els.materialBody.innerHTML = list.map((part) => {
+      const status = statusOf(part);
+      const lastOut = state.transactions.find((tx) => tx.partId === part.id && tx.type === 'out');
+      return `<tr>
+        <td><button class="part-link" type="button" data-action="detail" data-id="${esc(part.id)}">${esc(part.name)}<small>${esc(part.value)} · ${esc(part.pkg)}</small></button></td>
+        <td><span class="ep-num">${esc(part.location)}</span></td>
+        <td class="is-num stock-cell">${fmtNum(part.qty)}<small> / ${fmtNum(part.min)} ${esc(part.unit)}</small></td>
+        <td><span class="ep-badge ${status.cls}"><i class="ep-dot"></i>${status.label}</span></td>
+        <td><span class="ep-num">${lastOut ? fmtShortDate(lastOut.at) : '—'}</span></td>
+        <td><div class="row-actions">
+          <button class="ep-btn ep-btn--secondary ep-btn--sm" type="button" data-action="material-use" data-id="${esc(part.id)}">领用</button>
+          <button class="ep-btn ep-btn--ghost ep-btn--sm" type="button" data-action="in" data-id="${esc(part.id)}">补货</button>
+        </div></td>
+      </tr>`;
+    }).join('');
+
+    const low = list.filter((part) => part.qty <= part.min);
+    els.materialLowCount.textContent = `${low.length} LOW`;
+    els.materialLow.innerHTML = low.length
+      ? low.map((part) => `<div class="material-low-item"><div><strong>${esc(part.name)} ${esc(part.value)}</strong><span>${esc(part.location)} · 剩 ${fmtNum(part.qty)} / ${fmtNum(part.min)} ${esc(part.unit)}</span></div><button class="ep-btn ep-btn--ghost ep-btn--sm" type="button" data-action="in" data-id="${esc(part.id)}">补货</button></div>`).join('')
+      : '<div class="low-empty">耗材库存健康。</div>';
+
+    const log = state.transactions
+      .filter((tx) => tx.type === 'out' && getPart(tx.partId)?.category === '耗材')
+      .slice(0, 4);
+    els.materialLog.innerHTML = log.length
+      ? log.map(miniRow).join('')
+      : '<div class="summary-empty">还没有领用记录。</div>';
+  }
+
+  function renderSolder() {
+    if (!els.stationStatus) return;
+    const on = Boolean(state.stationOn);
+    els.stationStatus.className = `ep-badge${on ? ' status-low' : ''}`;
+    els.stationStatus.innerHTML = `<i class="ep-dot"></i>${on ? 'READY' : 'IDLE'}`;
+    els.stationTemp.textContent = on ? '320' : '28';
+    els.stationPower.textContent = on ? '45' : '0';
+    els.stationToggle.textContent = on ? '关闭工位' : '开启工位';
+    els.stationToggle.setAttribute('aria-pressed', String(on));
+    els.stationBars.innerHTML = Array.from({ length: 12 }, (_, index) =>
+      `<span class="${index < (on ? 9 : 1) ? 'is-on' : ''}"></span>`
+    ).join('');
+
+    const open = state.solderJobs.filter((job) => job.status !== 'done');
+    els.jobCount.textContent = `${open.length} JOBS`;
+    els.solderJobs.innerHTML = state.solderJobs.map((job) => `
+      <article class="job-card">
+        <div class="job-card__head">
+          <span class="ep-ui">${esc(job.id)}</span>
+          <span class="ep-badge ${job.status === 'done' ? 'status-ok' : job.status === 'active' ? 'status-low' : ''}"><i class="ep-dot"></i>${job.status === 'done' ? '已完成' : job.status === 'active' ? '进行中' : '待焊接'}</span>
+        </div>
+        <h3>${esc(job.project)}</h3>
+        <p>${esc(job.board)} · ${fmtNum(job.qty)} PCS</p>
+        <span class="job-card__note">${esc(job.note)}</span>
+        <div class="job-card__foot">
+          <span class="ep-ui">${job.status === 'done' ? 'SOLDERED' : 'STATION 01'}</span>
+          ${job.status === 'done'
+            ? '<span class="ep-ui">DONE</span>'
+            : `<button class="ep-btn ep-btn--secondary ep-btn--sm" type="button" data-action="${job.status === 'active' ? 'solder-done' : 'solder-start'}" data-id="${esc(job.id)}">${job.status === 'active' ? '记录完成' : '开始焊接'}</button>`}
+        </div>
+      </article>`).join('');
+  }
+
   function renderPager(container, pages, current, target) {
     const buttons = Array.from({ length: pages }, (_, i) => i + 1).map((page) =>
       `<button class="ep-page" type="button" data-action="page" data-target="${target}" data-page="${page}"${page === current ? ' aria-current="page"' : ''}>${page}</button>`
@@ -605,6 +903,349 @@
       <div class="summary-row"><span>库位</span><strong>${esc(part.location)}</strong></div>
       ${over ? `<div class="summary-warning">库存不足：当前只有 ${fmtNum(part.qty)} ${esc(part.unit)}。请减少数量。</div>` : ''}
       ${low ? `<div class="summary-warning summary-warning--ok">出库后${wasLow ? '仍低于' : '进入'}低库存（${fmtNum(after)} / ${fmtNum(part.min)}）。</div>` : ''}`;
+  }
+
+  /* ----------------------------------------------------------- dialogs -- */
+  function getPackage(id) {
+    return state.packages.find((pkg) => pkg.id === id);
+  }
+
+  function openReceive(id) {
+    const pkg = getPackage(id);
+    if (!pkg) return;
+    const part = getPart(pkg.partId);
+    if (!part) return;
+    ui.receiveId = id;
+    els.receiveDialogTitle.textContent = `收货 / ${pkg.tracking}`;
+    els.receiveDialogBody.innerHTML = `
+      <div class="receive-summary">
+        <span class="ep-ui">${esc(pkg.carrier)} · ${esc(pkg.eta)}</span>
+        <strong>${esc(partLabel(part))} ×${fmtNum(pkg.qty)}</strong>
+        <span>${esc(pkg.note)} · ${esc(pkg.supplier)}</span>
+      </div>
+      <div class="form-grid">
+        <div class="ep-field">
+          <label class="ep-field__label" for="receive-part">元件 <span>PART</span></label>
+          <select class="ep-select" id="receive-part">${partOptions(part.id, false)}</select>
+        </div>
+        <div class="ep-field">
+          <label class="ep-field__label" for="receive-qty">数量 <span>QTY</span></label>
+          <input class="ep-input" id="receive-qty" type="number" min="1" step="1" value="${pkg.qty}">
+        </div>
+        <div class="ep-field">
+          <label class="ep-field__label" for="receive-location">库位 <span>LOCATION</span></label>
+          <input class="ep-input" id="receive-location" type="text" value="${esc(part.location)}">
+        </div>
+        <div class="ep-field">
+          <label class="ep-field__label" for="receive-supplier">供应商 <span>SUPPLIER</span></label>
+          <input class="ep-input" id="receive-supplier" type="text" value="${esc(pkg.supplier)}" list="suppliers">
+        </div>
+        <div class="ep-field form-full">
+          <label class="ep-field__label" for="receive-note">备注 <span>NOTE</span></label>
+          <input class="ep-input" id="receive-note" type="text" value="${esc(`扫码收货 · ${pkg.tracking}`)}">
+        </div>
+      </div>
+      <p class="dialog-note">确认后写入入库流水，并把包裹标记为已收货。数量默认按包裹数量带出，可以改。</p>`;
+    els.receiveDialogFoot.innerHTML = `
+      <button class="ep-btn ep-btn--secondary ep-btn--sm" type="button" data-action="close-dialog">取消</button>
+      <button class="ep-btn ep-btn--primary ep-btn--sm" type="button" data-action="confirm-receive" data-id="${esc(pkg.id)}">确认入库</button>`;
+    const select = $('#receive-part', els.receiveDialogBody);
+    select?.addEventListener('change', () => {
+      const next = getPart(select.value);
+      if (!next) return;
+      const location = $('#receive-location', els.receiveDialogBody);
+      const supplier = $('#receive-supplier', els.receiveDialogBody);
+      if (location) location.value = next.location;
+      if (supplier) supplier.value = next.supplier;
+    });
+    if (!els.receiveDialog.open) els.receiveDialog.showModal();
+  }
+
+  function confirmReceive(id) {
+    const pkg = getPackage(id);
+    if (!pkg || pkg.status !== 'pending') return;
+    const select = $('#receive-part', els.receiveDialogBody);
+    const qtyInput = $('#receive-qty', els.receiveDialogBody);
+    const part = getPart(select?.value);
+    const qty = Number(qtyInput?.value);
+    if (!part) {
+      toast('找不到元件', '包裹关联的元件可能已被删除。', 'danger');
+      return;
+    }
+    if (!Number.isInteger(qty) || qty <= 0) {
+      qtyInput?.focus();
+      toast('数量无效', '请输入大于 0 的整数。', 'danger');
+      return;
+    }
+
+    const now = new Date().toISOString();
+    const location = $('#receive-location', els.receiveDialogBody)?.value.trim();
+    const supplier = $('#receive-supplier', els.receiveDialogBody)?.value.trim();
+    const note = $('#receive-note', els.receiveDialogBody)?.value.trim() || `扫码收货 · ${pkg.tracking}`;
+
+    part.qty += qty;
+    part.updatedAt = now;
+    if (location) part.location = location;
+    if (supplier) part.supplier = supplier;
+    state.transactions.unshift({
+      id: txId(), type: 'in', partId: part.id, qty, unit: part.unit,
+      actor: ACTOR, party: supplier || pkg.supplier || '—', note, at: now
+    });
+    pkg.status = 'received';
+    pkg.receivedAt = now;
+    saveState();
+    renderAll();
+    closeDialogs();
+    toast('收货完成', `${part.name} ${part.value} +${fmtNum(qty)} ${part.unit}`);
+  }
+
+  function simulateScan() {
+    const pkg = state.packages.find((item) => item.status === 'pending');
+    if (!pkg) {
+      toast('没有待收包裹', '在途列表已经清空。');
+      return;
+    }
+    openReceive(pkg.id);
+    toast('已识别包裹', `${pkg.carrier} · ${pkg.tracking}`);
+  }
+
+  let scanStream = null;
+
+  async function startCamera() {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      toast('摄像头不可用', '当前浏览器不支持摄像头预览，用「模拟扫码」即可。', 'danger');
+      return;
+    }
+    try {
+      scanStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+      if (els.scanVideo) {
+        els.scanVideo.srcObject = scanStream;
+        els.scanVideo.hidden = false;
+        await els.scanVideo.play().catch(() => {});
+      }
+      if (els.scanPlaceholder) els.scanPlaceholder.hidden = true;
+      $$('[data-action="stop-camera"]').forEach((button) => { button.hidden = false; });
+    } catch (error) {
+      toast('摄像头未开启', '没有拿到摄像头权限。可以继续用「模拟扫码」。', 'danger');
+    }
+  }
+
+  function stopCamera(quiet = false) {
+    if (scanStream) {
+      scanStream.getTracks().forEach((track) => track.stop());
+      scanStream = null;
+    }
+    if (els.scanVideo) {
+      els.scanVideo.pause();
+      els.scanVideo.srcObject = null;
+      els.scanVideo.hidden = true;
+    }
+    if (els.scanPlaceholder) els.scanPlaceholder.hidden = false;
+    $$('[data-action="stop-camera"]').forEach((button) => { button.hidden = true; });
+    if (!quiet) toast('摄像头已关闭', '回到模拟扫码模式。');
+  }
+
+  function openBom(id) {
+    const bom = state.boms.find((item) => item.id === id);
+    if (!bom) return;
+    const stats = bomStats(bom);
+    ui.bomId = id;
+    els.bomDialogTitle.textContent = `${bom.name} / ${bom.id}`;
+    els.bomDialogBody.innerHTML = `
+      <div class="bom-dialog__meta">
+        <span class="ep-ui">${esc(bom.project)} · ${esc(bom.version)}</span>
+        <p>${esc(bom.note)}</p>
+      </div>
+      <div class="ep-table-wrap" tabindex="0" role="region" aria-label="${esc(bom.name)} BOM 明细">
+        <table class="ep-table">
+          <thead><tr><th scope="col">Part</th><th scope="col" class="is-num">Need</th><th scope="col" class="is-num">Stock</th><th scope="col">Status</th></tr></thead>
+          <tbody>${stats.lines.map((line) => `<tr>
+            <td>${esc(line.part ? partLabel(line.part) : '未知元件')}</td>
+            <td class="is-num">${fmtNum(line.qty)} ${esc(line.part?.unit || '')}</td>
+            <td class="is-num ${line.ok ? '' : 'qty-out'}">${fmtNum(line.part?.qty || 0)}</td>
+            <td><span class="ep-badge ${line.ok ? 'status-ok' : 'status-low'}"><i class="ep-dot"></i>${line.ok ? '齐套' : '缺料'}</span></td>
+          </tr>`).join('')}</tbody>
+        </table>
+      </div>
+      <div class="bom-dialog__foot">
+        <span class="ep-ui">${stats.coverage}% READY · ${stats.missing} SHORT</span>
+        ${stats.missing ? '<span class="ep-warn-text">还有缺料，生成取件单后会显示为缺料单。</span>' : ''}
+      </div>`;
+    els.bomDialogFoot.innerHTML = `
+      <button class="ep-btn ep-btn--secondary ep-btn--sm" type="button" data-action="close-dialog">关闭</button>
+      <button class="ep-btn ep-btn--primary ep-btn--sm" type="button" data-action="bom-pick" data-id="${esc(bom.id)}">生成取件单</button>`;
+    if (!els.bomDialog.open) els.bomDialog.showModal();
+  }
+
+  function makePickId() {
+    let number = 1044;
+    while (state.picks.some((pick) => pick.id === `PK-${number}`)) number += 1;
+    return `PK-${number}`;
+  }
+
+  function createPickFromBom(id) {
+    const bom = state.boms.find((item) => item.id === id);
+    if (!bom) return;
+    const pick = {
+      id: makePickId(), project: bom.name, requested: ACTOR, bomId: bom.id,
+      status: 'pending', at: new Date().toISOString(), doneAt: null,
+      items: bom.lines.map((line) => ({ ...line }))
+    };
+    state.picks.unshift(pick);
+    saveState();
+    renderAll();
+    closeDialogs();
+    navigate('pick');
+    toast('取件单已生成', `${pick.id} · ${pick.project}`);
+  }
+
+  function openPick(id) {
+    const pick = state.picks.find((item) => item.id === id);
+    if (!pick) return;
+    const stats = bomStats({ lines: pick.items });
+    ui.pickId = id;
+    els.pickDialogTitle.textContent = `${pick.id} / ${pick.project}`;
+    els.pickDialogBody.innerHTML = `
+      <div class="pick-dialog__meta">
+        <span class="ep-ui">${esc(pick.requested)} · ${fmtDate(pick.at)} · ${pick.items.length} LINES</span>
+        <p>${pick.status === 'done' ? '这张单已经完成。' : '确认后按清单一次性扣减库存，并写入出库流水。'}</p>
+      </div>
+      <div class="ep-table-wrap" tabindex="0" role="region" aria-label="${esc(pick.id)} 取件明细">
+        <table class="ep-table">
+          <thead><tr><th scope="col">Part</th><th scope="col" class="is-num">Need</th><th scope="col" class="is-num">Stock</th><th scope="col">Status</th></tr></thead>
+          <tbody>${stats.lines.map((line) => `<tr>
+            <td>${esc(line.part ? partLabel(line.part) : '未知元件')}</td>
+            <td class="is-num">${fmtNum(line.qty)} ${esc(line.part?.unit || '')}</td>
+            <td class="is-num ${line.ok ? '' : 'qty-out'}">${fmtNum(line.part?.qty || 0)}</td>
+            <td><span class="ep-badge ${line.ok ? 'status-ok' : 'status-low'}"><i class="ep-dot"></i>${line.ok ? '够' : '缺'}</span></td>
+          </tr>`).join('')}</tbody>
+        </table>
+      </div>
+      ${stats.missing ? '<div class="summary-warning summary-warning--ok">有缺料，先补货再确认取件。可以去扫码收货或手动入库。</div>' : ''}`;
+    els.pickDialogFoot.innerHTML = `
+      <button class="ep-btn ep-btn--secondary ep-btn--sm" type="button" data-action="close-dialog">关闭</button>
+      ${pick.status === 'done'
+        ? '<span class="ep-badge status-ok"><i class="ep-dot"></i>已完成</span>'
+        : `<button class="ep-btn ep-btn--primary ep-btn--sm" type="button" data-action="pick-confirm" data-id="${esc(pick.id)}"${stats.missing ? ' disabled' : ''}>确认取件</button>`}`;
+    if (!els.pickDialog.open) els.pickDialog.showModal();
+  }
+
+  function confirmPick(id) {
+    const pick = state.picks.find((item) => item.id === id);
+    if (!pick || pick.status === 'done') return;
+    const stats = bomStats({ lines: pick.items });
+    if (stats.missing) {
+      toast('还缺料', '先补货，再确认取件。', 'danger');
+      return;
+    }
+    const now = new Date().toISOString();
+    stats.lines.forEach((line) => {
+      const part = line.part;
+      part.qty -= line.qty;
+      part.updatedAt = now;
+      state.transactions.unshift({
+        id: txId(), type: 'out', partId: part.id, qty: line.qty, unit: part.unit,
+        actor: ACTOR, party: pick.project, note: `取件 ${pick.id}`, at: now
+      });
+    });
+    pick.status = 'done';
+    pick.doneAt = now;
+    saveState();
+    renderAll();
+    closeDialogs();
+    toast('取件完成', `${pick.id} · ${pick.project} 已出库`);
+  }
+
+  function openAlbumPhoto(id) {
+    const photo = state.photos.find((item) => item.id === id);
+    if (!photo) return;
+    const part = getPart(photo.partId);
+    if (!part) return;
+    ui.albumId = id;
+    els.albumDialogTitle.textContent = `档案 / ${photo.id}`;
+    els.albumDialogBody.innerHTML = `
+      <div class="album-detail">
+        <div class="album-detail__art">
+          <div class="album-bars album-bars--large" aria-hidden="true">${barcodeMarkup(part.id + photo.id)}</div>
+          <span class="ep-ui">${esc(part.category)} · ${esc(part.location)}</span>
+        </div>
+        <div class="album-detail__meta">
+          <h3>${esc(part.name)} ${esc(part.value)}</h3>
+          <p>${esc(part.pkg)} · ${esc(part.supplier)}</p>
+          <p class="album-note">${esc(photo.note)}</p>
+          <span class="ep-ui">${fmtDate(photo.at)} · ${esc(photo.id)}</span>
+        </div>
+      </div>`;
+    els.albumDialogFoot.innerHTML = `
+      <button class="ep-btn ep-btn--secondary ep-btn--sm" type="button" data-action="close-dialog">关闭</button>
+      <button class="ep-btn ep-btn--secondary ep-btn--sm" type="button" data-action="album-part" data-id="${esc(part.id)}">查看元件</button>`;
+    if (!els.albumDialog.open) els.albumDialog.showModal();
+  }
+
+  function openAlbumAdd() {
+    ui.albumId = null;
+    els.albumDialogTitle.textContent = '新增档案';
+    els.albumDialogBody.innerHTML = `
+      <div class="form-grid">
+        <div class="ep-field form-full">
+          <label class="ep-field__label" for="album-part">元件 <span>PART</span></label>
+          <select class="ep-select" id="album-part">${partOptions(state.parts[0]?.id, false)}</select>
+        </div>
+        <div class="ep-field form-full">
+          <label class="ep-field__label" for="album-note">备注 <span>NOTE</span></label>
+          <input class="ep-input" id="album-note" type="text" placeholder="批次 / 外观 / 位置">
+        </div>
+      </div>
+      <p class="dialog-note">保存后生成一张扫描件档案，不需要上传真实照片。</p>`;
+    els.albumDialogFoot.innerHTML = `
+      <button class="ep-btn ep-btn--secondary ep-btn--sm" type="button" data-action="close-dialog">取消</button>
+      <button class="ep-btn ep-btn--primary ep-btn--sm" type="button" data-action="album-save">保存档案</button>`;
+    if (!els.albumDialog.open) els.albumDialog.showModal();
+  }
+
+  function saveAlbum() {
+    const part = getPart($('#album-part', els.albumDialogBody)?.value);
+    if (!part) return;
+    const note = $('#album-note', els.albumDialogBody)?.value.trim() || '手动归档';
+    const photo = {
+      id: `PH-${Date.now().toString(36).toUpperCase()}`,
+      partId: part.id, note, at: new Date().toISOString()
+    };
+    state.photos.unshift(photo);
+    saveState();
+    renderAll();
+    closeDialogs();
+    toast('档案已保存', `${part.name} ${part.value} · ${note}`);
+  }
+
+  function toggleStation() {
+    state.stationOn = !state.stationOn;
+    saveState();
+    renderSolder();
+    toast(state.stationOn ? '工位已开启' : '工位已关闭', state.stationOn ? '目标 320°C · 演示模式' : '温度回到待机。');
+  }
+
+  function startSolderJob(id) {
+    const job = state.solderJobs.find((item) => item.id === id);
+    if (!job) return;
+    state.solderJobs.forEach((item) => {
+      if (item.status === 'active' && item.id !== id) item.status = 'queued';
+    });
+    job.status = 'active';
+    job.startedAt = new Date().toISOString();
+    saveState();
+    renderSolder();
+    toast('开始焊接', `${job.id} · ${job.project}`);
+  }
+
+  function finishSolderJob(id) {
+    const job = state.solderJobs.find((item) => item.id === id);
+    if (!job) return;
+    job.status = 'done';
+    job.doneAt = new Date().toISOString();
+    saveState();
+    renderSolder();
+    toast('工单完成', `${job.id} · ${job.project}`);
   }
 
   /* -------------------------------------------------------------- actions -- */
@@ -765,11 +1406,17 @@
     saveState();
     ui.inv = { q: '', cat: 'all', status: 'all', page: 1 };
     ui.hist = { q: '', type: 'all', page: 1 };
+    ui.album = { cat: 'all' };
     ui.prefill = null;
     ui.dialogPart = null;
+    ui.receiveId = null;
+    ui.bomId = null;
+    ui.pickId = null;
+    ui.albumId = null;
     els.invSearch.value = '';
     els.invCat.value = 'all';
     els.invStatus.value = 'all';
+    els.albumCat.value = 'all';
     els.histSearch.value = '';
     els.histType.value = 'all';
     els.inQty.value = '1';
@@ -783,10 +1430,11 @@
     els.outNote.value = '';
     clearInboundErrors();
     clearOutboundErrors();
+    stopCamera(true);
     closeDialogs();
     renderAll();
-    if (location.hash === '#overview') route(false);
-    else location.hash = '#overview';
+    if (location.hash === '#scan') route(false);
+    else location.hash = '#scan';
     toast('演示数据已重置', `${state.parts.length} 个元件与 ${state.transactions.length} 条流水已恢复。`);
   }
 
@@ -891,24 +1539,34 @@
     if (!els.saveStamp) return;
     const when = state.savedAt ? fmtTime(state.savedAt) : '--:--';
     els.saveStamp.textContent = when;
-    els.storageLabel.textContent = storageOk ? 'LOCAL STORAGE' : 'MEMORY ONLY';
+    els.storageLabel.textContent = storageOk ? 'LOCAL' : 'MEMORY';
   }
 
   /* --------------------------------------------------------------- route -- */
   function route(initial = false) {
     const hash = location.hash.replace('#', '');
-    const view = VIEWS.includes(hash) ? hash : 'overview';
+    const view = VIEWS.includes(hash) ? hash : 'scan';
     ui.view = view;
+
+    if (view !== 'scan') stopCamera(true);
 
     $$('.view').forEach((section) => {
       section.hidden = section.dataset.view !== view;
     });
+
+    const activeNav = RELATED_NAV[view] || view;
     $$('[data-nav]').forEach((link) => {
-      if (link.dataset.nav === view) link.setAttribute('aria-current', 'page');
+      if (link.dataset.nav === activeNav) link.setAttribute('aria-current', 'page');
       else link.removeAttribute('aria-current');
     });
+    const home = $('[data-home]');
+    if (home) {
+      if (view === 'overview') home.setAttribute('aria-current', 'page');
+      else home.removeAttribute('aria-current');
+    }
 
-    els.crumb.textContent = view.toUpperCase();
+    els.crumb.textContent = view === 'scan' ? 'SCAN' : TITLES[view].toUpperCase();
+    els.sysState.textContent = view === 'scan' ? '入库定位中' : 'STOCK READY';
     document.title = `${TITLES[view]} — Parts Depot`;
 
     if (view === 'inbound') {
@@ -995,6 +1653,11 @@
       renderHistory();
     });
 
+    els.albumCat.addEventListener('change', () => {
+      ui.album.cat = els.albumCat.value;
+      renderAlbum();
+    });
+
     els.newPartBtn.addEventListener('click', () => {
       navigate('inbound', { isNew: true });
     });
@@ -1061,6 +1724,100 @@
         return;
       }
 
+      if (action === 'simulate-scan') {
+        simulateScan();
+        return;
+      }
+
+      if (action === 'start-camera') {
+        startCamera();
+        return;
+      }
+
+      if (action === 'stop-camera') {
+        stopCamera();
+        return;
+      }
+
+      if (action === 'sync-packages') {
+        els.syncStamp.textContent = '刚刚同步';
+        toast('同步完成', '在途包裹已经是最新状态。');
+        return;
+      }
+
+      if (action === 'receive-package') {
+        openReceive(trigger.dataset.id);
+        return;
+      }
+
+      if (action === 'confirm-receive') {
+        confirmReceive(trigger.dataset.id);
+        return;
+      }
+
+      if (action === 'bom-view') {
+        openBom(trigger.dataset.id);
+        return;
+      }
+
+      if (action === 'bom-pick') {
+        createPickFromBom(trigger.dataset.id);
+        return;
+      }
+
+      if (action === 'pick-open') {
+        openPick(trigger.dataset.id);
+        return;
+      }
+
+      if (action === 'pick-confirm') {
+        confirmPick(trigger.dataset.id);
+        return;
+      }
+
+      if (action === 'album-add') {
+        openAlbumAdd();
+        return;
+      }
+
+      if (action === 'album-view') {
+        openAlbumPhoto(trigger.dataset.id);
+        return;
+      }
+
+      if (action === 'album-part') {
+        const id = trigger.dataset.id;
+        closeDialogs();
+        openPart(id);
+        return;
+      }
+
+      if (action === 'album-save') {
+        saveAlbum();
+        return;
+      }
+
+      if (action === 'material-use') {
+        closeMenus();
+        navigate('outbound', { partId: trigger.dataset.id });
+        return;
+      }
+
+      if (action === 'station-toggle') {
+        toggleStation();
+        return;
+      }
+
+      if (action === 'solder-start') {
+        startSolderJob(trigger.dataset.id);
+        return;
+      }
+
+      if (action === 'solder-done') {
+        finishSolderJob(trigger.dataset.id);
+        return;
+      }
+
       if (action === 'in' || action === 'out') {
         closeMenus();
         navigate(action === 'in' ? 'inbound' : 'outbound', { partId: trigger.dataset.id });
@@ -1103,7 +1860,7 @@
       }
     });
 
-    [els.partDialog, els.resetDialog].forEach((dialog) => {
+    [els.partDialog, els.resetDialog, els.receiveDialog, els.bomDialog, els.pickDialog, els.albumDialog].forEach((dialog) => {
       dialog.addEventListener('click', (event) => {
         if (event.target === dialog) dialog.close();
       });
@@ -1119,10 +1876,7 @@
     els.rail = $('.rail');
     els.crumb = $('#crumb');
     els.todayDate = $('#today-date');
-    els.healthPct = $('#health-pct');
-    els.healthOk = $('#health-ok');
-    els.healthLow = $('#health-low');
-    els.healthMeter = $('#health-meter');
+    els.sysState = $('#sys-state');
     els.saveStamp = $('#save-stamp');
     els.storageLabel = $('#storage-label');
     els.overviewAlert = $('#overview-alert');
@@ -1141,6 +1895,40 @@
     els.rackCount = $('#rack-count');
     els.lowList = $('#low-list');
     els.recentBody = $('#recent-body');
+
+    els.scanVideo = $('#scan-video');
+    els.scanPlaceholder = $('#scan-placeholder');
+    els.packageList = $('#package-list');
+    els.packageCount = $('#package-count');
+    els.syncStamp = $('#sync-stamp');
+
+    els.albumCat = $('#album-cat');
+    els.albumCount = $('#album-count');
+    els.albumGrid = $('#album-grid');
+    els.albumEmpty = $('#album-empty');
+
+    els.bomList = $('#bom-list');
+    els.bomCount = $('#bom-count');
+
+    els.pickPending = $('#pick-pending');
+    els.pickShort = $('#pick-short');
+    els.pickDone = $('#pick-done');
+    els.pickCount = $('#pick-count');
+    els.pickList = $('#pick-list');
+
+    els.materialCount = $('#material-count');
+    els.materialBody = $('#material-body');
+    els.materialLow = $('#material-low');
+    els.materialLowCount = $('#material-low-count');
+    els.materialLog = $('#material-log');
+
+    els.stationStatus = $('#station-status');
+    els.stationTemp = $('#station-temp');
+    els.stationPower = $('#station-power');
+    els.stationToggle = $('#station-toggle');
+    els.stationBars = $('#station-bars');
+    els.jobCount = $('#job-count');
+    els.solderJobs = $('#solder-jobs');
 
     els.inboundForm = $('#inbound-form');
     els.inPart = $('#in-part');
@@ -1198,6 +1986,27 @@
     els.partDialogTitle = $('#part-dialog-title');
     els.partDialogBody = $('#part-dialog-body');
     els.partDialogFoot = $('#part-dialog-foot');
+
+    els.receiveDialog = $('#receive-dialog');
+    els.receiveDialogTitle = $('#receive-dialog-title');
+    els.receiveDialogBody = $('#receive-dialog-body');
+    els.receiveDialogFoot = $('#receive-dialog-foot');
+
+    els.bomDialog = $('#bom-dialog');
+    els.bomDialogTitle = $('#bom-dialog-title');
+    els.bomDialogBody = $('#bom-dialog-body');
+    els.bomDialogFoot = $('#bom-dialog-foot');
+
+    els.pickDialog = $('#pick-dialog');
+    els.pickDialogTitle = $('#pick-dialog-title');
+    els.pickDialogBody = $('#pick-dialog-body');
+    els.pickDialogFoot = $('#pick-dialog-foot');
+
+    els.albumDialog = $('#album-dialog');
+    els.albumDialogTitle = $('#album-dialog-title');
+    els.albumDialogBody = $('#album-dialog-body');
+    els.albumDialogFoot = $('#album-dialog-foot');
+
     els.resetDialog = $('#reset-dialog');
     els.toastStack = $('#toast-stack');
   }
@@ -1207,6 +2016,7 @@
       .concat(CATEGORIES.map((category) => `<option value="${esc(category)}">${esc(category)}</option>`))
       .join('');
     els.invCat.innerHTML = filterOptions;
+    els.albumCat.innerHTML = filterOptions;
     els.newCategory.innerHTML = CATEGORIES.map((category) => `<option value="${esc(category)}">${esc(category)}</option>`).join('');
     els.newCategory.value = CATEGORIES[0];
   }
@@ -1216,7 +2026,7 @@
     populateCategories();
     bind();
     els.todayDate.textContent = fmtTopDate(new Date());
-    if (!location.hash) history.replaceState(null, '', '#overview');
+    if (!location.hash) history.replaceState(null, '', '#scan');
     saveState();
     renderAll();
     route(true);
